@@ -48,17 +48,40 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
             const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
-            const wikiPage = '${{ matrix.platform }}-artifact-urls.md';
-            const wikiContent = `## Latest ${{ matrix.platform }} Artifact URLs\n\n- ${artifactUrl}\n`;
+            const wikiPage = 'Artifact-URLs.md';
+            let wikiContent = '';
+
+            try {
+              const { data } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: wikiPage,
+              });
+              wikiContent = Buffer.from(data.content, 'base64').toString();
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
+
+            const platform = '${{ matrix.platform }}';
+            const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
+            const newLine = `[${platform}](${artifactUrl})`;
+
+            if (regex.test(wikiContent)) {
+              wikiContent = wikiContent.replace(regex, newLine);
+            } else {
+              wikiContent += `\n${newLine}`;
+            }
+
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              path: `${wikiPage}`,
-              message: 'Update ${{ matrix.platform }} artifact URL in wiki',
+              path: wikiPage,
+              message: 'Update artifact URLs in wiki',
               content: Buffer.from(wikiContent).toString('base64'),
-              sha: github.getContent(context.repo.owner, context.repo.repo, wikiPage).data.sha
+              sha: data ? data.sha : undefined,
             });
 
   windows-build:
@@ -93,15 +116,38 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fs = require('fs');
             const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
-            const wikiPage = 'windows-artifact-urls.md';
-            const wikiContent = `## Latest Windows Artifact URLs\n\n- ${artifactUrl}\n`;
+            const wikiPage = 'Artifact-URLs.md';
+            let wikiContent = '';
+
+            try {
+              const { data } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: wikiPage,
+              });
+              wikiContent = Buffer.from(data.content, 'base64').toString();
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+            }
+
+            const platform = 'windows';
+            const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
+            const newLine = `[${platform}](${artifactUrl})`;
+
+            if (regex.test(wikiContent)) {
+              wikiContent = wikiContent.replace(regex, newLine);
+            } else {
+              wikiContent += `\n${newLine}`;
+            }
+
             await github.rest.repos.createOrUpdateFileContents({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              path: `${wikiPage}`,
-              message: 'Update Windows artifact URL in wiki',
+              path: wikiPage,
+              message: 'Update artifact URLs in wiki',
               content: Buffer.from(wikiContent).toString('base64'),
-              sha: github.getContent(context.repo.owner, context.repo.repo, wikiPage).data.sha
+              sha: data ? data.sha : undefined,
             });
