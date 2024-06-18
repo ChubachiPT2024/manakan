@@ -43,47 +43,6 @@ jobs:
           path: |
             out/make/**/*
 
-      - name: Update Wiki with artifact URL
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
-            const wikiPage = 'Artifact-URLs.md';
-            let wikiContent = '';
-
-            try {
-              const { data } = await github.rest.repos.getContent({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                path: wikiPage,
-              });
-              wikiContent = Buffer.from(data.content, 'base64').toString();
-            } catch (error) {
-              if (error.status !== 404) {
-                throw error;
-              }
-            }
-
-            const platform = '${{ matrix.platform }}';
-            const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
-            const newLine = `[${platform}](${artifactUrl})`;
-
-            if (regex.test(wikiContent)) {
-              wikiContent = wikiContent.replace(regex, newLine);
-            } else {
-              wikiContent += `\n${newLine}`;
-            }
-
-            await github.rest.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: wikiPage,
-              message: 'Update artifact URLs in wiki',
-              content: Buffer.from(wikiContent).toString('base64'),
-              sha: data ? data.sha : undefined,
-            });
-
   windows-build:
     runs-on: windows-2019
 
@@ -111,36 +70,49 @@ jobs:
           path: |
             out/make/**/*
 
-      - name: Update Wiki with artifact URL
+  update-wiki:
+    needs:
+      - mac-linux-build
+      - windows-build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update Wiki with artifact URLs
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
             const wikiPage = 'Artifact-URLs.md';
             let wikiContent = '';
+            let sha = null;
 
             try {
-              const { data } = await github.rest.repos.getContent({
+              const response = await github.rest.repos.getContent({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 path: wikiPage,
               });
-              wikiContent = Buffer.from(data.content, 'base64').toString();
+              wikiContent = Buffer.from(response.data.content, 'base64').toString();
+              sha = response.data.sha;
             } catch (error) {
               if (error.status !== 404) {
                 throw error;
               }
             }
 
-            const platform = 'windows';
-            const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
-            const newLine = `[${platform}](${artifactUrl})`;
+            const platforms = ['darwin', 'linux', 'win32'];
+            for (const platform of platforms) {
+              const artifactName = `${platform}-build`;
+              const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}#artifacts`;
+              const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
+              const newLine = `[${platform}](${artifactUrl})`;
 
-            if (regex.test(wikiContent)) {
-              wikiContent = wikiContent.replace(regex, newLine);
-            } else {
-              wikiContent += `\n${newLine}`;
+              if (regex.test(wikiContent)) {
+                wikiContent = wikiContent.replace(regex, newLine);
+              } else {
+                wikiContent += `\n${newLine}`;
+              }
             }
 
             await github.rest.repos.createOrUpdateFileContents({
@@ -149,5 +121,5 @@ jobs:
               path: wikiPage,
               message: 'Update artifact URLs in wiki',
               content: Buffer.from(wikiContent).toString('base64'),
-              sha: data ? data.sha : undefined,
+              sha: sha,
             });
