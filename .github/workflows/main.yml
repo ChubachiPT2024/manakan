@@ -13,8 +13,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-        platform: [darwin, linux, win32]
+        include:
+          - os: macos-latest
+            platform: darwin
+          - os: ubuntu-latest
+            platform: linux
+          - os: windows-latest
+            platform: win32
 
     steps:
       - name: Checkout code
