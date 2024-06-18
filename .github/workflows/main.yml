@@ -78,48 +78,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Update Wiki with artifact URLs
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const wikiPage = 'Artifact-URLs.md';
-            let wikiContent = '';
-            let sha = null;
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
-            try {
-              const response = await github.rest.repos.getContent({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                path: wikiPage,
-              });
-              wikiContent = Buffer.from(response.data.content, 'base64').toString();
-              sha = response.data.sha;
-            } catch (error) {
-              if (error.status !== 404) {
-                throw error;
-              }
-            }
+          wikiPage="Artifact-URLs.md"
+          platforms=("darwin" "linux" "win32")
 
-            const platforms = ['darwin', 'linux', 'win32'];
-            for (const platform of platforms) {
-              const artifactName = `${platform}-build`;
-              const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}#artifacts`;
-              const regex = new RegExp(`\\[${platform}\\]\\(.*\\)`, 'gm');
-              const newLine = `[${platform}](${artifactUrl})`;
+          for platform in "${platforms[@]}"; do
+            artifactUrl="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
+            sed -i -e "s|\[$platform\](.*)|[$platform]($artifactUrl)|g" "$wikiPage"
+          done
 
-              if (regex.test(wikiContent)) {
-                wikiContent = wikiContent.replace(regex, newLine);
-              } else {
-                wikiContent += `\n${newLine}`;
-              }
-            }
-
-            await github.rest.repos.createOrUpdateFileContents({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              path: wikiPage,
-              message: 'Update artifact URLs in wiki',
-              content: Buffer.from(wikiContent).toString('base64'),
-              sha: sha,
-            });
+          git add "$wikiPage"
+          git commit -m "Update artifact URLs in wiki"
+          git push
