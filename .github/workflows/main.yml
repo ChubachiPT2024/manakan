@@ -43,14 +43,6 @@ jobs:
           path: |
             out/make/**/*
 
-      - name: Upload artifacts to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-          filename: out/make/${{ matrix.platform }}
-          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-          overwrite: true
-
   windows-build:
     runs-on: windows-2019
 
@@ -77,11 +69,3 @@ jobs:
           name: windows-build
           path: |
             out/make/**/*
-
-      - name: Upload artifacts to Google Drive
-        uses: adityak74/google-drive-upload-git-action@main
-        with:
-          credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
-          filename: out/make/win32
-          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-          overwrite: true
