@@ -43,6 +43,9 @@ jobs:
           path: |
             out/make/**/*
 
+      - name: Set artifact URL
+        run: echo "${{ matrix.platform }}_ARTIFACT_URL=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts" >> $GITHUB_ENV
+
   windows-build:
     runs-on: windows-2019
 
@@ -70,30 +73,43 @@ jobs:
           path: |
             out/make/**/*
 
+      - name: Set artifact URL
+        run: echo "WINDOWS_ARTIFACT_URL=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts" >> $GITHUB_ENV
+
   update-wiki:
     needs:
       - mac-linux-build
       - windows-build
 
     runs-on: ubuntu-latest
+    timeout-minutes: 3
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Check out wiki repo
+        uses: actions/checkout@v3
+        with:
+          repository: "${{ github.repository }}.wiki"
+          path: .wiki
 
-      - name: Update Wiki with artifact URLs
+      - name: Update wiki pages
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          echo -e "# Artifact URLs\n\n" > .wiki/artifact-urls.md
+          echo -e "## macOS\n\n${{ env.darwin_ARTIFACT_URL }}\n\n" >> .wiki/artifact-urls.md
+          echo -e "## Ubuntu\n\n${{ env.linux_ARTIFACT_URL }}\n\n" >> .wiki/artifact-urls.md
+          echo -e "## Windows\n\n${{ env.WINDOWS_ARTIFACT_URL }}\n\n" >> .wiki/artifact-urls.md
 
-          wikiPage="Artifact-URLs.md"
-          platforms=("darwin" "linux" "win32")
+      - name: Stage and count changes
+        working-directory: .wiki
+        id: staging
+        run: |
+          git add .
+          echo "NUM_OF_STAGED=$(git diff --staged --name-only | wc -l)" >> $GITHUB_OUTPUT
 
-          for platform in "${platforms[@]}"; do
-            artifactUrl="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
-            sed -i -e "s|\[$platform\](.*)|[$platform]($artifactUrl)|g" "$wikiPage"
-          done
-
-          git add "$wikiPage"
-          git commit -m "Update artifact URLs in wiki"
+      - name: Commit wiki pages
+        working-directory: .wiki
+        if: steps.staging.outputs.NUM_OF_STAGED > 0
+        run: |
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git commit -m "${GITHUB_WORKFLOW}"
           git push
