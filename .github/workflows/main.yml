@@ -40,7 +40,7 @@ jobs:
       #       run: npm run build
 
       - name: Install mono and wine
-        run: sudo apt-get update && sudo apt-get install -y mono-devel wine
+        run: sudo apt-get update && sudo apt-get install -y mono-devel wine32
 
       - name: Package Electron app
         run: npm run make -- --platform ${{ matrix.platform }}
