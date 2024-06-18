@@ -39,19 +39,18 @@ jobs:
       #      - name: Build Electron app
       #       run: npm run build
 
-      - name: Install Mono and Wine (Ubuntu only)
-        if: matrix.os == 'windows'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mono-devel wine
-
       - name: Package Electron app
-        run: npm run make -- --platform ${{ matrix.platform }}
+        run: |
+          if ${{ matrix.os }} == "windows" ; then
+            sudo apt-get update
+            sudo apt-get install -y mono-devel wine
+          fi
+          npm run make -- --platform ${{ matrix.platform }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build
+          name: ${{ matrix.platform }}-build
           path: |
             dist/
 
