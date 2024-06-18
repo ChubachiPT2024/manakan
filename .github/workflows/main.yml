@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-latest
+          - os: macos
             platform: darwin
-          - os: ubuntu-latest
+          - os: ubuntu
             platform: linux
-          - os: windows-latest
+          - os: windows
             platform: win32
 
     steps:
@@ -40,7 +40,7 @@ jobs:
       #       run: npm run build
 
       - name: Install Mono and Wine (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest' && matrix.platform == 'win32'
+        if: matrix.os == 'windows'
         run: |
           sudo apt-get update
           sudo apt-get install -y mono-devel wine
@@ -66,19 +66,19 @@ jobs:
 #     - name: Download artifacts (macOS)
 #       uses: actions/download-artifact@v4
 #       with:
-#         name: macos-latest-build
+#         name: macos-build
 #         path: macos-build
 #
 #     - name: Download artifacts (Ubuntu)
 #       uses: actions/download-artifact@v4
 #       with:
-#         name: ubuntu-latest-build
+#         name: ubuntu-build
 #         path: ubuntu-build
 #
 #     - name: Download artifacts (Windows)
 #       uses: actions/download-artifact@v4
 #       with:
-#         name: windows-latest-build
+#         name: windows-build
 #         path: windows-build
 #
 #     - name: Create GitHub Release
