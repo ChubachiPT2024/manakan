@@ -41,7 +41,7 @@ jobs:
         with:
           name: ${{ matrix.platform }}-build
           path: |
-            dist/
+            out/make/**/*
 
   windows-build:
     runs-on: windows-2019
@@ -68,7 +68,7 @@ jobs:
         with:
           name: windows-build
           path: |
-            dist/
+            out/make/**/*
 
 # release:
 #   runs-on: ubuntu-latest
