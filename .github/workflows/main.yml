@@ -43,6 +43,24 @@ jobs:
           path: |
             out/make/**/*
 
+      - name: Update Wiki with artifact URL
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
+            const wikiPage = '${{ matrix.platform }}-artifact-urls.md';
+            const wikiContent = `## Latest ${{ matrix.platform }} Artifact URLs\n\n- ${artifactUrl}\n`;
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: `${wikiPage}`,
+              message: 'Update ${{ matrix.platform }} artifact URL in wiki',
+              content: Buffer.from(wikiContent).toString('base64'),
+              sha: github.getContent(context.repo.owner, context.repo.repo, wikiPage).data.sha
+            });
+
   windows-build:
     runs-on: windows-2019
 
@@ -69,3 +87,21 @@ jobs:
           name: windows-build
           path: |
             out/make/**/*
+
+      - name: Update Wiki with artifact URL
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const artifactUrl = '${{ steps.upload-artifact.outputs.artifact-url }}';
+            const wikiPage = 'windows-artifact-urls.md';
+            const wikiContent = `## Latest Windows Artifact URLs\n\n- ${artifactUrl}\n`;
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: `${wikiPage}`,
+              message: 'Update Windows artifact URL in wiki',
+              content: Buffer.from(wikiContent).toString('base64'),
+              sha: github.getContent(context.repo.owner, context.repo.repo, wikiPage).data.sha
+            });
