@@ -43,6 +43,14 @@ jobs:
           path: |
             out/make/**/*
 
+      - name: Upload artifacts to Google Drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          filename: out/make/${{ matrix.platform }}
+          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          overwrite: true
+
   windows-build:
     runs-on: windows-2019
 
@@ -70,70 +78,10 @@ jobs:
           path: |
             out/make/**/*
 
-# release:
-#   runs-on: ubuntu-latest
-#   needs: build
-#
-#   steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-#
-#     - name: Download artifacts (macOS)
-#       uses: actions/download-artifact@v4
-#       with:
-#         name: macos-build
-#         path: macos-build
-#
-#     - name: Download artifacts (Ubuntu)
-#       uses: actions/download-artifact@v4
-#       with:
-#         name: ubuntu-build
-#         path: ubuntu-build
-#
-#     - name: Download artifacts (Windows)
-#       uses: actions/download-artifact@v4
-#       with:
-#         name: windows-build
-#         path: windows-build
-#
-#     - name: Create GitHub Release
-#       id: create_release
-#       uses: actions/create-release@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         tag_name: ${{ github.ref }}
-#         release_name: Release ${{ github.ref }}
-#         draft: false
-#         prerelease: false
-#
-#     - name: Upload Release Asset (macOS)
-#       uses: actions/upload-release-asset@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: ./macos-build/path_to_your_macos_app.zip
-#         asset_name: your_macos_app.zip
-#         asset_content_type: application/zip
-#
-#     - name: Upload Release Asset (Ubuntu)
-#       uses: actions/upload-release-asset@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: ./ubuntu-build/path_to_your_ubuntu_app.zip
-#         asset_name: your_ubuntu_app.zip
-#         asset_content_type: application/zip
-#
-#     - name: Upload Release Asset (Windows)
-#       uses: actions/upload-release-asset@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: ./windows-build/path_to_your_windows_app.zip
-#         asset_name: your_windows_app.zip
-#         asset_content_type: application/zip
-#
+      - name: Upload artifacts to Google Drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+          filename: out/make/win32
+          folderId: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+          overwrite: true
