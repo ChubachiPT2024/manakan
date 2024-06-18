@@ -39,6 +39,12 @@ jobs:
       #      - name: Build Electron app
       #       run: npm run build
 
+      - name: Install Mono and Wine (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest' && matrix.platform == 'win32'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mono-devel wine
+
       - name: Package Electron app
         run: npm run make -- --platform ${{ matrix.platform }}
 
