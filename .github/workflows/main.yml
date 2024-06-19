@@ -48,7 +48,7 @@ jobs:
 
       - name: Set artifact URL
         id: set_artifact_url
-        run: echo "${{ matrix.platform }}_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts" >> $GITHUB_OUTPUT
+        run: echo "${{ matrix.platform }}_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" >> $GITHUB_OUTPUT
 
     outputs:
       darwin_url: ${{ steps.set_artifact_url.outputs.darwin_url }}
@@ -83,7 +83,7 @@ jobs:
 
       - name: Set artifact URL
         id: set_artifact_url
-        run: echo "windows_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts" >> $GITHUB_OUTPUT
+        run: echo "windows_url=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" >> $GITHUB_OUTPUT
 
     outputs:
       windows_url: ${{ steps.set_artifact_url.outputs.windows_url }}
@@ -106,9 +106,9 @@ jobs:
       - name: Update wiki pages
         run: |
           echo -e "# Artifact URLs\n\n" > .wiki/artifact-urls.md
-          echo -e "## macOS\n\n${{ needs.mac-linux-build.outputs.darwin_url }}\n\n" >> .wiki/artifact-urls.md
-          echo -e "## Ubuntu\n\n${{ needs.mac-linux-build.outputs.linux_url }}\n\n" >> .wiki/artifact-urls.md
-          echo -e "## Windows\n\n${{ needs.windows-build.outputs.windows_url }}\n\n" >> .wiki/artifact-urls.md
+          echo -e "## macOS\n\n[${{ needs.mac-linux-build.outputs.darwin_url }}](${{ needs.mac-linux-build.outputs.darwin_url }})\n\n" >> .wiki/artifact-urls.md
+          echo -e "## Ubuntu\n\n[${{ needs.mac-linux-build.outputs.linux_url }}](${{ needs.mac-linux-build.outputs.linux_url }})\n\n" >> .wiki/artifact-urls.md
+          echo -e "## Windows\n\n[${{ needs.windows-build.outputs.windows_url }}](${{ needs.windows-build.outputs.windows_url }})\n\n" >> .wiki/artifact-urls.md
 
       - name: Stage and count changes
         working-directory: .wiki
