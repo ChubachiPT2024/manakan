@@ -112,7 +112,7 @@ jobs:
             echo -e "## $platform\n\n" >> .wiki/artifact-urls.md
             for file in artifacts/$artifact_name/*; do
               filename=$(basename "$file")
-              cp "$file" ".wiki/$filename"
+              cp -r "$file" ".wiki/$filename"
               echo -e "[$filename]($filename)\n\n" >> .wiki/artifact-urls.md
             done
           done
