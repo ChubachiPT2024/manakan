@@ -79,56 +79,56 @@ jobs:
     outputs:
       artifact_name: windows-build
 
-  update-wiki:
+  release:
     needs:
       - mac-linux-build
       - windows-build
 
     runs-on: ubuntu-latest
-    timeout-minutes: 3
 
     steps:
-      - name: Check out wiki repo
-        uses: actions/checkout@v4
-        with:
-          repository: "${{ github.repository }}.wiki"
-          path: .wiki
-
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      - name: Update wiki pages
-        run: |
-          echo -e "# Artifact URLs\n\n" > .wiki/artifact-urls.md
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-          for platform in darwin linux windows; do
-            artifact_name="${{ needs.mac-linux-build.outputs.artifact_name }}"
-            if [ "$platform" == "windows" ]; then
-              artifact_name="${{ needs.windows-build.outputs.artifact_name }}"
-            fi
+      - name: Upload Release Assets (macOS)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/darwin-build/*
+          asset_name: macOS-build.zip
+          asset_content_type: application/zip
 
-            echo -e "## $platform\n\n" >> .wiki/artifact-urls.md
-            for file in artifacts/$artifact_name/*; do
-              filename=$(basename "$file")
-              cp -r "$file" ".wiki/$filename"
-              echo -e "[$filename]($filename)\n\n" >> .wiki/artifact-urls.md
-            done
-          done
+      - name: Upload Release Assets (Linux)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/linux-build/*
+          asset_name: linux-build.zip
+          asset_content_type: application/zip
 
-      - name: Stage and count changes
-        working-directory: .wiki
-        id: staging
-        run: |
-          git add .
-          echo "NUM_OF_STAGED=$(git diff --staged --name-only | wc -l)" >> $GITHUB_OUTPUT
-
-      - name: Commit wiki pages
-        working-directory: .wiki
-        if: steps.staging.outputs.NUM_OF_STAGED > 0
-        run: |
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git commit -m "${GITHUB_WORKFLOW}"
-          git push
+      - name: Upload Release Assets (Windows)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifacts/windows-build/*
+          asset_name: windows-build.zip
+          asset_content_type: application/zip
