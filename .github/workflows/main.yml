@@ -39,15 +39,16 @@ jobs:
       - name: Package Electron app
         run: npm run make -- --platform ${{ matrix.platform }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload to Google Drive (macOS/Linux)
+        if: matrix.platform == 'darwin' || matrix.platform == 'linux'
+        uses: satackey/action-google-drive@v1
         with:
-          name: ${{ matrix.platform }}-build
-          path: |
-            out/make/**/*
-
-    outputs:
-      artifact_name: ${{ matrix.platform }}-build
+          skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
+          upload-from: out/make/${{ matrix.platform }}/*.zip
+          upload-to: /manakan/${{ matrix.platform }}
+          overwrite: true
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
 
   windows-build:
     runs-on: windows-2019
@@ -69,79 +70,12 @@ jobs:
       - name: Package Electron app
         run: npm run make -- --platform win32
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload to Google Drive (Windows)
+        uses: satackey/action-google-drive@v1
         with:
-          name: windows-build
-          path: |
-            out/make/**/*
-
-    outputs:
-      artifact_name: windows-build
-
-  release:
-    needs:
-      - mac-linux-build
-      - windows-build
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download artifacts (macOS)
-        uses: actions/download-artifact@v4
-        with:
-          name: darwin-build
-          path: artifacts/darwin-build
-
-      - name: Download artifacts (Linux)
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-build
-          path: artifacts/linux-build
-
-      - name: Download artifacts (Windows)
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-build
-          path: artifacts/windows-build
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset (macOS)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/darwin-build/*
-          asset_name: macOS-build.zip
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset (Linux)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/linux-build/*
-          asset_name: linux-build.zip
-          asset_content_type: application/zip
-
-      - name: Upload Release Asset (Windows)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifacts/windows-build/*
-          asset_name: windows-build.zip
-          asset_content_type: application/zip
+          skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
+          upload-from: out/make/win32/*.zip
+          upload-to: /manakan/win32
+          overwrite: true
+          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
+          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
