@@ -81,12 +81,15 @@ jobs:
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
 
       - name: Upload to Google Drive
         uses: satackey/action-google-drive@v1
         with:
           skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
-          upload-from: .
+          upload-from: build
           upload-to: /manakan
           overwrite: true
           google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
