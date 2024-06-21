@@ -39,16 +39,11 @@ jobs:
       - name: Package Electron app
         run: npm run make -- --platform ${{ matrix.platform }}
 
-      - name: Upload to Google Drive (macOS/Linux)
-        if: matrix.platform == 'darwin' || matrix.platform == 'linux'
-        uses: satackey/action-google-drive@v1
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
-          upload-from: out/make/${{ matrix.platform }}/*.zip
-          upload-to: /manakan/${{ matrix.platform }}
-          overwrite: true
-          google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
-          google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          name: ${{ matrix.platform }}-build
+          path: out/make/${{ matrix.platform }}
 
   windows-build:
     runs-on: windows-2019
@@ -70,12 +65,29 @@ jobs:
       - name: Package Electron app
         run: npm run make -- --platform win32
 
-      - name: Upload to Google Drive (Windows)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: out/make/win32
+
+  upload-to-google-drive:
+    needs:
+      - mac-linux-build
+      - windows-build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Upload to Google Drive
         uses: satackey/action-google-drive@v1
         with:
           skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
-          upload-from: out/make/win32/*.zip
-          upload-to: /manakan/win32
+          upload-from: .
+          upload-to: /manakan
           overwrite: true
           google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
