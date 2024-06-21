@@ -5,13 +5,14 @@ on:
     branches:
       - main
       - release
-      - feature/add-github-actions-workflow
 
 permissions:
   contents: write
 
 jobs:
   mac-linux-build:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -46,6 +47,8 @@ jobs:
           path: out/make/**/*
 
   windows-build:
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
+
     runs-on: windows-2019
 
     steps:
@@ -76,6 +79,8 @@ jobs:
       - mac-linux-build
       - windows-build
 
+    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
+
     runs-on: ubuntu-latest
 
     steps:
@@ -90,6 +95,5 @@ jobs:
           skicka-tokencache-json: ${{ secrets.SKICKA_TOKENCACHE_JSON }}
           upload-from: build
           upload-to: /manakan
-          overwrite: true
           google-client-id: ${{ secrets.GOOGLE_CLIENT_ID }}
           google-client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
