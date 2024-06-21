@@ -32,7 +32,3 @@ console.log('👋 This message is being logged by "renderer.ts", included via Vi
 
 // Add this to the end of the existing file
 import './index';
-
-// 表示側でAPIを呼び出し
-// ボタン等を使えば、ユーザーがタイトルを変更できる
-window.electronAPI.setTitle('manakan')
