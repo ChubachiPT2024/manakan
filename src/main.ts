@@ -6,7 +6,12 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = () => {
+const createWindow = async () => {
+
+  // electron-storeを動的インポート
+  const Store = (await import('electron-store')).default;
+  const store = new Store();
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -25,6 +30,15 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  // IPCハンドラをここで定義
+  ipcMain.handle('loadTodoList', async (event, data) => {
+    return store.get('todoList');
+  });
+
+  ipcMain.handle('storeTodoList', async (event, data) => {
+    store.set('todoList', data);
+  });
 };
 
 // This method will be called when Electron has finished
