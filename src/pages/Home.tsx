@@ -2,24 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Excel from 'exceljs';
 
-export interface Report {
-    id: number;
-    course: string;
-    students: Student[];
-}
-
-// reportlist.xlsxの内容をもとに型定義
-// Excelファイルを参照しなくていいものだけを型定義している
-// 提出の状態(未提出、提出済み)や提出日時を追加することも考えられる
-export interface Student {
-    id: number;
-    userId: string;
-    numId: number;
-    grade: number;
-    symgrade: number;
-    comment: string;
-    files: File[];
-}
+// 型定義をimport
+import { Report } from '../types';
 
 const Home = () => {
     const inputRef = useRef<HTMLInputElement>(null); // ファイル選択用のinput要素の参照

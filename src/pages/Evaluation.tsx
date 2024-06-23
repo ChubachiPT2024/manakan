@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom"
-import { Student } from "./Home"
+import { Student } from "../types"
 
 // ページ名称については検討の余地あり
 const Evaluation = () => {
