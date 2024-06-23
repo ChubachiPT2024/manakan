@@ -16,3 +16,11 @@ export interface Student {
     comment: string;
     files: File[];
 }
+
+export type ReportContextType = {
+    report: Report | null;
+    setReport: (foler: Report) => void;
+};
+
+export type ReportAction =
+    | { type: 'SET_REPORT'; report: Report };
