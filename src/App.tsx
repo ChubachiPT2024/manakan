@@ -1,5 +1,4 @@
-import { Route, Routes } from "react-router-dom";
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Route, Routes } from "react-router-dom";
 import CommonLayout from "./common/CommonLayout";
 
 // ページコンポーネントのインポート
