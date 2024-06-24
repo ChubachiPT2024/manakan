@@ -4,7 +4,7 @@ const CommonLayout = () => {
     return (
         <>
             <header>
-                <NavLink to="/">
+                <NavLink to="/" style={{ color: "black" }}>
                     <h1>Manakan</h1>
                 </NavLink>
                 <hr />
