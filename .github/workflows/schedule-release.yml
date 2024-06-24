@@ -1,0 +1,25 @@
+name: Weekly Release Merge and Label
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+
+jobs:
+  merge-main-to-release-and-create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name 'GitHub Actions'
+          git config user.email 'actions@github.com'
+
+      - name: Merge main into release
+        run: |
+          git checkout release
+          git merge --no-ff main -m "Weekly merge main into release"
+          git push origin release
