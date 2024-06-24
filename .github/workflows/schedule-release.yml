@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 9 * * 1'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   merge-main-to-release-and-create-release:
     runs-on: ubuntu-latest
@@ -21,5 +25,5 @@ jobs:
       - name: Merge main into release
         run: |
           git checkout release
-          git merge --no-ff main -m "Weekly merge main into release"
+          git merge --no-ff origin/main -m "Weekly merge main into release"
           git push origin release
