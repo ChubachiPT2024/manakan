@@ -1,4 +1,4 @@
-name: Weekly Release Merge and Label
+name: Weekly Release Merge PR Creation
 
 on:
   schedule:
