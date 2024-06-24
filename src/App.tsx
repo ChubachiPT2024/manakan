@@ -7,6 +7,7 @@ import Evaluation from "./pages/Evaluation";
 
 export default function App() {
     return (
+        // Electron では BrowserRouter ではなく HashRouter を使う
         <HashRouter>
             <Routes>
                 <Route path="/" element={<CommonLayout />}>

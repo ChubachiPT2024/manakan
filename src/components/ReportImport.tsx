@@ -50,7 +50,8 @@ const ReportImport = () => {
             });
 
 
-        // 学生情報を取得
+        // 学生情報を取得   
+        // 学生もProviderで管理することも考えられるしれない
         const newReport: Report = {
             id: 1,
             course: course,
@@ -71,6 +72,8 @@ const ReportImport = () => {
         };
 
         setReport(newReport);
+
+        // 評価画面に遷移
         navigate('/evaluation')
     };
 

@@ -9,10 +9,10 @@ const Evaluation = () => {
     const { report } = useContext(ReportContext);
 
     return (
-        <div>
+        <>
             <h1>Evaluation Page</h1>
             <p>評価対象のフォルダがインポートされたら、遷移されてくるページ</p>
-
+            {/* 学生と提出物がインポートされたかを確認している */}
             <h2>コース名: {report.course}</h2>
             <h3>学生:</h3>
             {report.students.map((student: Student) => {
@@ -31,7 +31,7 @@ const Evaluation = () => {
                     </div>
                 );
             })}
-        </div>
+        </>
     );
 };
 
