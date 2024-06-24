@@ -3,9 +3,6 @@ name: Weekly Release Merge and Label
 on:
   schedule:
     - cron: '0 9 * * 1'
-  push:
-    branches:
-      - feature/*
 
 permissions:
   contents: write
