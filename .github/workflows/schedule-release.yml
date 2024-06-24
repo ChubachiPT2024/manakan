@@ -3,6 +3,13 @@ name: Weekly Release Merge and Label
 on:
   schedule:
     - cron: '0 9 * * 1'
+  push:
+    branches:
+      - feature/*
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   merge-main-to-release-and-create-release:
