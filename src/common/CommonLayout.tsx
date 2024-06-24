@@ -9,7 +9,7 @@ const CommonLayout = () => {
                 </NavLink>
                 <hr />
             </header>
-            <Outlet />
+            <Outlet />{/* ルーティングでここが置き換わる */}
         </>
     );
 };
