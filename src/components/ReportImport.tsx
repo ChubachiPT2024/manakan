@@ -1,4 +1,4 @@
-import { useRef, useContext } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Excel from 'exceljs';
 
@@ -9,7 +9,6 @@ import { Report } from '../types';
 import { ReportContext } from '../context/ReportContext';
 
 const ReportImport = () => {
-    const inputRef = useRef<HTMLInputElement>(null); // ファイル選択用のinput要素の参照
     const navigate = useNavigate(); // ルーティング用の関数
 
     const { setReport } = useContext(ReportContext);
@@ -83,7 +82,6 @@ const ReportImport = () => {
                 type="file"
                 multiple
                 onChange={handleImport}
-                ref={inputRef}
                 // @ts-ignore
                 webkitdirectory="true"
             />
