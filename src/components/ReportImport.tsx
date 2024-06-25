@@ -17,9 +17,10 @@ const ReportImport = () => {
         if (!event.target.files) return;
         const fileList = event.target.files;
 
-        // reportlist.xlsxが含まれているか確認
+        // reportlist.xlsxがインポートされたフォルダのすぐ下に含まれているか確認
         // 含まれていない場合は処理を中断
-        if (!Array.from(fileList).some((file) => file.name === 'reportlist.xlsx')) {
+        // 判定方法は改善の余地あり
+        if (!Array.from(fileList).some((file) => file.webkitRelativePath.split('/')[1] === 'reportlist.xlsx')) {
             alert('reportlist.xlsxが含まれていません');
             return;
         }
