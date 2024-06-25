@@ -40,11 +40,14 @@ const ReportImport = () => {
         const studentMap = new Map<string, File[] | null>();
         submissionList
             .forEach((file) => {
-                const studentFilePath = file.webkitRelativePath.split('/')[1];
-                if (!studentMap.has(studentFilePath)) {
-                    studentMap.set(studentFilePath, [file]);
+                // file.webkitRelativePathは選択されたフォルダからの相対パスが取得できる
+                // 例えば、選択されたフォルダが「$HOME/AIIT/PBL/manaba/report-27048-35677」であれば、
+                // file.webkitRelativePathは「/report-27048-35677/23745140@a2340sw/テスト.pdf」となる
+                const studentFolderPath = file.webkitRelativePath.split('/')[1];
+                if (!studentMap.has(studentFolderPath)) {
+                    studentMap.set(studentFolderPath, [file]);
                 } else {
-                    studentMap.get(studentFilePath).push(file);
+                    studentMap.get(studentFolderPath).push(file);
                 }
             });
 
@@ -83,6 +86,7 @@ const ReportImport = () => {
                 multiple
                 onChange={handleImport}
                 // @ts-ignore
+                // trueを指定することでディレクトリを選択できる
                 webkitdirectory="true"
             />
         </>
