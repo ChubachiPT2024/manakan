@@ -29,7 +29,7 @@ const ReportImport = () => {
         if (!submissionList) return;
 
         // コース名を取得
-        const arrayBuffer = await fileList[0].arrayBuffer();
+        const arrayBuffer = await Array.from(fileList).find((file) => file.name === 'reportlist.xlsx')?.arrayBuffer();
         const workbook = new Excel.Workbook();
         await workbook.xlsx.load(arrayBuffer); // reportlist.xlsxファイルを読み込む
         const worksheet = workbook.getWorksheet(1); // 1番目のシートを取得
