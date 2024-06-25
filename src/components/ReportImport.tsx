@@ -37,7 +37,7 @@ const ReportImport = () => {
 
         // 提出物を学生ごとに分類 
         // 複数のファイルが提出されることを考慮
-        const studentMap = new Map<string, File[] | null>();
+        const studentMap = new Map<string, File[]>();
         submissionList
             .forEach((file) => {
                 // file.webkitRelativePathは選択されたフォルダからの相対パスが取得できる
