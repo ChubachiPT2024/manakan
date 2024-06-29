@@ -2,6 +2,8 @@ import { CourseRepository } from 'src/domain/models/courses/courseRepository'
 import { ReportListImportCommand } from './reportListImportCommand'
 import * as Excel from 'exceljs'
 import { Course } from 'src/domain/models/courses/course'
+import { ReportRepository } from 'src/domain/models/reports/reportRepository'
+import { Report } from 'src/domain/models/reports/report'
 
 /**
  * レポートリストアプリケーションサービス
@@ -11,8 +13,12 @@ export class ReportListApplicationService {
    * コンストラクタ
    *
    * @param courseRepository コースリポジトリ
+   * @param reportRepository レポートリポジトリ
    */
-  public constructor(private readonly courseRepository: CourseRepository) {}
+  public constructor(
+    private readonly courseRepository: CourseRepository,
+    private readonly reportRepository: ReportRepository
+  ) {}
 
   /**
    * レポートリストをインポートする
@@ -38,6 +44,10 @@ export class ReportListApplicationService {
     await this.courseRepository.saveAsync(new Course(courseId, courseName))
 
     const reportId = Number(worksheet.getCell('B3').text)
+    const reportTitle = worksheet.getCell('C3').text
+    await this.reportRepository.saveAsync(
+      new Report(courseId, reportId, reportTitle)
+    )
 
     return reportId
   }
