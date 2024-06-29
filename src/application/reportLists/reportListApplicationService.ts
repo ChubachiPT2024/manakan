@@ -4,6 +4,8 @@ import * as Excel from 'exceljs'
 import { Course } from 'src/domain/models/courses/course'
 import { ReportRepository } from 'src/domain/models/reports/reportRepository'
 import { Report } from 'src/domain/models/reports/report'
+import { StudentRepository } from 'src/domain/models/students/studentRepository'
+import { Student } from 'src/domain/models/students/student'
 
 /**
  * レポートリストアプリケーションサービス
@@ -14,10 +16,12 @@ export class ReportListApplicationService {
    *
    * @param courseRepository コースリポジトリ
    * @param reportRepository レポートリポジトリ
+   * @param studentRepository 学生リポジトリ
    */
   public constructor(
     private readonly courseRepository: CourseRepository,
-    private readonly reportRepository: ReportRepository
+    private readonly reportRepository: ReportRepository,
+    private readonly studentRepository: StudentRepository
   ) {}
 
   /**
@@ -48,6 +52,22 @@ export class ReportListApplicationService {
     await this.reportRepository.saveAsync(
       new Report(courseId, reportId, reportTitle)
     )
+
+    for (let i = 8; ; i++) {
+      const row = worksheet.getRow(i)
+      const role = row.getCell('A').text
+      if (role === '#end') {
+        break
+      }
+      if (role !== '履修生') {
+        continue
+      }
+
+      const userId: string = row.getCell('B').text
+      const numId: number = Number(row.getCell('C').text)
+      const name: string = row.getCell('D').text
+      await this.studentRepository.saveAsync(new Student(userId, numId, name))
+    }
 
     return reportId
   }
