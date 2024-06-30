@@ -1,3 +1,4 @@
+import { CourseGetCommand } from 'src/application/courses/courseGetCommand'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
 import { ReportGetResult } from 'src/application/reports/reportGetResult'
 
@@ -11,6 +12,10 @@ export interface IElectronAPI {
   getReportAsync: (
     reportGetCommand: ReportGetCommand
   ) => Promise<ReportGetResult>
+
+  getCourseAsync: (
+    courseGetCommand: CourseGetCommand
+  ) => Promise<CourseGetResult>
 }
 
 declare global {

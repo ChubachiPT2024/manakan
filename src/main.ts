@@ -8,6 +8,8 @@ import { InMemoryCourseRepository } from './infrastructure/inMemory/courses/inMe
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
 import { ReportGetCommand } from './application/reports/reportGetCommand'
 import { ReportApplicationService } from './application/reports/reportApplicationService'
+import { CourseGetCommand } from './application/courses/courseGetCommand'
+import { CourseApplicationService } from './application/courses/courseApplicationService'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -48,6 +50,7 @@ const reportListApplicationService = new ReportListApplicationService(
   studentRepository
 )
 const reportApplicationService = new ReportApplicationService(reportRepository)
+const courseApplicationService = new CourseApplicationService(courseRepository)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -63,6 +66,12 @@ app.whenReady().then(() => {
     'getReportAsync',
     async (_, reportGetCommand: ReportGetCommand) =>
       await reportApplicationService.getAsync(reportGetCommand)
+  )
+
+  ipcMain.handle(
+    'getCourseAsync',
+    async (_, courseGetCommand: CourseGetCommand) =>
+      await courseApplicationService.getAsync(courseGetCommand)
   )
 
   createWindow()
