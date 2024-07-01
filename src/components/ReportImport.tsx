@@ -1,4 +1,4 @@
-import { useRef, useContext } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Excel from 'exceljs';
 
@@ -9,7 +9,6 @@ import { Report } from '../types';
 import { ReportContext } from '../context/ReportContext';
 
 const ReportImport = () => {
-    const inputRef = useRef<HTMLInputElement>(null); // ファイル選択用のinput要素の参照
     const navigate = useNavigate(); // ルーティング用の関数
 
     const { setReport } = useContext(ReportContext);
@@ -18,9 +17,10 @@ const ReportImport = () => {
         if (!event.target.files) return;
         const fileList = event.target.files;
 
-        // reportlist.xlsxが含まれているか確認
+        // reportlist.xlsxがインポートされたフォルダのすぐ下に含まれているか確認
         // 含まれていない場合は処理を中断
-        if (!Array.from(fileList).some((file) => file.name === 'reportlist.xlsx')) {
+        // 判定方法は改善の余地あり
+        if (!Array.from(fileList).some((file) => file.webkitRelativePath.split('/')[1] === 'reportlist.xlsx')) {
             alert('reportlist.xlsxが含まれていません');
             return;
         }
@@ -30,7 +30,7 @@ const ReportImport = () => {
         if (!submissionList) return;
 
         // コース名を取得
-        const arrayBuffer = await fileList[0].arrayBuffer();
+        const arrayBuffer = await Array.from(fileList).find((file) => file.name === 'reportlist.xlsx')?.arrayBuffer();
         const workbook = new Excel.Workbook();
         await workbook.xlsx.load(arrayBuffer); // reportlist.xlsxファイルを読み込む
         const worksheet = workbook.getWorksheet(1); // 1番目のシートを取得
@@ -38,14 +38,17 @@ const ReportImport = () => {
 
         // 提出物を学生ごとに分類 
         // 複数のファイルが提出されることを考慮
-        const studentMap = new Map<string, File[] | null>();
+        const studentMap = new Map<string, File[]>();
         submissionList
             .forEach((file) => {
-                const studentFilePath = file.webkitRelativePath.split('/')[1];
-                if (!studentMap.has(studentFilePath)) {
-                    studentMap.set(studentFilePath, [file]);
+                // file.webkitRelativePathは選択されたフォルダからの相対パスが取得できる
+                // 例えば、選択されたフォルダが「$HOME/AIIT/PBL/manaba/report-27048-35677」であれば、
+                // file.webkitRelativePathは「/report-27048-35677/23745140@a2340sw/テスト.pdf」となる
+                const studentFolderPath = file.webkitRelativePath.split('/')[1];
+                if (!studentMap.has(studentFolderPath)) {
+                    studentMap.set(studentFolderPath, [file]);
                 } else {
-                    studentMap.get(studentFilePath).push(file);
+                    studentMap.get(studentFolderPath).push(file);
                 }
             });
 
@@ -83,8 +86,8 @@ const ReportImport = () => {
                 type="file"
                 multiple
                 onChange={handleImport}
-                ref={inputRef}
                 // @ts-ignore
+                // trueを指定することでディレクトリを選択できる
                 webkitdirectory="true"
             />
         </>
