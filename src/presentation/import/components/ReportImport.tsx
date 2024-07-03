@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import * as Excel from 'exceljs';
 
 // 型定義をimport
-import { Report } from '../types';
+import { Report } from '../../types';
 
 // コンテキストをimport
-import { ReportContext } from '../context/ReportContext';
+import { ReportContext } from '../../context/ReportContext';
 
 const ReportImport = () => {
     const navigate = useNavigate(); // ルーティング用の関数
