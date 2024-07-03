@@ -84,10 +84,11 @@ const ReportImport = () => {
         <>
             <input
                 type="file"
+                multiple
                 onChange={handleImport}
                 // @ts-ignore
                 // trueを指定することでディレクトリを選択できる
-                //webkitdirectory="true"
+                webkitdirectory="true"
             />
         </>
     );

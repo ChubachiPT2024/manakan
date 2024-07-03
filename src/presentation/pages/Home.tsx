@@ -1,4 +1,5 @@
 import DropForm from "../import/components/DropForm";
+import ReportImport from "../import/components/ReportImport";
 
 const Home = () => {
     return (
@@ -6,6 +7,7 @@ const Home = () => {
             <div className="flex flex-col items-center justify-center mx-auto mt-10">
                 {/* ファイルのインポート */}
                 <DropForm />
+                <ReportImport />
 
                 {/* 最近使用したデータリスト */}
                 <div className="w-full max-w-lg rounded-lg p-4 pt-8">
