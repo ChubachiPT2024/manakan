@@ -6,6 +6,8 @@ import { ReportRepository } from 'src/domain/models/reports/reportRepository'
 import { Report } from 'src/domain/models/reports/report'
 import { StudentRepository } from 'src/domain/models/students/studentRepository'
 import { Student } from 'src/domain/models/students/student'
+import { SubmissionRepository } from 'src/domain/models/submissions/submissionRepository'
+import { Submission } from 'src/domain/models/submissions/submission'
 
 /**
  * レポートリストアプリケーションサービス
@@ -17,11 +19,13 @@ export class ReportListApplicationService {
    * @param courseRepository コースリポジトリ
    * @param reportRepository レポートリポジトリ
    * @param studentRepository 学生リポジトリ
+   * @param submissionRepository 提出物リポジトリ
    */
   public constructor(
     private readonly courseRepository: CourseRepository,
     private readonly reportRepository: ReportRepository,
-    private readonly studentRepository: StudentRepository
+    private readonly studentRepository: StudentRepository,
+    private readonly submissionRepository: SubmissionRepository
   ) {}
 
   /**
@@ -67,6 +71,13 @@ export class ReportListApplicationService {
       const numId: number = Number(row.getCell('C').text)
       const name: string = row.getCell('D').text
       await this.studentRepository.saveAsync(new Student(userId, numId, name))
+
+      // TODO できればハイパーリンクから取得
+      // なぜか isHyperlink が false, hyperlink が undefined で取得できなかった
+      const folderRelativePath = `${numId}@${userId}`
+      await this.submissionRepository.saveAsync(
+        new Submission(reportId, numId, folderRelativePath)
+      )
     }
 
     return reportId
