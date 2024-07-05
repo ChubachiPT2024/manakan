@@ -10,7 +10,7 @@ export default function App() {
         <HashRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/evaluation" element={<Evaluation />} />
+                <Route path="/evaluation/:reportId" element={<Evaluation />} />
             </Routes>
         </HashRouter>
     );
