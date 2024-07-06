@@ -1,20 +1,40 @@
 import { useNavigate } from 'react-router-dom';
-
 import { FileUploader } from "react-drag-drop-files";
-
 import { MdOutlineFileUpload } from "react-icons/md";
+import { ReportListImportCommand } from "src/application/reportLists/reportListImportCommand";
 
 const DropForm = () => {
+	// ナビゲーション用フック
 	const navigate = useNavigate();
 
-	const handleDrop = (file: File) => {
-		console.log(file);
+	/**
+	 * ファイルをドロップしたときの処理
+	 *
+	 * @param {File} file - ドロップされたファイル
+	 */
+	const handleDrop = async (file: File) => {
+		// file名がreportlist.xlsxでない場合はエラー
+		if (file.name !== "reportlist.xlsx") {
+			alert("インポートされたファイルがreportlist.xlsxではありません。");
+			return;
+		}
 
-		// ルーティング処理
-		navigate('/evaluation');
+		try {
+			// レポートIDを取得
+			const reportId = await window.electronAPI.importReportListAsync(
+				new ReportListImportCommand(file.path)
+			);
+			
+			// 評価画面に遷移
+			navigate(`/evaluation/${reportId}`);
+
+		} catch (error) {
+			console.error(error);
+			alert("ファイルのインポートに失敗しました。");
+		}
 	}
 
-  	return (
+  return (
 		<>
 			<FileUploader
 				// オプションについては
@@ -26,16 +46,15 @@ const DropForm = () => {
 				hoverTitle=" " // ドラッグ時のタイトル (空文字で非表示)
 				children={
 					<div className="rounded-lg bg-gray-100 px-20 py-6 flex flex-col items-center justify-center">
-  						<MdOutlineFileUpload size={100} color="gray" />
-  						<p className="text-lg text-gray-600">ここにファイルをドロップ</p>
-  						<p className="text-lg text-gray-400">または</p>
-  						<div className="text-gray-600 cursor-pointer border border-gray-300 shadow px-2">ファイルを選択</div>
+							<MdOutlineFileUpload size={100} color="gray" />
+							<p className="text-lg text-gray-600">ここにreportlist.xlsxをドロップ</p>
+							<p className="text-lg text-gray-400">または</p>
+							<div className="text-gray-600 cursor-pointer border border-gray-300 shadow px-2">ファイルを選択</div>
 					</div>
-
 				}
 			/>
 		</>
-  	);
+  );
 }
 
 export default DropForm;
