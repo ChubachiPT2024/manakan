@@ -1,10 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-
 import { FileUploader } from "react-drag-drop-files";
-
 import { MdOutlineFileUpload } from "react-icons/md";
-
-import { fetchReportId } from '../hooks/useFetchReportId';
+import { ReportListImportCommand } from "src/application/reportLists/reportListImportCommand";
 
 const DropForm = () => {
 	// ナビゲーション用フック
@@ -24,7 +21,9 @@ const DropForm = () => {
 
 		try {
 			// レポートIDを取得
-			const reportId = await fetchReportId(file.path);
+			const reportId = await window.electronAPI.importReportListAsync(
+				new ReportListImportCommand(file.path)
+			);
 			
 			// 評価画面に遷移
 			navigate(`/evaluation/${reportId}`);
