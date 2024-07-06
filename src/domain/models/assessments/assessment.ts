@@ -1,0 +1,35 @@
+/**
+ * 個別評価
+ */
+export class Assessment {
+  /**
+   * コンストラクタ
+   *
+   * @param reportId レポート ID
+   * @param studentNumId 学籍番号
+   * @param feedback フィードバック
+   * @param memo メモ
+   * @param grade 評点
+   * @param rank 評点内の位置
+   * @param score 点数
+   */
+  public constructor(
+    public readonly reportId: number,
+    public readonly studentNumId: number,
+    public readonly feedback?: string,
+    public readonly memo?: string,
+    public readonly grade?: number,
+    public readonly rank?: number,
+    public readonly score?: number
+  ) {
+    if (!grade && (grade < 0 || grade > 5)) {
+      throw new TypeError('The grade must be in [0, 5].')
+    }
+
+    // TODO rank の仕様決定後、バリデーション
+
+    if (!score && (score < 0 || score > 100)) {
+      throw new TypeError('The score must be in [0, 100].')
+    }
+  }
+}

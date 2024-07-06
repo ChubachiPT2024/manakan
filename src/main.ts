@@ -10,6 +10,8 @@ import { ReportGetCommand } from './application/reports/reportGetCommand'
 import { ReportApplicationService } from './application/reports/reportApplicationService'
 import { CourseGetCommand } from './application/courses/courseGetCommand'
 import { CourseApplicationService } from './application/courses/courseApplicationService'
+import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
+import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessments/inMemoryAssessmentRepository'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -44,10 +46,14 @@ const createWindow = () => {
 const courseRepository = new InMemoryCourseRepository()
 const reportRepository = new InMemoryReportRepository()
 const studentRepository = new InMemoryStudentRepository()
+const submissionRepository = new InMemorySubmissionRepository()
+const assessmentRepository = new InMemoryAssessmentRepository()
 const reportListApplicationService = new ReportListApplicationService(
   courseRepository,
   reportRepository,
-  studentRepository
+  studentRepository,
+  submissionRepository,
+  assessmentRepository
 )
 const reportApplicationService = new ReportApplicationService(reportRepository)
 const courseApplicationService = new CourseApplicationService(courseRepository)
