@@ -3,6 +3,8 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 // ページコンポーネントのインポート
 import Home from "./presentation/pages/Home";
 import Evaluation from "./presentation/pages/Evaluation";
+import Check from "./presentation/pages/Check";
+import Review from "./presentation/pages/Review";
 
 export default function App() {
     return (
@@ -11,6 +13,8 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/evaluation/:reportId" element={<Evaluation />} />
+                <Route path="/review" element={<Review />} />
+                <Route path="/check" element={<Check />} />
             </Routes>
         </HashRouter>
     );
