@@ -1,5 +1,4 @@
-import { useDroppable } from '@dnd-kit/core'
-import { ReactNode, MouseEventHandler } from 'react'
+import { MouseEventHandler } from 'react'
 
 interface SelectedButtonProps {
   styles: string
@@ -16,7 +15,7 @@ export function SelectedButton({
 }: SelectedButtonProps) {
   return (
     <button
-      className={`text-sm text-white mr-4 w-24 h-9 rounded-lg ${styles} ${
+      className={`text-sm text-white mr-2 w-24 h-9 rounded-lg ${styles} ${
         isDisabled ? 'opacity-50 cursor-not-allowed' : undefined
       }`}
       disabled={isDisabled}

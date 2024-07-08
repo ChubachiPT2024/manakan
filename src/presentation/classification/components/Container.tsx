@@ -1,19 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
   useDroppable,
   useDraggable,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  MouseSensor,
 } from '@dnd-kit/core'
 import { GradeColumn } from './GradeColumn'
 import { RankRow } from './RankRow'
 import { SubmissionCard } from './SubmissionCard'
 import { SideMenu } from './SideMenu'
 import { SelectedButton } from './SelectedButton'
-
 const Container = () => {
   function handleDragEnd(event: DragEndEvent) {
-    // const { active, over } = event
+    const { active, over } = event
     // console.log(over?.id)
     // if (active.id !== over?.id && over?.id) {
     //   setTasks((prevTasks) =>
@@ -32,6 +35,10 @@ const Container = () => {
     // }
   }
 
+  //TODO:Delete dummy data
+  const corse = {
+    name: '情報アーキテクチャ特論7',
+  }
   const gradeColumns = [
     { id: 5, title: '5', submissionNum: 0 },
     { id: 4, title: '4', submissionNum: 0 },
@@ -40,16 +47,15 @@ const Container = () => {
     { id: 1, title: '1', submissionNum: 0 },
     { id: 0, title: '0', submissionNum: 0 },
   ]
-
   const rankRows = [
-    { id: 5, title: '++', submissionNum: 0 },
-    { id: 4, title: '+', submissionNum: 0 },
-    { id: 3, title: '+-', submissionNum: 0 },
-    { id: 2, title: '-', submissionNum: 0 },
-    { id: 1, title: '--', submissionNum: 0 },
+    { id: 5, title: '++' },
+    { id: 4, title: '+' },
+    { id: 3, title: '+-' },
+    { id: 2, title: '-' },
+    { id: 1, title: '--' },
   ]
-
-  const submissions: Submission[] = [
+  const [isDisabled, setIsDisabled] = useState<boolean>(true)
+  const [submissions, setSubmissions] = useState<Submission[]>([
     {
       id: 1,
       studentName: 'ハリー',
@@ -60,38 +66,52 @@ const Container = () => {
     {
       id: 2,
       studentName: 'ロン',
-      isChecked: true,
+      isChecked: false,
       rowId: '3',
       columnId: '2',
     },
     {
       id: 3,
       studentName: 'ハーマイオニー',
-      isChecked: true,
+      isChecked: false,
       rowId: null,
       columnId: null,
     },
-  ]
+  ])
 
-  const isCheckedInSubmissions = !submissions.some(
-    (submission) => submission.isChecked
+  useEffect(() => {
+    const isCheckedInSubmissions = submissions.some(
+      (submission) => submission.isChecked
+    )
+    setIsDisabled(!isCheckedInSubmissions)
+  }, [submissions.map((s) => s.isChecked).join(',')])
+
+  const notHasGradeSubmissions = submissions.filter(
+    (submission) => submission.columnId !== null
   )
 
-  const [isDisabled, setIsDisabled] = useState<boolean>(isCheckedInSubmissions)
-
-  const nonGradeSubmissions = submissions.filter(
-    (submission) => submission.columnId === null
-  )
+  const handleCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: number
+  ) => {
+    setSubmissions((prevSubmissions) =>
+      prevSubmissions.map((submission) =>
+        submission.id === id
+          ? { ...submission, isChecked: event.target.checked }
+          : submission
+      )
+    )
+  }
 
   return (
     <>
       <DndContext onDragEnd={handleDragEnd}>
         <div className="flex h-screen overflow-hidden">
-          <SideMenu submissions={nonGradeSubmissions} />
+          <SideMenu submissions={notHasGradeSubmissions} />
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
               <div className="pb-7 flex justify-between">
-                <h1 className="text-xl">コース名</h1>
+                <h1 className="text-2xl">{corse.name}</h1>
                 <div className="absolute top-3 right-2">
                   <SelectedButton
                     styles="bg-sky-400"
@@ -108,7 +128,7 @@ const Container = () => {
                 </div>
               </div>
               <div className="flex-1 overflow-x-auto">
-                <div className="flex h-full" style={{ width: 'max-content' }}>
+                <div className="flex h-full">
                   {gradeColumns.map((column) => (
                     <GradeColumn
                       key={column.id}
@@ -133,6 +153,9 @@ const Container = () => {
                                 key={submission.id}
                                 id={submission.id}
                                 submission={submission}
+                                onChange={(e) =>
+                                  handleCheckboxChange(e, submission.id)
+                                }
                               />
                             ))}
                         </RankRow>
