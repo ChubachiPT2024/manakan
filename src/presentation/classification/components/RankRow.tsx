@@ -4,11 +4,10 @@ import { ReactNode } from 'react'
 interface RankRowProps {
   id: string
   title: string
-  status: string
   children: ReactNode
 }
 
-export function RankRow({ id, status, children }: RankRowProps) {
+export function RankRow({ id, title, children }: RankRowProps) {
   const { setNodeRef } = useDroppable({ id })
 
   return (
@@ -20,9 +19,10 @@ export function RankRow({ id, status, children }: RankRowProps) {
         borderRadius: '4px',
         cursor: 'move',
         minHeight: '30px',
-        backgroundColor: status === 'notStarted' ? 'white' : 'lightgrey',
+        background: 'grey',
       }}
     >
+      <div>{title}</div>
       {children}
     </div>
   )

@@ -2,7 +2,7 @@ import { useDroppable } from '@dnd-kit/core'
 import { ReactNode } from 'react'
 
 interface GradeColumnProps {
-  id: string
+  id: number
   title: string
   children: ReactNode
 }
