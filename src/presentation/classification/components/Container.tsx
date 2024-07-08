@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
-  useDroppable,
-  useDraggable,
   PointerSensor,
   useSensor,
   useSensors,
-  MouseSensor,
 } from '@dnd-kit/core'
 import { GradeColumn } from './GradeColumn'
 import { RankRow } from './RankRow'
@@ -17,22 +14,29 @@ import { SelectedButton } from './SelectedButton'
 const Container = () => {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
-    // console.log(over?.id)
-    // if (active.id !== over?.id && over?.id) {
-    //   setTasks((prevTasks) =>
-    //     prevTasks.map((task) => {
-    //       if (task.name === active.id) {
-    //         const [newStatus, newRowLevel] = (over.id as string).split('-')
-    //         return {
-    //           ...task,
-    //           status: newStatus,
-    //           rowLevel: newStatus === 'notStarted' ? 'A' : newRowLevel,
-    //         }
-    //       }
-    //       return task
-    //     })
-    //   )
-    // }
+
+    if (active.id !== over?.id) {
+      setSubmissions((prevSubmissions) =>
+        prevSubmissions.map((submission) => {
+          if (submission.id === Number(active.id)) {
+            if (over.id === 'has-not-grade') {
+              return {
+                ...submission,
+                columnId: null,
+                rowId: null,
+              }
+            }
+            const [columnId, rowId] = (over.id as string).split('-')
+            return {
+              ...submission,
+              columnId,
+              rowId,
+            }
+          }
+          return submission
+        })
+      )
+    }
   }
 
   //TODO:Delete dummy data
@@ -67,8 +71,8 @@ const Container = () => {
       id: 2,
       studentName: 'ロン',
       isChecked: false,
-      rowId: '3',
-      columnId: '2',
+      rowId: null,
+      columnId: null,
     },
     {
       id: 3,
@@ -86,8 +90,16 @@ const Container = () => {
     setIsDisabled(!isCheckedInSubmissions)
   }, [submissions.map((s) => s.isChecked).join(',')])
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+      },
+    })
+  )
+
   const notHasGradeSubmissions = submissions.filter(
-    (submission) => submission.columnId !== null
+    (submission) => submission.columnId == null
   )
 
   const handleCheckboxChange = (
@@ -105,7 +117,7 @@ const Container = () => {
 
   return (
     <>
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         <div className="flex h-screen overflow-hidden">
           <SideMenu submissions={notHasGradeSubmissions} />
           <div className="flex-1 overflow-hidden">
