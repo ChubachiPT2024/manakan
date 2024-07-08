@@ -1,3 +1,4 @@
+import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
 import { CourseGetCommand } from 'src/application/courses/courseGetCommand'
 import { ReportListGetResult } from 'src/application/reportLists/reportListGetResult'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
@@ -21,6 +22,10 @@ export interface IElectronAPI {
   getCourseAsync: (
     courseGetCommand: CourseGetCommand
   ) => Promise<CourseGetResult>
+
+  classifyAssessmentAsync: (
+    assessmentClassifyCommand: AssessmentClassifyCommand
+  ) => Proimse<void>
 }
 
 declare global {
