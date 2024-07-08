@@ -114,7 +114,7 @@ export class ReportListApplicationService {
     const submissionMap = new Map(submissions.map((x) => [x.studentNumId, x]))
 
     // 対象のレポートについて、学籍番号を Key, 個別評価を Value とする Map を作成
-    const assessments = await this.assessmentRepository.findAsync(
+    const assessments = await this.assessmentRepository.findByReportIdAsync(
       command.reportId
     )
     const assessmentMap = new Map(assessments.map((x) => [x.studentNumId, x]))

@@ -32,4 +32,23 @@ export class Assessment {
       throw new TypeError('The score must be in [0, 100].')
     }
   }
+
+  /**
+   * 分類する
+   *
+   * @param grade 評点
+   * @param rank 評点内の位置
+   * @returns 分類後の個別評価
+   */
+  public classify(grade: number, rank: number) {
+    return new Assessment(
+      this.reportId,
+      this.studentNumId,
+      this.feedback,
+      this.memo,
+      grade,
+      rank,
+      this.score
+    )
+  }
 }

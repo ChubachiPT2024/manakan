@@ -159,7 +159,7 @@ describe('import', () => {
 
     await service.importAsync(command)
 
-    const assessments = await assessmentRepository.findAsync(35677)
+    const assessments = await assessmentRepository.findByReportIdAsync(35677)
     const assessment = assessments.find((x) => x.studentNumId === 23745148)
 
     expect(assessment.reportId).toBe(35677)

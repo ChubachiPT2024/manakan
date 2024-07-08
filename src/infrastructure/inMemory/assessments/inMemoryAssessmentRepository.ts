@@ -23,13 +23,28 @@ export class InMemoryAssessmentRepository implements AssessmentRepository {
   }
 
   /**
-   * 個別評価を検索する
+   * 個別評価をレポート ID で検索する
    *
    * @param reportId レポート ID
    * @returns 個別評価
    */
-  async findAsync(reportId: number): Promise<Assessment[]> {
+  async findByReportIdAsync(reportId: number): Promise<Assessment[]> {
     const map = this.assessments.get(reportId) ?? new Map<number, Assessment>()
     return [...map.values()]
+  }
+
+  /**
+   * 個別評価を検索する
+   *
+   * @param reportId レポート ID
+   * @param studentNumId 学籍番号
+   * @returns 個別評価
+   */
+  async findAsync(reportId: number, studentNumId: number): Promise<Assessment> {
+    const assessment = this.assessments.get(reportId)?.get(studentNumId)
+    if (!assessment) {
+      throw new Error('The assessment is not found.')
+    }
+    return assessment
   }
 }
