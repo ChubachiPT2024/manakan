@@ -10,7 +10,7 @@ export function SideMenu({ submissions }: SideMenuProps) {
     submissions.length === 0
   )
   return (
-    <div className="h-screen w-56 flex flex-col">
+    <div className="bg-white h-screen w-56 flex flex-col">
       <header className="pt-3 pl-3 pb-7 flex">
         <div className="h-8 w-8 bg-pink-500 "></div>
         <h1 className="text-3xl font-semibold">Manakan</h1>

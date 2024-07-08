@@ -13,17 +13,12 @@ export function RankRow({ id, title, children }: RankRowProps) {
   return (
     <div
       ref={setNodeRef}
-      style={{
-        padding: '8px',
-        margin: '8px 0',
-        borderRadius: '4px',
-        cursor: 'move',
-        minHeight: '30px',
-        background: 'grey',
-      }}
+      className="flex bg-gray-100 mb-2 min-h-[72px] w-[230px] overflow-y-auto "
     >
-      <div>{title}</div>
-      {children}
+      <div className="flex items-center justify-center text-sm  w-8">
+        {title}
+      </div>
+      <div className="">{children}</div>
     </div>
   )
 }

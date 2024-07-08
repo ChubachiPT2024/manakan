@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
@@ -86,59 +86,61 @@ const Container = () => {
   return (
     <>
       <DndContext onDragEnd={handleDragEnd}>
-        <div className="flex h-screen">
-          {/* sidemenu */}
+        <div className="flex h-screen overflow-hidden">
           <SideMenu submissions={nonGradeSubmissions} />
-          {/* corse title & select button*/}
-          <div className="pt-3 pl-3 w-screen">
-            <div className="pb-7 flex justify-between">
-              <h1 className="text-xl">コース名</h1>
-              <div>
-                <SelectedButton
-                  styles="bg-sky-400"
-                  title="複数開く"
-                  isDisabled={isDisabled}
-                  onClick={() => {}}
-                />
-                <SelectedButton
-                  styles="bg-red-400"
-                  title="選択解除"
-                  isDisabled={isDisabled}
-                  onClick={() => {}}
-                />
+          <div className="flex-1 overflow-hidden">
+            <div className="pt-3 pl-3 h-full flex flex-col">
+              <div className="pb-7 flex justify-between">
+                <h1 className="text-xl">コース名</h1>
+                <div className="absolute top-3 right-2">
+                  <SelectedButton
+                    styles="bg-sky-400"
+                    title="複数開く"
+                    isDisabled={isDisabled}
+                    onClick={() => {}}
+                  />
+                  <SelectedButton
+                    styles="bg-red-400"
+                    title="選択解除"
+                    isDisabled={isDisabled}
+                    onClick={() => {}}
+                  />
+                </div>
               </div>
-            </div>
-            {/* canban */}
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              {gradeColumns.map((column) => (
-                <GradeColumn
-                  key={column.id}
-                  id={column.id}
-                  title={column.title}
-                >
-                  {rankRows.map((row) => (
-                    <RankRow
-                      key={`${row.id}`}
-                      id={`${column.id}-${row.id}`}
-                      title={row.title}
+              <div className="flex-1 overflow-x-auto">
+                <div className="flex h-full" style={{ width: 'max-content' }}>
+                  {gradeColumns.map((column) => (
+                    <GradeColumn
+                      key={column.id}
+                      id={column.id}
+                      title={column.title}
+                      submissionNum={column.submissionNum}
                     >
-                      {submissions
-                        .filter(
-                          (submission) =>
-                            `${submission.columnId}-${submission.rowId}` ===
-                            `${column.id}-${row.id}`
-                        )
-                        .map((submission) => (
-                          <SubmissionCard
-                            key={submission.id}
-                            id={submission.id}
-                            submission={submission}
-                          />
-                        ))}
-                    </RankRow>
+                      {rankRows.map((row) => (
+                        <RankRow
+                          key={`${row.id}`}
+                          id={`${column.id}-${row.id}`}
+                          title={row.title}
+                        >
+                          {submissions
+                            .filter(
+                              (submission) =>
+                                `${submission.columnId}-${submission.rowId}` ===
+                                `${column.id}-${row.id}`
+                            )
+                            .map((submission) => (
+                              <SubmissionCard
+                                key={submission.id}
+                                id={submission.id}
+                                submission={submission}
+                              />
+                            ))}
+                        </RankRow>
+                      ))}
+                    </GradeColumn>
                   ))}
-                </GradeColumn>
-              ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
