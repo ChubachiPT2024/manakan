@@ -3,4 +3,5 @@ type Submission = {
   studentName: string
   status: string
   gradeRowLevel: string | null
+  isChecked: boolean
 }

@@ -9,6 +9,7 @@ import { GradeColumn } from './GradeColumn'
 import { RankRow } from './RankRow'
 import { SubmissionCard } from './SubmissionCard'
 import { SideMenu } from './SideMenu'
+import { SelectedButton } from './SelectedButton'
 
 type Task = {
   name: string
@@ -29,9 +30,7 @@ const Container = () => {
       rowLevel: 'B',
     },
   ])
-  //handleDragEndの中身持って来る
-  //debug
-  //これをベースにするなら、tasksの中身を変える＆＆UIを変える
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     console.log(over?.id)
@@ -65,31 +64,62 @@ const Container = () => {
       studentName: 'ハリー',
       status: 'todo',
       gradeRowLevel: null,
+      isChecked: false,
     },
     {
       id: 2,
       studentName: 'ロン',
       status: 'todo',
       gradeRowLevel: null,
+      isChecked: true,
     },
   ]
+
+  const isCheckedInSubmissions = !submissions.some(
+    (submission) => submission.isChecked
+  )
+  const [isDisabled, setIsDisabled] = useState<boolean>(isCheckedInSubmissions)
   return (
     <>
       <DndContext onDragEnd={handleDragEnd}>
-        {/* sidemenu */}
         <div className="flex h-screen">
+          {/* sidemenu */}
           <SideMenu submissions={submissions} />
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {columns.map((column) => (
-              <GradeColumn key={column.id} id={column.id} title={column.title}>
-                {column.singleRow ? (
-                  <RankRow
-                    status={column.id}
-                    key={`${column.id}-A`}
-                    id={`${column.id}-A`}
-                    title={column.title}
-                  >
-                    {/* {submissions
+          {/* corse title & select button*/}
+          <div className="pt-3 pl-3 w-screen">
+            <div className="pb-7 flex justify-between">
+              <h1 className="text-xl">コース名</h1>
+              <div>
+                <SelectedButton
+                  styles="bg-sky-400"
+                  title="複数開く"
+                  isDisabled={isDisabled}
+                  onClick={() => {}}
+                />
+                <SelectedButton
+                  styles="bg-red-400"
+                  title="選択解除"
+                  isDisabled={isDisabled}
+                  onClick={() => {}}
+                />
+              </div>
+            </div>
+            {/* canban */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {columns.map((column) => (
+                <GradeColumn
+                  key={column.id}
+                  id={column.id}
+                  title={column.title}
+                >
+                  {column.singleRow ? (
+                    <RankRow
+                      status={column.id}
+                      key={`${column.id}-A`}
+                      id={`${column.id}-A`}
+                      title={column.title}
+                    >
+                      {/* {submissions
                     .filter((submission) => submission.status === column.id)
                     .map((task, idx) => (
                       <SubmissionCard
@@ -101,43 +131,41 @@ const Container = () => {
                         <div>{'rank' + (idx + 1)}</div>
                       </SubmissionCard>
                     ))} */}
-                    <div>name</div>
-                  </RankRow>
-                ) : (
-                  rowLabels.map((rowLabel) => (
-                    <RankRow
-                      status={column.id}
-                      key={`${column.id}-${rowLabel}`}
-                      id={`${column.id}-${rowLabel}`}
-                      title={column.title}
-                    >
-                      {tasks
-                        .filter(
-                          (task) =>
-                            task.status === column.id &&
-                            task.rowLevel === rowLabel
-                        )
-                        .map((task, idx) => (
-                          // <SubmissionCard
-                          //   key={task.name}
-                          //   id={task.name}
-                          //   status={task.status}
-                          // >
-                          //   <div>{task.name}</div>
-                          //   <div>{'rank' + (idx + 1)}</div>
-                          // </SubmissionCard>
-                          <div>name</div>
-                        ))}
+                      <div>name</div>
                     </RankRow>
-                  ))
-                )}
-              </GradeColumn>
-            ))}
+                  ) : (
+                    rowLabels.map((rowLabel) => (
+                      <RankRow
+                        status={column.id}
+                        key={`${column.id}-${rowLabel}`}
+                        id={`${column.id}-${rowLabel}`}
+                        title={column.title}
+                      >
+                        {tasks
+                          .filter(
+                            (task) =>
+                              task.status === column.id &&
+                              task.rowLevel === rowLabel
+                          )
+                          .map((task, idx) => (
+                            // <SubmissionCard
+                            //   key={task.name}
+                            //   id={task.name}
+                            //   status={task.status}
+                            // >
+                            //   <div>{task.name}</div>
+                            //   <div>{'rank' + (idx + 1)}</div>
+                            // </SubmissionCard>
+                            <div>name</div>
+                          ))}
+                      </RankRow>
+                    ))
+                  )}
+                </GradeColumn>
+              ))}
+            </div>
           </div>
         </div>
-        {/* corse title */}
-        {/* select button */}
-        {/* canban */}
       </DndContext>
     </>
   )
