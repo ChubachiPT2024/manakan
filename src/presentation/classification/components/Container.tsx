@@ -8,6 +8,7 @@ import {
 import { GradeColumn } from './GradeColumn'
 import { RankRow } from './RankRow'
 import { SubmissionCard } from './SubmissionCard'
+import { SideMenu } from './SideMenu'
 
 type Task = {
   name: string
@@ -58,63 +59,85 @@ const Container = () => {
     { id: 'inProgress', title: 'In Progress', singleRow: false },
     { id: 'done', title: 'Done', singleRow: false },
   ]
-
+  const submissions: Submission[] = [
+    {
+      id: 1,
+      studentName: 'ハリー',
+      status: 'todo',
+      gradeRowLevel: null,
+    },
+    {
+      id: 2,
+      studentName: 'ロン',
+      status: 'todo',
+      gradeRowLevel: null,
+    },
+  ]
   return (
     <>
       <DndContext onDragEnd={handleDragEnd}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {columns.map((column) => (
-            <GradeColumn key={column.id} id={column.id} title={column.title}>
-              {column.singleRow ? (
-                <RankRow
-                  status={column.id}
-                  key={`${column.id}-A`}
-                  id={`${column.id}-A`}
-                  title={column.title}
-                >
-                  {tasks
-                    .filter((task) => task.status === column.id)
+        {/* sidemenu */}
+        <div className="flex h-screen">
+          <SideMenu submissions={submissions} />
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            {columns.map((column) => (
+              <GradeColumn key={column.id} id={column.id} title={column.title}>
+                {column.singleRow ? (
+                  <RankRow
+                    status={column.id}
+                    key={`${column.id}-A`}
+                    id={`${column.id}-A`}
+                    title={column.title}
+                  >
+                    {/* {submissions
+                    .filter((submission) => submission.status === column.id)
                     .map((task, idx) => (
                       <SubmissionCard
-                        key={task.name}
-                        id={task.name}
+                        key={submission.id}
+                        id={submission.id}
                         status={task.status}
                       >
                         <div>{task.name}</div>
                         <div>{'rank' + (idx + 1)}</div>
                       </SubmissionCard>
-                    ))}
-                </RankRow>
-              ) : (
-                rowLabels.map((rowLabel) => (
-                  <RankRow
-                    status={column.id}
-                    key={`${column.id}-${rowLabel}`}
-                    id={`${column.id}-${rowLabel}`}
-                    title={column.title}
-                  >
-                    {tasks
-                      .filter(
-                        (task) =>
-                          task.status === column.id &&
-                          task.rowLevel === rowLabel
-                      )
-                      .map((task, idx) => (
-                        <SubmissionCard
-                          key={task.name}
-                          id={task.name}
-                          status={task.status}
-                        >
-                          <div>{task.name}</div>
-                          <div>{'rank' + (idx + 1)}</div>
-                        </SubmissionCard>
-                      ))}
+                    ))} */}
+                    <div>name</div>
                   </RankRow>
-                ))
-              )}
-            </GradeColumn>
-          ))}
+                ) : (
+                  rowLabels.map((rowLabel) => (
+                    <RankRow
+                      status={column.id}
+                      key={`${column.id}-${rowLabel}`}
+                      id={`${column.id}-${rowLabel}`}
+                      title={column.title}
+                    >
+                      {tasks
+                        .filter(
+                          (task) =>
+                            task.status === column.id &&
+                            task.rowLevel === rowLabel
+                        )
+                        .map((task, idx) => (
+                          // <SubmissionCard
+                          //   key={task.name}
+                          //   id={task.name}
+                          //   status={task.status}
+                          // >
+                          //   <div>{task.name}</div>
+                          //   <div>{'rank' + (idx + 1)}</div>
+                          // </SubmissionCard>
+                          <div>name</div>
+                        ))}
+                    </RankRow>
+                  ))
+                )}
+              </GradeColumn>
+            ))}
+          </div>
         </div>
+        {/* corse title */}
+        {/* select button */}
+        {/* canban */}
       </DndContext>
     </>
   )

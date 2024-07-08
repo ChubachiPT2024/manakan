@@ -2,12 +2,11 @@ import { useDraggable } from '@dnd-kit/core'
 import { ReactNode } from 'react'
 
 interface SubmissionCardProps {
-  id: string
-  children: ReactNode
-  status: string
+  id: number
+  submission: Submission
 }
 
-export function SubmissionCard({ id, children, status }: SubmissionCardProps) {
+export function SubmissionCard({ id, submission }: SubmissionCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
     data: { status },
@@ -22,10 +21,9 @@ export function SubmissionCard({ id, children, status }: SubmissionCardProps) {
   return (
     <div
       ref={setNodeRef}
+      className="h-14 w-52 border rounded-lg mt-2 bg-white"
       style={{
         ...style,
-        padding: '8px',
-        margin: '8px 0',
         backgroundColor: 'white',
         borderRadius: '4px',
         cursor: 'move',
@@ -34,7 +32,15 @@ export function SubmissionCard({ id, children, status }: SubmissionCardProps) {
       {...listeners}
       {...attributes}
     >
-      {children}
+      <div className="flex pl-2">
+        <div className="flex mt-3">
+          <input type="checkbox" className="" />
+          <div className="ml-2 pl-2">
+            <p className="text-xs">学修番号：{submission.id}</p>
+            <p className="text-xs">{submission.studentName}</p>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
