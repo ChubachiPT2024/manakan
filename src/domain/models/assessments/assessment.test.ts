@@ -14,3 +14,16 @@ describe('classify', () => {
     expect(classified.rank).toBe(2)
   })
 })
+
+describe('update feedback', () => {
+  test('The feedback is updated.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.updateFeedback('feedback')
+
+    // Assert
+    expect(classified.feedback).toBe('feedback')
+  })
+})

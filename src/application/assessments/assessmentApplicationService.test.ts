@@ -3,6 +3,7 @@ import { InMemoryAssessmentRepository } from 'src/infrastructure/inMemory/assess
 import { describe, expect, test } from 'vitest'
 import { AssessmentApplicationService } from './assessmentApplicationService'
 import { AssessmentClassifyCommand } from './assessmentClassifyCommand'
+import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand.'
 
 describe('classify', () => {
   test('The grade and rank are set after classification.', async () => {
@@ -28,5 +29,30 @@ describe('classify', () => {
     )
     expect(classified.grade).toBe(1)
     expect(classified.rank).toBe(2)
+  })
+})
+
+describe('update feedback', () => {
+  test('The feedback is updated.', async () => {
+    // Arrange
+    const repository = new InMemoryAssessmentRepository()
+    const assessment = new Assessment(0, 0)
+    await repository.saveAsync(assessment)
+    const service = new AssessmentApplicationService(repository)
+    const command = new AssessmentFeedbackUpdateCommand(
+      assessment.reportId,
+      assessment.studentNumId,
+      'feedback'
+    )
+
+    // Act
+    await service.updateFeedbackAsync(command)
+
+    // Assert
+    const classified = await repository.findAsync(
+      assessment.reportId,
+      assessment.studentNumId
+    )
+    expect(classified.feedback).toBe('feedback')
   })
 })
