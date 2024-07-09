@@ -16,6 +16,7 @@ import { ReportListGetCommand } from './application/reportLists/reportListGetCom
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
 import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
+import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -105,6 +106,12 @@ app.whenReady().then(() => {
     'updateAssessmentFeedbackAsync',
     async (_, command: AssessmentFeedbackUpdateCommand) =>
       await assessmentApplicationService.updateFeedbackAsync(command)
+  )
+
+  ipcMain.handle(
+    'updateAssessmentMemoAsync',
+    async (_, command: AssessmentMemoUpdateCommand) =>
+      await assessmentApplicationService.updateMemoAsync(command)
   )
 
   createWindow()
