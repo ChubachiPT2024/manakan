@@ -15,7 +15,7 @@ export function RankRow({ id, title, children }: RankRowProps) {
       ref={setNodeRef}
       className="flex bg-gray-100 mb-2 min-h-[72px] w-[230px] o rounded-md"
     >
-      <div className="flex items-center justify-center text-sm px-1.5">
+      <div className="flex items-center justify-center text-sm min-w-8 px-1.5">
         {title}
       </div>
       <div>{children}</div>
