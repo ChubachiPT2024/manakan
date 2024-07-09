@@ -2,7 +2,7 @@ import { useDraggable } from '@dnd-kit/core'
 import { FaRegFolder } from 'react-icons/fa'
 
 interface SubmissionCardProps {
-  id: string | number
+  id: number
   submission: Submission
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
 }

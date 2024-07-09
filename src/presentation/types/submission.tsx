@@ -1,7 +1,7 @@
-type Submission = {
+interface Submission {
   id: number
   studentName: string
   isChecked: boolean
-  columnId: string
-  rowId: string
+  columnId: number
+  rowId: number
 }

@@ -1,14 +1,12 @@
 import { ReactNode } from 'react'
 
 interface GradeColumnProps {
-  id: number
   title: string
   children: ReactNode
   submissionNum: number
 }
 
 export function GradeColumn({
-  id,
   title,
   children,
   submissionNum,

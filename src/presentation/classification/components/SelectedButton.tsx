@@ -1,16 +1,16 @@
 import { MouseEventHandler } from 'react'
 
 interface SelectedButtonProps {
-  styles: string
   title: string
   isDisabled: boolean
+  styles: string
   onClick: MouseEventHandler<HTMLButtonElement>
 }
 
 export function SelectedButton({
-  styles,
   title,
   isDisabled,
+  styles,
   onClick,
 }: SelectedButtonProps) {
   return (
