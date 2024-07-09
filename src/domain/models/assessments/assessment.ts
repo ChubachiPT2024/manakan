@@ -69,4 +69,22 @@ export class Assessment {
       this.score
     )
   }
+
+  /**
+   * メモを更新する
+   *
+   * @param memo メモ
+   * @returns メモ更新後の個別評価
+   */
+  public updateMemo(memo: string) {
+    return new Assessment(
+      this.reportId,
+      this.studentNumId,
+      this.feedback,
+      memo,
+      this.grade,
+      this.rank,
+      this.score
+    )
+  }
 }

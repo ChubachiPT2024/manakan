@@ -1,6 +1,7 @@
 import { AssessmentRepository } from 'src/domain/models/assessments/assessmentRepository'
 import { AssessmentClassifyCommand } from './assessmentClassifyCommand'
 import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand.'
+import { AssessmentMemoUpdateCommand } from './assessmentMemoUpdateCommand'
 
 /**
  * 個別評価アプリケーションサービス
@@ -47,6 +48,24 @@ export class AssessmentApplicationService {
     )
 
     const updated = assessment.updateFeedback(command.feedback)
+
+    await this.assessmentRepository.saveAsync(updated)
+  }
+
+  /**
+   * メモを更新する
+   *
+   * @param command 個別評価メモ更新コマンド
+   */
+  public async updateMemoAsync(
+    command: AssessmentMemoUpdateCommand
+  ): Promise<void> {
+    const assessment = await this.assessmentRepository.findAsync(
+      command.reportId,
+      command.studentNumId
+    )
+
+    const updated = assessment.updateFeedback(command.memo)
 
     await this.assessmentRepository.saveAsync(updated)
   }

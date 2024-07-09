@@ -27,3 +27,16 @@ describe('update feedback', () => {
     expect(classified.feedback).toBe('feedback')
   })
 })
+
+describe('update memo', () => {
+  test('The memo is updated.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.updateFeedback('memo')
+
+    // Assert
+    expect(classified.feedback).toBe('memo')
+  })
+})
