@@ -10,6 +10,13 @@ import { SubmissionRepository } from 'src/domain/models/submissions/submissionRe
 import { Submission } from 'src/domain/models/submissions/submission'
 import { AssessmentRepository } from 'src/domain/models/assessments/assessmentRepository'
 import { Assessment } from 'src/domain/models/assessments/assessment'
+import { ReportListGetResult } from './reportListGetResult'
+import { ReportListGetCommand } from './reportListGetCommand'
+import { ReportListItemData } from './reportListItemData'
+import { ReportListItemSubmissionData } from './reportListItemSubmissionData'
+import { ReportListItemAssessmentData } from './reportListItemAssessmentData'
+import { ReportListItemStudentData } from './reportListItemStudentData'
+import { ReportListData } from './reportListData'
 
 /**
  * レポートリストアプリケーションサービス
@@ -89,5 +96,46 @@ export class ReportListApplicationService {
     }
 
     return reportId
+  }
+
+  /**
+   * レポートリストを取得する
+   *
+   * @param command レポートリスト取得コマンド
+   * @returns レポートリスト取得結果
+   */
+  public async getAsync(
+    command: ReportListGetCommand
+  ): Promise<ReportListGetResult> {
+    // 対象のレポートについて、学籍番号を Key, 提出物を Value とする Map を作成
+    const submissions = await this.submissionRepository.findAsync(
+      command.reportId
+    )
+    const submissionMap = new Map(submissions.map((x) => [x.studentNumId, x]))
+
+    // 対象のレポートについて、学籍番号を Key, 個別評価を Value とする Map を作成
+    const assessments = await this.assessmentRepository.findAsync(
+      command.reportId
+    )
+    const assessmentMap = new Map(assessments.map((x) => [x.studentNumId, x]))
+
+    const items: ReportListItemData[] = []
+    for (const studentNumId of submissionMap.keys()) {
+      const student = await this.studentRepository.findAsync(studentNumId)
+      items.push(
+        new ReportListItemData(
+          new ReportListItemStudentData(student),
+          new ReportListItemSubmissionData(submissionMap.get(studentNumId)),
+          new ReportListItemAssessmentData(assessmentMap.get(studentNumId))
+        )
+      )
+    }
+
+    const report = await this.reportRepository.findAsync(command.reportId)
+    const course = await this.courseRepository.findAsync(report.courseId)
+
+    return new ReportListGetResult(
+      new ReportListData(course.id, course.name, report.id, report.title, items)
+    )
   }
 }

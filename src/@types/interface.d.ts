@@ -1,4 +1,5 @@
 import { CourseGetCommand } from 'src/application/courses/courseGetCommand'
+import { ReportListGetResult } from 'src/application/reportLists/reportListGetResult'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
 import { ReportGetResult } from 'src/application/reports/reportGetResult'
 
@@ -8,6 +9,10 @@ export interface IElectronAPI {
   importReportListAsync: (
     reportListImportCommand: ReportListImportCommand
   ) => Promise<number>
+
+  getReportListAsync: (
+    reportListGetCommand: ReportListGetCommand
+  ) => Promise<ReportListGetResult>
 
   getReportAsync: (
     reportGetCommand: ReportGetCommand

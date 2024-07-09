@@ -12,6 +12,7 @@ import { CourseGetCommand } from './application/courses/courseGetCommand'
 import { CourseApplicationService } from './application/courses/courseApplicationService'
 import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
 import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessments/inMemoryAssessmentRepository'
+import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -66,6 +67,12 @@ app.whenReady().then(() => {
     'importReportListAsync',
     async (_, reportListImportCommand: ReportListImportCommand) =>
       await reportListApplicationService.importAsync(reportListImportCommand)
+  )
+
+  ipcMain.handle(
+    'getReportListAsync',
+    async (_, reportListGetCommand: ReportListGetCommand) =>
+      await reportListApplicationService.getAsync(reportListGetCommand)
   )
 
   ipcMain.handle(
