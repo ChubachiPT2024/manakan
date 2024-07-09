@@ -115,7 +115,7 @@ const Classification = () => {
         ).length,
       }))
     )
-  })
+  }, [gradeColumns, submissions])
 
   useEffect(() => {
     const isCheckedInSubmissions = submissions.some(
