@@ -10,6 +10,7 @@ import { ReportListGetCommand } from './application/reportLists/reportListGetCom
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
 import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
+import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   importReportListAsync: (reportListImportCommand: ReportListImportCommand) =>
@@ -33,4 +34,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   updateAssessmentMemoAsync: (command: AssessmentMemoUpdateCommand) =>
     ipcRenderer.invoke('updateAssessmentMemoAsync', command),
+
+  updateAssessmentScoreAsync: (command: AssessmentScoreUpdateCommand) =>
+    ipcRenderer.invoke('updateAssessmentScoreAsync', command),
 })

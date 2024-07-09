@@ -17,6 +17,7 @@ import { AssessmentClassifyCommand } from './application/assessments/assessmentC
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
 import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
 import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
+import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -112,6 +113,12 @@ app.whenReady().then(() => {
     'updateAssessmentMemoAsync',
     async (_, command: AssessmentMemoUpdateCommand) =>
       await assessmentApplicationService.updateMemoAsync(command)
+  )
+
+  ipcMain.handle(
+    'updateAssessmentScoreAsync',
+    async (_, command: AssessmentScoreUpdateCommand) =>
+      await assessmentApplicationService.updateScoreAsync(command)
   )
 
   createWindow()
