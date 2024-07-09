@@ -1,3 +1,5 @@
+import { AssessmentRank } from './assessmentRank'
+
 /**
  * 個別評価
  */
@@ -19,14 +21,12 @@ export class Assessment {
     public readonly feedback?: string,
     public readonly memo?: string,
     public readonly grade?: number,
-    public readonly rank?: number,
+    public readonly rank?: AssessmentRank,
     public readonly score?: number
   ) {
     if (!grade && (grade < 0 || grade > 5)) {
       throw new TypeError('The grade must be in [0, 5].')
     }
-
-    // TODO rank の仕様決定後、バリデーション
 
     if (!score && (score < 0 || score > 100)) {
       throw new TypeError('The score must be in [0, 100].')
@@ -40,7 +40,7 @@ export class Assessment {
    * @param rank 評点内の位置
    * @returns 分類後の個別評価
    */
-  public classify(grade: number, rank: number) {
+  public classify(grade: number, rank: AssessmentRank) {
     return new Assessment(
       this.reportId,
       this.studentNumId,

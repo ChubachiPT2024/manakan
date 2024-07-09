@@ -1,4 +1,5 @@
 import { Assessment } from 'src/domain/models/assessments/assessment'
+import { AssessmentRank } from 'src/domain/models/assessments/assessmentRank'
 
 /**
  * レポートリスト項目の個別評価データ（DTO）
@@ -22,8 +23,7 @@ export class ReportListItemAssessmentData {
   /**
    * 評点内の位置
    */
-  public readonly rank?: number
-
+  public readonly rank?: AssessmentRank
   /**
    * 点数
    */

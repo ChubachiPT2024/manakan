@@ -1,3 +1,5 @@
+import { AssessmentRank } from 'src/domain/models/assessments/assessmentRank'
+
 /**
  * 個別評価分類コマンド
  */
@@ -14,6 +16,6 @@ export class AssessmentClassifyCommand {
     public readonly reportId: number,
     public readonly studentNumId: number,
     public readonly grade: number,
-    public readonly rank: number
+    public readonly rank: AssessmentRank
   ) {}
 }
