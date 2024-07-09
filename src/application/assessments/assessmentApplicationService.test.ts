@@ -15,7 +15,7 @@ describe('classify', () => {
       assessment.reportId,
       assessment.studentNumId,
       1,
-      2
+      '+-'
     )
 
     // Act
@@ -27,6 +27,6 @@ describe('classify', () => {
       assessment.studentNumId
     )
     expect(classified.grade).toBe(1)
-    expect(classified.rank).toBe(2)
+    expect(classified.rank).toBe('+-')
   })
 })
