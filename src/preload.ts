@@ -8,6 +8,7 @@ import { ReportGetCommand } from './application/reports/reportGetCommand'
 import { CourseGetCommand } from './application/courses/courseGetCommand'
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
+import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   importReportListAsync: (reportListImportCommand: ReportListImportCommand) =>
@@ -25,4 +26,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   classifyAssessmentAsync: (
     assessmentClassifyCommand: AssessmentClassifyCommand
   ) => ipcRenderer.invoke('classifyAssessmentAsync', assessmentClassifyCommand),
+
+  updateAssessmentFeedbackAsync: (command: AssessmentFeedbackUpdateCommand) =>
+    ipcRenderer.invoke('updateAssessmentFeedbackAsync', command),
 })

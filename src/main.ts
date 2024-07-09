@@ -15,6 +15,7 @@ import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessme
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
+import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -98,6 +99,12 @@ app.whenReady().then(() => {
       await assessmentApplicationService.classifyAsync(
         assessmentClassifyCommand
       )
+  )
+
+  ipcMain.handle(
+    'updateAssessmentFeedbackAsync',
+    async (_, command: AssessmentFeedbackUpdateCommand) =>
+      await assessmentApplicationService.updateFeedbackAsync(command)
   )
 
   createWindow()
