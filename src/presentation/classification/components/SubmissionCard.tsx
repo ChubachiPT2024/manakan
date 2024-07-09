@@ -31,7 +31,6 @@ export function SubmissionCard({
       {...listeners}
     >
       <div className="flex mt-3 pl-2 pt-2">
-        {/* BUG:https://github.com/clauderic/dnd-kit/issues/591 */}
         <input
           type="checkbox"
           onChange={onChange}

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   PointerSensor,
   useSensor,
   useSensors,
@@ -12,21 +14,24 @@ import { SubmissionCard } from './SubmissionCard'
 import { SideMenu } from './SideMenu'
 import { SelectedButton } from './SelectedButton'
 const Container = () => {
+  const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
+  const [isDisabled, setIsDisabled] = useState<boolean>(true)
+
   function handleDragEnd(event: DragEndEvent) {
+    setDraggingSubmissionId(null)
     const { active, over } = event
+    let columnId: string | null
+    let rowId: string | null
 
     if (active.id !== over?.id) {
       setSubmissions((prevSubmissions) =>
         prevSubmissions.map((submission) => {
           if (submission.id === Number(active.id)) {
-            if (over.id === 'has-not-grade') {
-              return {
-                ...submission,
-                columnId: null,
-                rowId: null,
-              }
+            if (over.id !== 'has-not-grade') {
+              const [overColumnId, overRowId] = (over.id as string).split('-')
+              columnId = overColumnId
+              rowId = overRowId
             }
-            const [columnId, rowId] = (over.id as string).split('-')
             return {
               ...submission,
               columnId,
@@ -58,7 +63,6 @@ const Container = () => {
     { id: 2, title: '-' },
     { id: 1, title: '--' },
   ]
-  const [isDisabled, setIsDisabled] = useState<boolean>(true)
   const [submissions, setSubmissions] = useState<Submission[]>([
     {
       id: 1,
@@ -90,17 +94,25 @@ const Container = () => {
     setIsDisabled(!isCheckedInSubmissions)
   }, [submissions.map((s) => s.isChecked).join(',')])
 
+  // BUG:https://github.com/clauderic/dnd-kit/issues/591
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 5,
+        distance: 1,
       },
     })
   )
 
-  const notHasGradeSubmissions = submissions.filter(
-    (submission) => submission.columnId == null
-  )
+  const notHasGradeSubmissions = submissions
+    .filter((submission) => submission.id !== draggingSubmissionId)
+    .filter((submission) => submission.columnId == null)
+  const hasGradeSubmissions = submissions
+    .filter((submission) => submission.id !== draggingSubmissionId)
+    .filter((submission) => submission.columnId != null)
+
+  function handleDragStart(event: DragStartEvent) {
+    setDraggingSubmissionId(event.active.id)
+  }
 
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -117,14 +129,29 @@ const Container = () => {
 
   return (
     <>
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <div className="flex h-screen overflow-hidden">
+      <DndContext
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        sensors={sensors}
+      >
+        {draggingSubmissionId && (
+          <DragOverlay>
+            <SubmissionCard
+              id={draggingSubmissionId}
+              submission={submissions.find(
+                (s) => s.id === Number(draggingSubmissionId)
+              )}
+              onChange={() => {}}
+            />
+          </DragOverlay>
+        )}
+        <div className="flex h-screen">
           <SideMenu submissions={notHasGradeSubmissions} />
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
               <div className="pb-7 flex justify-between">
                 <h1 className="text-2xl">{corse.name}</h1>
-                <div className="absolute top-3 right-2">
+                <div>
                   <SelectedButton
                     styles="bg-sky-400"
                     title="複数開く"
@@ -154,7 +181,7 @@ const Container = () => {
                           id={`${column.id}-${row.id}`}
                           title={row.title}
                         >
-                          {submissions
+                          {hasGradeSubmissions
                             .filter(
                               (submission) =>
                                 `${submission.columnId}-${submission.rowId}` ===
