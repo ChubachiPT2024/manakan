@@ -67,14 +67,14 @@ const Classification = () => {
   const corse = {
     name: '情報アーキテクチャ特論7',
   }
-  const gradeColumns = [
+  const [gradeColumns, setGradeColumns] = useState<GradeColumn[]>([
     { id: 5, title: '5', submissionNum: 0 },
     { id: 4, title: '4', submissionNum: 0 },
     { id: 3, title: '3', submissionNum: 0 },
     { id: 2, title: '2', submissionNum: 0 },
     { id: 1, title: '1', submissionNum: 0 },
     { id: 0, title: '0', submissionNum: 0 },
-  ]
+  ])
   const rankRows = [
     { id: 5, title: '++' },
     { id: 4, title: '+' },
@@ -105,6 +105,17 @@ const Classification = () => {
       columnId: null,
     },
   ])
+
+  useEffect(() => {
+    setGradeColumns(
+      gradeColumns.map((column) => ({
+        ...column,
+        submissionNum: submissions.filter(
+          (submission) => submission.columnId === column.id
+        ).length,
+      }))
+    )
+  })
 
   useEffect(() => {
     const isCheckedInSubmissions = submissions.some(
