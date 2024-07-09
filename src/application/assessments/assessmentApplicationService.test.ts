@@ -5,6 +5,7 @@ import { AssessmentApplicationService } from './assessmentApplicationService'
 import { AssessmentClassifyCommand } from './assessmentClassifyCommand'
 import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand.'
 import { AssessmentMemoUpdateCommand } from './assessmentMemoUpdateCommand'
+import { AssessmentScoreUpdateCommand } from './assessmentScoreUpdateCommand'
 
 describe('classify', () => {
   test('The grade and rank are set after classification.', async () => {
@@ -80,5 +81,30 @@ describe('update memo', () => {
       assessment.studentNumId
     )
     expect(classified.feedback).toBe('memo')
+  })
+})
+
+describe('update score', () => {
+  test('The score is updated.', async () => {
+    // Arrange
+    const repository = new InMemoryAssessmentRepository()
+    const assessment = new Assessment(0, 0)
+    await repository.saveAsync(assessment)
+    const service = new AssessmentApplicationService(repository)
+    const command = new AssessmentScoreUpdateCommand(
+      assessment.reportId,
+      assessment.studentNumId,
+      0
+    )
+
+    // Act
+    await service.updateScoreAsync(command)
+
+    // Assert
+    const updated = await repository.findAsync(
+      assessment.reportId,
+      assessment.studentNumId
+    )
+    expect(updated.score).toBe(0)
   })
 })
