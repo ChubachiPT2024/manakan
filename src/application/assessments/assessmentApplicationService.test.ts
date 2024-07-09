@@ -51,11 +51,11 @@ describe('update feedback', () => {
     await service.updateFeedbackAsync(command)
 
     // Assert
-    const classified = await repository.findAsync(
+    const updated = await repository.findAsync(
       assessment.reportId,
       assessment.studentNumId
     )
-    expect(classified.feedback).toBe('feedback')
+    expect(updated.feedback).toBe('feedback')
   })
 })
 
@@ -76,11 +76,11 @@ describe('update memo', () => {
     await service.updateMemoAsync(command)
 
     // Assert
-    const classified = await repository.findAsync(
+    const updated = await repository.findAsync(
       assessment.reportId,
       assessment.studentNumId
     )
-    expect(classified.feedback).toBe('memo')
+    expect(updated.feedback).toBe('memo')
   })
 })
 
