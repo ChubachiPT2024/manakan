@@ -5,7 +5,7 @@ export class ReportListImportCommand {
   /**
    * コンストラクタ
    *
-   * @param reportListFilePath レポートリストファイルパス
+   * @param reportListFileAbsolutePath レポートリストファイルの絶対パス
    */
-  public constructor(public readonly reportListFilePath: string) {}
+  public constructor(public readonly reportListFileAbsolutePath: string) {}
 }
