@@ -1,6 +1,6 @@
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from 'react-router-dom'
 
-// ページコンポーネントのインポート
+
 import Home from "./presentation/pages/Home";
 import Evaluation from "./presentation/pages/Evaluation";
 import Review from "./presentation/pages/Review";
