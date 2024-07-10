@@ -64,7 +64,7 @@ const Classification = () => {
   }
 
   //TODO:Delete dummy data
-  const corse = {
+  const course = {
     name: '情報アーキテクチャ特論7',
   }
   const [gradeColumns, setGradeColumns] = useState<GradeColumn[]>([
@@ -175,7 +175,7 @@ const Classification = () => {
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
               <div className="pb-7 flex justify-between">
-                <h1 className="text-2xl">{corse.name}</h1>
+                <h1 className="text-2xl">{course.name}</h1>
                 <div>
                   <SelectedButton
                     styles="bg-sky-400"
