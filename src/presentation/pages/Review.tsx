@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
-import { MdOutlineReadMore } from "react-icons/md";
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Review = () => {
   // 評点の状態
@@ -26,7 +26,7 @@ const Review = () => {
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
-          <MdOutlineReadMore className='w-12 h-12' color={"#a9a9a9"} />
+          <MdKeyboardDoubleArrowLeft className='w-12 h-12' color={"#a9a9a9"} />
         </div>
 
         {/* メインコンテンツ */}
@@ -247,7 +247,7 @@ const Review = () => {
               <h2 className="text-xl font-bold mb-2">メモ</h2>
               <div className='pl-3'>
                 {/* TODO: placeholderを相談 */}
-                <TextField id="memo" multiline rows={4} placeholder="評価する際のメモを記述ください" sx={{m: "0"}} fullWidth />
+                <TextField id="memo" multiline rows={4} placeholder="評価の為の一時的なメモを記述して下さい。このデータはmanabaには反映されません。" sx={{m: "0"}} fullWidth />
               </div>
             </div>
 
@@ -256,7 +256,7 @@ const Review = () => {
               <h2 className="text-xl font-bold mb-2">フィードバック</h2>
               <div className='pl-3'>
                 {/* TODO: placeholderを相談 */}
-                <TextField id="feedback" multiline rows={4}  placeholder="学生に伝えるためのフィードバックを記述ください" fullWidth/>
+                <TextField id="feedback" multiline rows={4}  placeholder="学生に伝える為のフィードバックを記述して下さい。" fullWidth/>
               </div>
             </div>
           </div>
