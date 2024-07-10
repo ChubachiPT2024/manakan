@@ -6,6 +6,8 @@ import { CourseGetCommand } from 'src/application/courses/courseGetCommand'
 import { ReportListGetResult } from 'src/application/reportLists/reportListGetResult'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
 import { ReportGetResult } from 'src/application/reports/reportGetResult'
+import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
+import { SubmissionFileGetResult } from 'src/application/submissionFiles/submissionFileGetResult'
 import { SubmissionSummariesGetCommand } from 'src/application/submissionSummaries/submissionSummariesGetCommand'
 import { SubmissionSummariesGetResult } from 'src/application/submissionSummaries/submissionSummariesGetResult'
 
@@ -47,6 +49,10 @@ export interface IElectronAPI {
   getSubmissionSummariesAsync: (
     command: SubmissionSummariesGetCommand
   ) => Promise<SubmissionSummariesGetResult>
+
+  getSubmissionFileAsync: (
+    comman: SubmissionFileGetCommand
+  ) => Promise<SubmissionFileGetResult>
 }
 
 declare global {

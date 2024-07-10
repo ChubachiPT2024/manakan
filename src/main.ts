@@ -20,6 +20,8 @@ import { AssessmentMemoUpdateCommand } from './application/assessments/assessmen
 import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 import { SubmissionSummaryApplicationService } from './application/submissionSummaries/submissionSummaryApplicationService'
 import { SubmissionSummariesGetCommand } from './application/submissionSummaries/submissionSummariesGetCommand'
+import { SubmissionFileApplicationService } from './application/submissionFiles/submissionFileApplicationService'
+import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -75,6 +77,10 @@ const submissionSummaryApplicationService =
     studentRepository,
     assessmentRepository
   )
+const submissionFileApplicationService = new SubmissionFileApplicationService(
+  reportRepository,
+  submissionRepository
+)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -136,6 +142,12 @@ app.whenReady().then(() => {
       await submissionSummaryApplicationService.getSubmissionSummariesAsync(
         command
       )
+  )
+
+  ipcMain.handle(
+    'getSubmissionFileAsync',
+    async (_, command: SubmissionFileGetCommand) =>
+      await submissionFileApplicationService.getAsync(command)
   )
 
   createWindow()

@@ -12,6 +12,7 @@ import { AssessmentFeedbackUpdateCommand } from './application/assessments/asses
 import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
 import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 import { SubmissionSummariesGetCommand } from './application/submissionSummaries/submissionSummariesGetCommand'
+import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   importReportListAsync: (reportListImportCommand: ReportListImportCommand) =>
@@ -41,4 +42,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getSubmissionSummariesAsync: (command: SubmissionSummariesGetCommand) =>
     ipcRenderer.invoke('getSubmissionSummariesAsync', command),
+
+  getSubmissionFileAsync: (command: SubmissionFileGetCommand) =>
+    ipcRenderer.invoke('getSubmissionFileAsync', command),
 })
