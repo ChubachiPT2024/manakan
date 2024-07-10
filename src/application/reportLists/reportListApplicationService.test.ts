@@ -136,7 +136,7 @@ describe('import', () => {
 
     await service.importAsync(command)
 
-    const submissions = await submissionRepository.findAsync(35677)
+    const submissions = await submissionRepository.findByReportIdAsync(35677)
     const submission = submissions.find((x) => x.studentNumId === 23745148)
     expect(submission.reportId).toBe(35677)
     expect(submission.studentNumId).toBe(23745148)
