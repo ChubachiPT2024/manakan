@@ -62,6 +62,9 @@ describe('import', () => {
     expect(report.courseId).toBe(27048)
     expect(report.id).toBe(35677)
     expect(report.title).toBe('個人レポート課題')
+    expect(report.reportListFolderAbsoultePath).toBe(
+      path.join(__dirname, 'reportListImportTestFiles')
+    )
   })
 
   test('The first student is saved.', async () => {
@@ -159,7 +162,7 @@ describe('import', () => {
 
     await service.importAsync(command)
 
-    const assessments = await assessmentRepository.findAsync(35677)
+    const assessments = await assessmentRepository.findByReportIdAsync(35677)
     const assessment = assessments.find((x) => x.studentNumId === 23745148)
 
     expect(assessment.reportId).toBe(35677)
@@ -188,7 +191,12 @@ describe('get', () => {
     )
     const course = new Course(27048, 'コミュニケーション技術特論2')
     await courseRepository.saveAsync(course)
-    const report = new Report(course.id, 35677, '個人レポート課題')
+    const report = new Report(
+      course.id,
+      35677,
+      '個人レポート課題',
+      'folderAbsolutePath'
+    )
     await reportRepository.saveAsync(report)
     const student = new Student('a2348mt', 23745148, '田中　真')
     await studentRepository.saveAsync(student)

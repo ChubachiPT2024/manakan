@@ -17,6 +17,7 @@ import { ReportListItemSubmissionData } from './reportListItemSubmissionData'
 import { ReportListItemAssessmentData } from './reportListItemAssessmentData'
 import { ReportListItemStudentData } from './reportListItemStudentData'
 import { ReportListData } from './reportListData'
+import path from 'path'
 
 /**
  * レポートリストアプリケーションサービス
@@ -49,7 +50,9 @@ export class ReportListApplicationService {
     reportListImportCommand: ReportListImportCommand
   ): Promise<number> {
     const workbook = new Excel.Workbook()
-    await workbook.xlsx.readFile(reportListImportCommand.reportListFilePath)
+    await workbook.xlsx.readFile(
+      reportListImportCommand.reportListFileAbsolutePath
+    )
 
     // id によるアクセスは非推奨らしいので、名前でアクセス
     // https://github.com/exceljs/exceljs?tab=readme-ov-file#access-worksheets
@@ -64,8 +67,11 @@ export class ReportListApplicationService {
 
     const reportId = Number(worksheet.getCell('B3').text)
     const reportTitle = worksheet.getCell('C3').text
+    const reportListFolderAbsolutePath = path.dirname(
+      reportListImportCommand.reportListFileAbsolutePath
+    )
     await this.reportRepository.saveAsync(
-      new Report(courseId, reportId, reportTitle)
+      new Report(courseId, reportId, reportTitle, reportListFolderAbsolutePath)
     )
 
     for (let i = 8; ; i++) {
@@ -114,7 +120,7 @@ export class ReportListApplicationService {
     const submissionMap = new Map(submissions.map((x) => [x.studentNumId, x]))
 
     // 対象のレポートについて、学籍番号を Key, 個別評価を Value とする Map を作成
-    const assessments = await this.assessmentRepository.findAsync(
+    const assessments = await this.assessmentRepository.findByReportIdAsync(
       command.reportId
     )
     const assessmentMap = new Map(assessments.map((x) => [x.studentNumId, x]))

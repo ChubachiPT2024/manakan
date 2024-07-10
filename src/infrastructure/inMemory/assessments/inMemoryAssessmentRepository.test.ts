@@ -8,7 +8,7 @@ describe('save', () => {
     const expected = new Assessment(1, 2)
     await repository.saveAsync(expected)
 
-    const actual = await repository.findAsync(expected.reportId)
+    const actual = await repository.findByReportIdAsync(expected.reportId)
 
     expect(actual.length).toBe(1)
     expect(actual[0].reportId).toBe(expected.reportId)
@@ -18,5 +18,39 @@ describe('save', () => {
     expect(actual[0].grade).toBe(expected.grade)
     expect(actual[0].rank).toBe(expected.rank)
     expect(actual[0].score).toBe(expected.score)
+  })
+})
+
+describe('find', () => {
+  test('The saved assessment is found.', async () => {
+    // Arrange
+    const repository = new InMemoryAssessmentRepository()
+    const expected = new Assessment(1, 2)
+    await repository.saveAsync(expected)
+
+    // Act
+    const actual = await repository.findAsync(
+      expected.reportId,
+      expected.studentNumId
+    )
+
+    // Assert
+    expect(actual.reportId).toBe(expected.reportId)
+    expect(actual.studentNumId).toBe(expected.studentNumId)
+    expect(actual.feedback).toBe(expected.feedback)
+    expect(actual.memo).toBe(expected.memo)
+    expect(actual.grade).toBe(expected.grade)
+    expect(actual.rank).toBe(expected.rank)
+    expect(actual.score).toBe(expected.score)
+  })
+
+  test('The unsaved assessment is not found.', async () => {
+    // Arrange
+    const repository = new InMemoryAssessmentRepository()
+    const expected = new Assessment(1, 2)
+    await repository.saveAsync(expected)
+
+    // Act, Assert
+    expect(() => repository.findAsync(3, 4)).rejects.toThrowError()
   })
 })
