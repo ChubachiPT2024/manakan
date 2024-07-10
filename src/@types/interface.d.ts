@@ -6,6 +6,8 @@ import { CourseGetCommand } from 'src/application/courses/courseGetCommand'
 import { ReportListGetResult } from 'src/application/reportLists/reportListGetResult'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
 import { ReportGetResult } from 'src/application/reports/reportGetResult'
+import { SubmissionSummariesGetCommand } from 'src/application/submissionSummaries/submissionSummariesGetCommand'
+import { SubmissionSummariesGetResult } from 'src/application/submissionSummaries/submissionSummariesGetResult'
 
 // 型付きで API を公開するための定義
 // https://www.electronjs.org/docs/latest/tutorial/context-isolation#usage-with-typescript
@@ -41,6 +43,10 @@ export interface IElectronAPI {
   updateAssessmentScoreAsync: (
     command: AssessmentScoreUpdateCommand
   ) => Promise<void>
+
+  getSubmissionSummariesAsync: (
+    command: SubmissionSummariesGetCommand
+  ) => Promise<SubmissionSummariesGetResult>
 }
 
 declare global {
