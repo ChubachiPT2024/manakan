@@ -160,7 +160,18 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex h-screen">
-          <SideMenu submissions={notHasGradeSubmissions} />
+          <SideMenu submissions={notHasGradeSubmissions}>
+            {submissions.map((submission) => {
+              return (
+                <SubmissionCard
+                  key={submission.id}
+                  id={submission.id}
+                  submission={submission}
+                  onChange={(e) => handleCheckboxChange(e, submission.id)}
+                />
+              )
+            })}
+          </SideMenu>
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
               <div className="pb-7 flex justify-between">

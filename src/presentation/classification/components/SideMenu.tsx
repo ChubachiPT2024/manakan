@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { SubmissionCard } from './SubmissionCard'
 import { useDroppable } from '@dnd-kit/core'
 
 interface SideMenuProps {
+  children: ReactNode
   submissions: Submission[]
 }
 
-export function SideMenu({ submissions }: SideMenuProps) {
+export function SideMenu({ children, submissions }: SideMenuProps) {
   const [isDisabled, setIsDisabled] = useState<boolean>(
     submissions.length === 0
   )
@@ -28,16 +29,7 @@ export function SideMenu({ submissions }: SideMenuProps) {
         ref={setNodeRef}
       >
         <h2 className="text-xl mb-4">未分類</h2>
-        {submissions.map((submission) => {
-          return (
-            <SubmissionCard
-              key={submission.id}
-              id={submission.id}
-              submission={submission}
-              onChange={() => {}}
-            />
-          )
-        })}
+        {children}
       </div>
       <div className="p-3">
         <button
