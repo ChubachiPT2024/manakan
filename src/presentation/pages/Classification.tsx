@@ -13,10 +13,30 @@ import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
+import { useParams } from 'react-router-dom'
+import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
+import { Report } from '../types/report'
+import { AssessmentRank } from '../types/submission'
 
 const Classification = () => {
+  const { id } = useParams()
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [isDisabled, setIsDisabled] = useState<boolean>(true)
+  const [report, setReport] = useState<Report | undefined>(undefined)
+  const [assessmentGrades, setAssessmentGrades] = useState<
+    {
+      id: number
+      submissionNum: number
+    }[]
+  >([
+    { id: 1, submissionNum: 0 },
+    { id: 2, submissionNum: 0 },
+    { id: 3, submissionNum: 0 },
+    { id: 4, submissionNum: 0 },
+    { id: 5, submissionNum: 0 },
+  ])
+
+  const assessmentRanks = ['++', '+', '+-', '-', '--']
 
   const handleDragStart = (event: DragStartEvent) => {
     setDraggingSubmissionId(event.active.id)
@@ -25,104 +45,102 @@ const Classification = () => {
   const handleDragEnd = (event: DragEndEvent) => {
     setDraggingSubmissionId(null)
     const { active, over } = event
-    let columnId: number | null
-    let rowId: number | null
+
+    let grade: number | null = null
+    let rank: AssessmentRank | null = null
 
     if (over && active.id !== over?.id) {
-      setSubmissions((prevSubmissions) =>
-        prevSubmissions.map((submission) => {
-          if (submission.id === Number(active.id)) {
-            if (over.id !== 'has-not-grade') {
-              const [overColumnId, overRowId] = (over.id as string).split('-')
-              columnId = Number(overColumnId)
-              rowId = Number(overRowId)
-            }
-
-            return {
-              ...submission,
-              columnId,
-              rowId,
-            }
+      const newItems = report.items.map((item) => {
+        if (item.student.id === active.id) {
+          if (over.id !== 'has-not-grade') {
+            const [newGrade, newRank] = (over.id as string).split(':')
+            grade = Number(newGrade)
+            rank = newRank as AssessmentRank
           }
-          return submission
-        })
-      )
+
+          return {
+            ...item,
+            assessment: {
+              grade: grade,
+              rank: rank,
+            },
+          }
+        }
+
+        return item
+      })
+
+      setReport({
+        ...report,
+        items: newItems,
+      })
     }
   }
 
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    id: number
+    id: string
   ) => {
-    setSubmissions((prevSubmissions) =>
-      prevSubmissions.map((submission) =>
-        submission.id === id
-          ? { ...submission, isChecked: event.target.checked }
-          : submission
-      )
-    )
-  }
+    const newReport = report.items.map((item) => {
+      if (item.student.id === id) {
+        return {
+          ...item,
+          isChecked: event.target.checked,
+        }
+      }
 
-  //TODO:Delete dummy data
-  const course = {
-    name: '情報アーキテクチャ特論7',
+      return item
+    })
+
+    setReport({
+      ...report,
+      items: newReport,
+    })
   }
-  const [gradeColumns, setGradeColumns] = useState<GradeColumn[]>([
-    { id: 5, title: '5', submissionNum: 0 },
-    { id: 4, title: '4', submissionNum: 0 },
-    { id: 3, title: '3', submissionNum: 0 },
-    { id: 2, title: '2', submissionNum: 0 },
-    { id: 1, title: '1', submissionNum: 0 },
-    { id: 0, title: '0', submissionNum: 0 },
-  ])
-  const rankRows = [
-    { id: 5, title: '++' },
-    { id: 4, title: '+' },
-    { id: 3, title: '+-' },
-    { id: 2, title: '-' },
-    { id: 1, title: '--' },
-  ]
-  const [submissions, setSubmissions] = useState<Submission[]>([
-    {
-      id: 1,
-      studentName: 'ハリー',
-      isChecked: false,
-      rowId: 1,
-      columnId: 2,
-    },
-    {
-      id: 2,
-      studentName: 'ロン',
-      isChecked: false,
-      rowId: null,
-      columnId: null,
-    },
-    {
-      id: 3,
-      studentName: 'ハーマイオニー',
-      isChecked: false,
-      rowId: null,
-      columnId: null,
-    },
-  ])
 
   useEffect(() => {
-    setGradeColumns(
-      gradeColumns.map((column) => ({
-        ...column,
-        submissionNum: submissions.filter(
-          (submission) => submission.columnId === column.id
+    window.electronAPI
+      .getReportListAsync(new ReportListGetCommand(Number(id)))
+      .then((res) => {
+        const newItems = res.reportListData.items.map((item) => {
+          return {
+            student: {
+              id: item.student.userId,
+              name: item.student.name,
+            },
+            assessment: {
+              grade: item.assessment.grade,
+              rank: item.assessment.rank,
+            },
+            isChecked: false,
+          }
+        })
+        setReport({
+          id: res.reportListData.courseId,
+          title: res.reportListData.courseName,
+          items: newItems,
+        })
+      })
+  }, [id])
+
+  useEffect(() => {
+    if (!report) return
+    setAssessmentGrades(
+      assessmentGrades.map((grade) => ({
+        ...grade,
+        submissionNum: report.items.filter(
+          (item) => item.assessment.grade === grade.id
         ).length,
       }))
     )
-  }, [submissions])
+  }, [report])
 
   useEffect(() => {
-    const isCheckedInSubmissions = submissions.some(
-      (submission) => submission.isChecked
-    )
-    setIsDisabled(!isCheckedInSubmissions)
-  }, [submissions.map((s) => s.isChecked).join(',')])
+    if (report) {
+      const isCheckedInSubmissions = report.items.some((item) => item.isChecked)
+      setIsDisabled(!isCheckedInSubmissions)
+    }
+  }, [report])
 
   // BUG:https://github.com/clauderic/dnd-kit/issues/591
   const sensors = useSensors(
@@ -132,16 +150,21 @@ const Classification = () => {
       },
     })
   )
+  if (!report) {
+    return <div>loading</div>
+  }
 
-  const draggingSubmission = submissions.find(
-    (submission) => submission.id === Number(draggingSubmissionId)
+  const draggingItem = report.items.find(
+    (item) => item.student.id === draggingSubmissionId
   )
-  const notHasGradeSubmissions = submissions
-    .filter((submission) => submission.id !== draggingSubmissionId)
-    .filter((submission) => submission.columnId == null)
-  const hasGradeSubmissions = submissions
-    .filter((submission) => submission.id !== draggingSubmissionId)
-    .filter((submission) => submission.columnId != null)
+  const notHasGradeItem = report.items
+    .filter((item) => item.student.id !== draggingSubmissionId)
+    .filter((item) => item.assessment.grade == null)
+  const hasGradeItem = report.items
+    .filter((item) => item.student.id !== draggingSubmissionId)
+    .filter(
+      (item) => item.assessment.grade != null && item.assessment.rank != null
+    )
 
   return (
     <>
@@ -155,20 +178,20 @@ const Classification = () => {
             <SubmissionCard
               key={draggingSubmissionId}
               id={draggingSubmissionId}
-              submission={draggingSubmission}
+              item={draggingItem}
               onChange={() => {}}
             />
           </DragOverlay>
         )}
         <div className="flex h-screen">
-          <SideMenu isDisabled={notHasGradeSubmissions.length == 0}>
-            {notHasGradeSubmissions.map((submission) => {
+          <SideMenu isDisabled={notHasGradeItem.length == 0}>
+            {notHasGradeItem.map((item, idx) => {
               return (
                 <SubmissionCard
-                  key={submission.id}
-                  id={submission.id}
-                  submission={submission}
-                  onChange={(e) => handleCheckboxChange(e, submission.id)}
+                  key={idx}
+                  id={item.student.id}
+                  item={item}
+                  onChange={(e) => handleCheckboxChange(e, item.student.id)}
                 />
               )
             })}
@@ -176,7 +199,7 @@ const Classification = () => {
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
               <div className="pb-7 flex justify-between">
-                <h1 className="text-2xl">{course.name}</h1>
+                <h1 className="text-2xl">{report.title}</h1>
                 <div>
                   <SelectedButton
                     styles="bg-sky-400"
@@ -194,31 +217,31 @@ const Classification = () => {
               </div>
               <div className="flex-1 overflow-x-auto">
                 <div className="flex h-full">
-                  {gradeColumns.map((column) => (
+                  {assessmentGrades.map((grade) => (
                     <GradeColumn
-                      key={column.id}
-                      title={column.title}
-                      submissionNum={column.submissionNum}
+                      key={grade.id}
+                      title={grade.id.toString()}
+                      submissionNum={grade.submissionNum}
                     >
-                      {rankRows.map((row) => (
+                      {assessmentRanks.map((rank, index) => (
                         <RankRow
-                          key={`${row.id}`}
-                          id={`${column.id}-${row.id}`}
-                          title={row.title}
+                          key={index}
+                          id={`${grade.id}:${rank}`}
+                          title={rank}
                         >
-                          {hasGradeSubmissions
+                          {hasGradeItem
                             .filter(
-                              (submission) =>
-                                `${submission.columnId}-${submission.rowId}` ===
-                                `${column.id}-${row.id}`
+                              (item) =>
+                                `${item.assessment.grade}:${item.assessment.rank}` ===
+                                `${grade.id}:${rank}`
                             )
-                            .map((submission) => (
+                            .map((item, index) => (
                               <SubmissionCard
-                                key={submission.id}
-                                id={submission.id}
-                                submission={submission}
+                                key={index}
+                                id={item.student.id}
+                                item={item}
                                 onChange={(e) =>
-                                  handleCheckboxChange(e, submission.id)
+                                  handleCheckboxChange(e, item.student.id)
                                 }
                               />
                             ))}

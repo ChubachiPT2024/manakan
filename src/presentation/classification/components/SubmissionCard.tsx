@@ -1,17 +1,14 @@
 import { useDraggable } from '@dnd-kit/core'
 import { FaRegFolder } from 'react-icons/fa'
+import { Item } from 'src/presentation/types/report'
 
 interface SubmissionCardProps {
-  id: number
-  submission: Submission
+  id: string
+  item: Item
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
 }
 
-export function SubmissionCard({
-  id,
-  submission,
-  onChange,
-}: SubmissionCardProps) {
+export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id,
   })
@@ -31,15 +28,11 @@ export function SubmissionCard({
       {...listeners}
     >
       <div className="flex mt-3 pl-2 pt-2">
-        <input
-          type="checkbox"
-          onChange={onChange}
-          checked={submission.isChecked}
-        />
+        <input type="checkbox" onChange={onChange} checked={item.isChecked} />
         <FaRegFolder className="ml-3 mt-1 w-6 h-6" />
         <div className="ml-2 pl-2">
-          <p className="text-xs">学修番号：{submission.id}</p>
-          <p className="text-xs">{submission.studentName}</p>
+          <p className="text-xs">学修番号：{item.student.id}</p>
+          <p className="text-xs">{item.student.name}</p>
         </div>
       </div>
     </div>
