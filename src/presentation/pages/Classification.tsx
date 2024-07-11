@@ -13,16 +13,20 @@ import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
 
 const Classification = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
+  const [process, setProcess] = useState<'loading' | 'success' | 'error'>(
+    'loading'
+  )
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
-  const [isDisabled, setIsDisabled] = useState<boolean>(true)
-  const [report, setReport] = useState<Report | undefined>(undefined)
+  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([])
+  const [report, setReport] = useState<Report | null>(null)
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
       id: number
@@ -98,6 +102,20 @@ const Classification = () => {
     })
   }
 
+  const handleCheckboxClear = () => {
+    const newReport = report.items.map((item) => {
+      return {
+        ...item,
+        isChecked: false,
+      }
+    })
+
+    setReport({
+      ...report,
+      items: newReport,
+    })
+  }
+
   useEffect(() => {
     window.electronAPI
       .getReportListAsync(new ReportListGetCommand(Number(id)))
@@ -120,6 +138,13 @@ const Classification = () => {
           title: res.reportListData.courseName,
           items: newItems,
         })
+        setProcess('success')
+      })
+      .catch((err) => {
+        setProcess('error')
+      })
+      .finally(() => {
+        setProcess('success')
       })
   }, [id])
 
@@ -137,8 +162,10 @@ const Classification = () => {
 
   useEffect(() => {
     if (report) {
-      const isCheckedInSubmissions = report.items.some((item) => item.isChecked)
-      setIsDisabled(!isCheckedInSubmissions)
+      const checkedReportIds = report.items
+        .filter((item) => item.isChecked)
+        .map((item) => item.student.id)
+      setSelectedStudentIds(checkedReportIds)
     }
   }, [report])
 
@@ -150,8 +177,39 @@ const Classification = () => {
       },
     })
   )
-  if (!report) {
-    return <div>loading</div>
+
+  if (process === 'loading') {
+    return (
+      <>
+        <div
+          className="flex justify-center items-center h-screen"
+          aria-label="読み込み中"
+        >
+          <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+        </div>
+      </>
+    )
+  }
+
+  if (process === 'error') {
+    return (
+      <>
+        <div
+          className="flex justify-center items-center h-screen"
+          aria-label="読み込み中"
+        >
+          <div className="text-center">
+            <h1 className="text-2xl mb-5">エラーが発生しました</h1>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => navigate('/')}
+            >
+              ホームへ戻る
+            </button>
+          </div>
+        </div>
+      </>
+    )
   }
 
   const draggingItem = report.items.find(
@@ -179,7 +237,7 @@ const Classification = () => {
               key={draggingSubmissionId}
               id={draggingSubmissionId}
               item={draggingItem}
-              onChange={() => {}}
+              onChange={(e) => handleCheckboxChange(e, draggingSubmissionId)}
             />
           </DragOverlay>
         )}
@@ -204,14 +262,16 @@ const Classification = () => {
                   <SelectedButton
                     styles="bg-sky-400"
                     title="複数開く"
-                    isDisabled={isDisabled}
-                    onClick={() => {}}
+                    isDisabled={selectedStudentIds.length === 0}
+                    onClick={() => {
+                      //TODO: navigate('/review')
+                    }}
                   />
                   <SelectedButton
                     styles="bg-red-400"
                     title="選択解除"
-                    isDisabled={isDisabled}
-                    onClick={() => {}}
+                    isDisabled={selectedStudentIds.length === 0}
+                    onClick={handleCheckboxClear}
                   />
                 </div>
               </div>
