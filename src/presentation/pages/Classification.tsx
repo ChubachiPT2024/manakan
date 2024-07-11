@@ -153,6 +153,7 @@ const Classification = () => {
         {draggingSubmissionId && (
           <DragOverlay>
             <SubmissionCard
+              key={draggingSubmissionId}
               id={draggingSubmissionId}
               submission={draggingSubmission}
               onChange={() => {}}
@@ -160,8 +161,8 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex h-screen">
-          <SideMenu submissions={notHasGradeSubmissions}>
-            {submissions.map((submission) => {
+          <SideMenu isDisabled={notHasGradeSubmissions.length == 0}>
+            {notHasGradeSubmissions.map((submission) => {
               return (
                 <SubmissionCard
                   key={submission.id}

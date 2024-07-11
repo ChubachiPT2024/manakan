@@ -4,18 +4,11 @@ import { useDroppable } from '@dnd-kit/core'
 
 interface SideMenuProps {
   children: ReactNode
-  submissions: Submission[]
+  isDisabled: boolean
 }
 
-export function SideMenu({ children, submissions }: SideMenuProps) {
-  const [isDisabled, setIsDisabled] = useState<boolean>(
-    submissions.length === 0
-  )
+export function SideMenu({ children, isDisabled }: SideMenuProps) {
   const { setNodeRef } = useDroppable({ id: 'has-not-grade' })
-
-  useEffect(() => {
-    setIsDisabled(submissions.length === 0)
-  }, [submissions])
 
   return (
     <div className="bg-white h-screen w-56 flex flex-col shadow-md">
