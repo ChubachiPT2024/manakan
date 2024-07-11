@@ -3,7 +3,7 @@ import { InMemoryAssessmentRepository } from 'src/infrastructure/inMemory/assess
 import { describe, expect, test } from 'vitest'
 import { AssessmentApplicationService } from './assessmentApplicationService'
 import { AssessmentClassifyCommand } from './assessmentClassifyCommand'
-import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand.'
+import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand'
 import { AssessmentMemoUpdateCommand } from './assessmentMemoUpdateCommand'
 import { AssessmentScoreUpdateCommand } from './assessmentScoreUpdateCommand'
 

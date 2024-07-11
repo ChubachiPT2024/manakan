@@ -1,6 +1,6 @@
 import { AssessmentRepository } from 'src/domain/models/assessments/assessmentRepository'
 import { AssessmentClassifyCommand } from './assessmentClassifyCommand'
-import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand.'
+import { AssessmentFeedbackUpdateCommand } from './assessmentFeedbackUpdateCommand'
 import { AssessmentMemoUpdateCommand } from './assessmentMemoUpdateCommand'
 import { AssessmentScoreUpdateCommand } from './assessmentScoreUpdateCommand'
 

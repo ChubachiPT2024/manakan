@@ -15,7 +15,7 @@ import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessme
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
-import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand.'
+import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand'
 import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
 import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 import { SubmissionSummaryApplicationService } from './application/submissionSummaries/submissionSummaryApplicationService'
