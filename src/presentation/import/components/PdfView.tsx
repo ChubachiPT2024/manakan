@@ -20,6 +20,7 @@ const PdfView: React.FC<PdfViewProps> = ({
 }) => {
   const [pdfDatas, setPdfDatas] = useState<Uint8Array[]>([])
 
+  // ここは API におきかえる
   useEffect(() => {
     const fetchPdfFiles = async () => {
       const pdfDataPromises = pdfPaths.map(async (path) => {
