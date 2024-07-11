@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+=======
+// ReviewPage.tsx
+>>>>>>> 8aa702e (multi PDFs/user enabled, but need to fix width.)
 
+import React, { useState } from 'react'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -8,10 +15,8 @@ import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
-
 import { MdKeyboardDoubleArrowLeft } from 'react-icons/md'
 import PdfView from '../import/components/PdfView'
-// import PdfView from './presentation/import/components/PdfView'
 
 const Review = () => {
   const navigate = useNavigate()
@@ -30,8 +35,30 @@ const Review = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setGrade(Number(event.target.value))
   }
-  // PDF ファイル取得用のテンポラリコード。API取得に変更した後は削除予定
-  const pdfFiles1 = ['./sample1.pdf', './sample2.pdf', './sample3.pdf']
+
+  // 学生名と対応するPDFファイルのパスを含むオブジェクトの配列
+  const students = [
+    {
+      name: '学生1',
+      pdfPaths: ['./sample1.pdf', './sample2.pdf', './sample3.pdf'],
+    },
+    {
+      name: '学生2',
+      pdfPaths: ['./sample2.pdf', './sample3.pdf', './sample4.pdf'],
+    },
+    {
+      name: '学生3',
+      pdfPaths: ['./sample3.pdf', './sample4.pdf', './sample5.pdf'],
+    },
+    {
+      name: '学生4',
+      pdfPaths: ['./sample4.pdf', './sample5.pdf', './sample1.pdf'],
+    },
+    {
+      name: '学生5',
+      pdfPaths: ['./sample5.pdf', './sample1.pdf', './sample2.pdf'],
+    },
+  ]
 
   return (
     <>
@@ -50,189 +77,16 @@ const Review = () => {
         <div className="flex mt-14" style={{ height: 'calc(100vh - 4rem)' }}>
           {/* PDF表示 */}
           <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
-            <PdfView
-              studentName="学生1"
-              pdfPaths={pdfFiles1}
-              height="calc(100vh - 4rem)"
-              width={900}
-              pageHeight={1000}
-            />
-            {/*             
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">学生1</h2>
-              <div
-                className="inline-block overflow-y-auto m-2"
-                style={{ height: 'calc(100vh - 4rem)' }}
-              >
-                <div
-                  className="mb-5 bg-red-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 1-1
-                </div>
-                <div
-                  className="mb-5 bg-red-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 1-2
-                </div>
-                <div
-                  className="bg-red-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 1-3
-                </div>
-              </div> 
-            </div>*/}
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">学生2</h2>
-              <div
-                className="inline-block overflow-y-auto m-2"
-                style={{ height: 'calc(100vh - 3.5rem)' }}
-              >
-                <div
-                  className="mb-5 bg-blue-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 2-1
-                </div>
-                <div
-                  className="mb-5 bg-blue-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 2-2
-                </div>
-                <div
-                  className="bg-blue-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 2-3
-                </div>
-              </div>
-            </div>
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">学生3</h2>
-              <div
-                className="inline-block overflow-y-auto m-2"
-                style={{ height: 'calc(100vh - 3.5rem)' }}
-              >
-                <div
-                  className="mb-5 bg-green-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 3-1
-                </div>
-                <div
-                  className="mb-5 bg-green-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 3-2
-                </div>
-                <div
-                  className="bg-green-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 3-3
-                </div>
-              </div>
-            </div>
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">学生4</h2>
-              <div
-                className="inline-block overflow-y-auto m-2"
-                style={{ height: 'calc(100vh - 3.5rem)' }}
-              >
-                <div
-                  className="mb-5 bg-pink-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 4-1
-                </div>
-                <div
-                  className="mb-5 bg-pink-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 4-2
-                </div>
-                <div
-                  className="bg-pink-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 4-3
-                </div>
-              </div>
-            </div>
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">学生5</h2>
-              <div
-                className="inline-block overflow-y-auto m-2"
-                style={{ height: 'calc(100vh - 3.5rem)' }}
-              >
-                <div
-                  className="mb-5 bg-purple-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 5-1
-                </div>
-                <div
-                  className="mb-5 bg-purple-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 5-2
-                </div>
-                <div
-                  className="bg-purple-500"
-                  style={{
-                    width: 900,
-                    height: 1000,
-                  }}
-                >
-                  PDF 5-3
-                </div>
-              </div>
-            </div>
+            {students.map((student, index) => (
+              <PdfView
+                key={index}
+                studentName={student.name}
+                pdfPaths={student.pdfPaths}
+                height="calc(100vh - 4rem)"
+                width={900}
+                pageHeight={1000}
+              />
+            ))}
           </div>
 
           {/* sidebar */}
@@ -246,36 +100,15 @@ const Review = () => {
                   defaultValue="学生1"
                   name="radio-buttons-group"
                 >
-                  <FormControlLabel
-                    value="学生1"
-                    control={<Radio />}
-                    label="学生1"
-                    sx={{ m: '0' }}
-                  />
-                  <FormControlLabel
-                    value="学生2"
-                    control={<Radio />}
-                    label="学生2"
-                    sx={{ m: '0' }}
-                  />
-                  <FormControlLabel
-                    value="学生3"
-                    control={<Radio />}
-                    label="学生3"
-                    sx={{ m: '0' }}
-                  />
-                  <FormControlLabel
-                    value="学生4"
-                    control={<Radio />}
-                    label="学生4"
-                    sx={{ m: '0' }}
-                  />
-                  <FormControlLabel
-                    value="学生5"
-                    control={<Radio />}
-                    label="学生5"
-                    sx={{ m: '0' }}
-                  />
+                  {students.map((student, index) => (
+                    <FormControlLabel
+                      key={index}
+                      value={student.name}
+                      control={<Radio />}
+                      label={student.name}
+                      sx={{ m: '0' }}
+                    />
+                  ))}
                 </RadioGroup>
               </FormControl>
             </div>
@@ -335,7 +168,6 @@ const Review = () => {
             <div className="m-1">
               <h2 className="text-xl font-bold mb-2">メモ</h2>
               <div className="pl-3">
-                {/* TODO: placeholderを相談 */}
                 <TextField
                   id="memo"
                   multiline
@@ -351,7 +183,6 @@ const Review = () => {
             <div className="m-1">
               <h2 className="text-xl font-bold mb-2">フィードバック</h2>
               <div className="pl-3">
-                {/* TODO: placeholderを相談 */}
                 <TextField
                   id="feedback"
                   multiline

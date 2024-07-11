@@ -1,7 +1,10 @@
-// presentation/import/components/PdfView.tsx
+import React, { useEffect, useState, useMemo } from 'react'
+import { Document, Page, pdfjs } from 'react-pdf'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
 
-import React, { useEffect, useState } from 'react'
-import { Document, Page } from 'react-pdf'
+// pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`
 
 interface PdfViewProps {
   studentName: string
@@ -19,8 +22,8 @@ const PdfView: React.FC<PdfViewProps> = ({
   pageHeight,
 }) => {
   const [pdfDatas, setPdfDatas] = useState<Uint8Array[]>([])
+  const [numPages, setNumPages] = useState<number[]>([])
 
-  // ここは API におきかえる
   useEffect(() => {
     const fetchPdfFiles = async () => {
       const pdfDataPromises = pdfPaths.map(async (path) => {
@@ -36,21 +39,35 @@ const PdfView: React.FC<PdfViewProps> = ({
     fetchPdfFiles()
   }, [pdfPaths])
 
+  const onDocumentLoadSuccess = (index: number) => (pdf: any) => {
+    setNumPages((prevNumPages) => {
+      const newNumPages = [...prevNumPages]
+      newNumPages[index] = pdf.numPages
+      return newNumPages
+    })
+  }
+
+  const memoizedFiles = useMemo(() => {
+    return pdfDatas.map((data) => ({ data }))
+  }, [pdfDatas])
+
   return (
-    <div className="text-center">
+    <div className="text-center" style={{ height, overflowY: 'auto' }}>
       <h2 className="text-2xl font-bold">{studentName}</h2>
-      <div className="inline-block overflow-y-auto m-2" style={{ height }}>
-        {pdfDatas.map((data, index) => (
+      <div>
+        {memoizedFiles.map((file, index) => (
           <div
             key={index}
-            className="mb-5 bg-red-500"
-            style={{ width, height: pageHeight }}
+            className="mb-5 overflow-y-auto"
+            style={{ width: `${width}px`, height }}
           >
-            <Document file={{ data }}>
-              {Array.from(new Array(1), (_, pageIndex) => (
+            <Document file={file} onLoadSuccess={onDocumentLoadSuccess(index)}>
+              {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
-                  key={`${studentName}-page-${pageIndex + 1}`}
+                  key={`${studentName}-page-${index}-${pageIndex + 1}`}
                   pageNumber={pageIndex + 1}
+                  width={width}
+                  height={pageHeight}
                 />
               ))}
             </Document>
