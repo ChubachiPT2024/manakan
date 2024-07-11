@@ -13,8 +13,10 @@ import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
+import { useNavigate } from 'react-router-dom'
 
 const Classification = () => {
+  const navigate = useNavigate()
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [isDisabled, setIsDisabled] = useState<boolean>(true)
 
@@ -143,6 +145,10 @@ const Classification = () => {
     .filter((submission) => submission.id !== draggingSubmissionId)
     .filter((submission) => submission.columnId != null)
 
+  const handleOpenSelected = () => {
+    navigate('/review')
+  }
+
   return (
     <>
       <DndContext
@@ -181,7 +187,7 @@ const Classification = () => {
                     styles="bg-sky-400"
                     title="複数開く"
                     isDisabled={isDisabled}
-                    onClick={() => {}}
+                    onClick={handleOpenSelected}
                   />
                   <SelectedButton
                     styles="bg-red-400"
