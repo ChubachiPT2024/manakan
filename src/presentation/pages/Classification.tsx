@@ -157,10 +157,10 @@ const Classification = () => {
   const draggingItem = report.items.find(
     (item) => item.student.id === draggingSubmissionId
   )
-  const notHasGradeItem = report.items
+  const notHasAssessmentItem = report.items
     .filter((item) => item.student.id !== draggingSubmissionId)
     .filter((item) => item.assessment.grade == null)
-  const hasGradeItem = report.items
+  const hasAssessmentItem = report.items
     .filter((item) => item.student.id !== draggingSubmissionId)
     .filter(
       (item) => item.assessment.grade != null && item.assessment.rank != null
@@ -184,8 +184,8 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex h-screen">
-          <SideMenu isDisabled={notHasGradeItem.length == 0}>
-            {notHasGradeItem.map((item, idx) => {
+          <SideMenu isDisabled={notHasAssessmentItem.length == 0}>
+            {notHasAssessmentItem.map((item, idx) => {
               return (
                 <SubmissionCard
                   key={idx}
@@ -229,7 +229,7 @@ const Classification = () => {
                           id={`${grade.id}:${rank}`}
                           title={rank}
                         >
-                          {hasGradeItem
+                          {hasAssessmentItem
                             .filter(
                               (item) =>
                                 `${item.assessment.grade}:${item.assessment.rank}` ===
