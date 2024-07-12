@@ -39,26 +39,23 @@ const PdfView: React.FC<PdfViewProps> = ({
     fetchPdfFiles()
   }, [pdfPaths])
 
-  const onDocumentLoadSuccess = useCallback(
-    (index: number, numPages: number) => {
-      setNumPages((prevNumPages) => {
-        const newNumPages = [...prevNumPages]
-        newNumPages[index] = numPages
-        return newNumPages
-      })
-    },
-    []
-  )
+  const onDocumentLoadSuccess = useCallback((index: number, pdf: any) => {
+    setNumPages((prevNumPages) => {
+      const newNumPages = [...prevNumPages]
+      newNumPages[index] = pdf.numPages
+      return newNumPages
+    })
+  }, [])
 
   const memoizedFiles = useMemo(() => {
-    return pdfDatas.map((data) => ({ data }))
+    return pdfDatas.map((data, index) => ({ file: { data }, index }))
   }, [pdfDatas])
 
   return (
     <div className="text-center" style={{ height, width }}>
       <h2 className="text-2xl font-bold">{studentName}</h2>
       <div className="overflow-y-auto" style={{ height }}>
-        {memoizedFiles.map((file, index) => (
+        {memoizedFiles.map(({ file, index }) => (
           <div
             key={index}
             className="mb-5 overflow-y-auto"
@@ -66,9 +63,7 @@ const PdfView: React.FC<PdfViewProps> = ({
           >
             <Document
               file={file}
-              onLoadSuccess={(pdf) =>
-                onDocumentLoadSuccess(index, pdf.numPages)
-              }
+              onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
             >
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
