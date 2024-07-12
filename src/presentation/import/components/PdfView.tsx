@@ -52,14 +52,14 @@ const PdfView: React.FC<PdfViewProps> = ({
   }, [pdfDatas])
 
   return (
-    <div className="text-center" style={{ height, overflowY: 'auto' }}>
+    <div className="text-center" style={{ height, width }}>
       <h2 className="text-2xl font-bold">{studentName}</h2>
-      <div>
+      <div className="overflow-y-auto" style={{ height }}>
         {memoizedFiles.map((file, index) => (
           <div
             key={index}
             className="mb-5 overflow-y-auto"
-            style={{ width: `${width}px`, height }}
+            style={{ width, height: pageHeight }}
           >
             <Document file={file} onLoadSuccess={onDocumentLoadSuccess(index)}>
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (

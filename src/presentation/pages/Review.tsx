@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-=======
 // ReviewPage.tsx
->>>>>>> 8aa702e (multi PDFs/user enabled, but need to fix width.)
 
 import React, { useState } from 'react'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
