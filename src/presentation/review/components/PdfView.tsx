@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
@@ -39,13 +39,16 @@ const PdfView: React.FC<PdfViewProps> = ({
     fetchPdfFiles()
   }, [pdfPaths])
 
-  const onDocumentLoadSuccess = (index: number) => (pdf: any) => {
-    setNumPages((prevNumPages) => {
-      const newNumPages = [...prevNumPages]
-      newNumPages[index] = pdf.numPages
-      return newNumPages
-    })
-  }
+  const onDocumentLoadSuccess = useCallback(
+    (index: number, numPages: number) => {
+      setNumPages((prevNumPages) => {
+        const newNumPages = [...prevNumPages]
+        newNumPages[index] = numPages
+        return newNumPages
+      })
+    },
+    []
+  )
 
   const memoizedFiles = useMemo(() => {
     return pdfDatas.map((data) => ({ data }))
@@ -61,7 +64,12 @@ const PdfView: React.FC<PdfViewProps> = ({
             className="mb-5 overflow-y-auto"
             style={{ width, height: pageHeight }}
           >
-            <Document file={file} onLoadSuccess={onDocumentLoadSuccess(index)}>
+            <Document
+              file={file}
+              onLoadSuccess={(pdf) =>
+                onDocumentLoadSuccess(index, pdf.numPages)
+              }
+            >
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
                   key={`${studentName}-page-${index}-${pageIndex + 1}`}
