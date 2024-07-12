@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import { MdKeyboardDoubleArrowLeft } from 'react-icons/md'
-import PdfView from '../import/components/PdfView'
+import PdfView from '../review/components/PdfView'
 
 const Review = () => {
   const navigate = useNavigate()
