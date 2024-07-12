@@ -6,8 +6,6 @@ import { InMemoryStudentRepository } from './infrastructure/inMemory/students/in
 import { InMemoryReportRepository } from './infrastructure/inMemory/reports/inMemoryReportRepository'
 import { InMemoryCourseRepository } from './infrastructure/inMemory/courses/inMemoryCourseRepository'
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
-import { ReportGetCommand } from './application/reports/reportGetCommand'
-import { ReportApplicationService } from './application/reports/reportApplicationService'
 import { CourseGetCommand } from './application/courses/courseGetCommand'
 import { CourseApplicationService } from './application/courses/courseApplicationService'
 import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
@@ -65,7 +63,6 @@ const reportListApplicationService = new ReportListApplicationService(
   submissionRepository,
   assessmentRepository
 )
-const reportApplicationService = new ReportApplicationService(reportRepository)
 const courseApplicationService = new CourseApplicationService(courseRepository)
 const assessmentApplicationService = new AssessmentApplicationService(
   assessmentRepository
@@ -96,12 +93,6 @@ app.whenReady().then(() => {
     'getReportListAsync',
     async (_, reportListGetCommand: ReportListGetCommand) =>
       await reportListApplicationService.getAsync(reportListGetCommand)
-  )
-
-  ipcMain.handle(
-    'getReportAsync',
-    async (_, reportGetCommand: ReportGetCommand) =>
-      await reportApplicationService.getAsync(reportGetCommand)
   )
 
   ipcMain.handle(
