@@ -35,7 +35,7 @@ export class SubmissionFileApplicationService {
     )
 
     const reader = new SubmissionFileReader(
-      report.reportListFolderAbsoultePath,
+      report.reportListFolderAbsolutePath,
       submission.folderRelativePath
     )
     const content = await reader.readAsync(command.fileName)
