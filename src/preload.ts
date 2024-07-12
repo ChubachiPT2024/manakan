@@ -4,7 +4,6 @@
 // 'electron/renderer' から import すると Vite がエラーを出す
 import { contextBridge, ipcRenderer } from 'electron'
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
-import { CourseGetCommand } from './application/courses/courseGetCommand'
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand'
@@ -19,9 +18,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getReportListAsync: (reportListGetCommand: ReportListGetCommand) =>
     ipcRenderer.invoke('getReportListAsync', reportListGetCommand),
-
-  getCourseAsync: (courseGetCommand: CourseGetCommand) =>
-    ipcRenderer.invoke('getCourseAsync', courseGetCommand),
 
   classifyAssessmentAsync: (
     assessmentClassifyCommand: AssessmentClassifyCommand
