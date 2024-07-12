@@ -14,3 +14,42 @@ describe('classify', () => {
     expect(classified.rank).toBe(2)
   })
 })
+
+describe('update feedback', () => {
+  test('The feedback is updated.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.updateFeedback('feedback')
+
+    // Assert
+    expect(classified.feedback).toBe('feedback')
+  })
+})
+
+describe('update memo', () => {
+  test('The memo is updated.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.updateFeedback('memo')
+
+    // Assert
+    expect(classified.feedback).toBe('memo')
+  })
+})
+
+describe('update score', () => {
+  test('The score is updated.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.updateScore(0)
+
+    // Assert
+    expect(classified.score).toBe(0)
+  })
+})

@@ -51,4 +51,58 @@ export class Assessment {
       this.score
     )
   }
+
+  /**
+   * フィードバックを更新する
+   *
+   * @param feedback フィードバック
+   * @returns フィードバック更新後の個別評価
+   */
+  public updateFeedback(feedback: string) {
+    return new Assessment(
+      this.reportId,
+      this.studentNumId,
+      feedback,
+      this.memo,
+      this.grade,
+      this.rank,
+      this.score
+    )
+  }
+
+  /**
+   * メモを更新する
+   *
+   * @param memo メモ
+   * @returns メモ更新後の個別評価
+   */
+  public updateMemo(memo: string) {
+    return new Assessment(
+      this.reportId,
+      this.studentNumId,
+      this.feedback,
+      memo,
+      this.grade,
+      this.rank,
+      this.score
+    )
+  }
+
+  /**
+   * 点数を更新する
+   *
+   * @param score 点数
+   * @returns 点数更新後の個別評価
+   */
+  public updateScore(score: number) {
+    return new Assessment(
+      this.reportId,
+      this.studentNumId,
+      this.feedback,
+      this.memo,
+      this.grade,
+      this.rank,
+      score
+    )
+  }
 }

@@ -26,13 +26,28 @@ export class InMemorySubmissionRepository implements SubmissionRepository {
   }
 
   /**
-   * 提出物を検索する
+   * 提出物をレポート ID で検索する
    *
    * @param reportId レポート ID
    * @returns 提出物
    */
-  async findAsync(reportId: number): Promise<Submission[]> {
+  async findByReportIdAsync(reportId: number): Promise<Submission[]> {
     const map = this.submissions.get(reportId) ?? new Map<number, Submission>()
     return [...map.values()]
+  }
+
+  /**
+   * 提出物を検索する
+   *
+   * @param reportId レポート ID
+   * @param studentNumId 学籍番号
+   * @returns 提出物
+   */
+  async findAsync(reportId: number, studentNumId: number): Promise<Submission> {
+    const submission = this.submissions.get(reportId)?.get(studentNumId)
+    if (!submission) {
+      throw new Error('The submission is not found.')
+    }
+    return submission
   }
 }
