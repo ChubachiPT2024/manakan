@@ -14,6 +14,7 @@ interface PdfViewProps {
   pageHeight: number
 }
 
+// 以下の Props を学籍番号を受けとる様に修正し、useEffect内で API 経由でPDFファイルを取得するように修正予定
 const PdfView: React.FC<PdfViewProps> = ({
   studentName,
   pdfPaths,
