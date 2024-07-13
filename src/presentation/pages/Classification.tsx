@@ -17,6 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
+import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
 
 const Classification = () => {
   const { id } = useParams()
@@ -25,7 +26,7 @@ const Classification = () => {
     'loading'
   )
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
-  const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([])
+  const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([])
   const [report, setReport] = useState<Report | null>(null)
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
@@ -55,7 +56,7 @@ const Classification = () => {
 
     if (over && active.id !== over?.id) {
       const newItems = report.items.map((item) => {
-        if (item.student.id === active.id) {
+        if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
             const [newGrade, newRank] = (over.id as string).split(':')
             grade = Number(newGrade)
@@ -74,6 +75,10 @@ const Classification = () => {
         return item
       })
 
+      const item = report.items.find((item) => item.student.numId === active.id)
+      const studentNumId = Number(item.student.numId)
+      updateAssessment(report.id, studentNumId, grade, rank)
+
       setReport({
         ...report,
         items: newItems,
@@ -81,12 +86,27 @@ const Classification = () => {
     }
   }
 
+  const updateAssessment = async (
+    reportId: number,
+    studentId: number,
+    grade: number,
+    rank: AssessmentRank
+  ) => {
+    await window.electronAPI
+      .classifyAssessmentAsync(
+        new AssessmentClassifyCommand(reportId, studentId, grade, rank)
+      )
+      .catch((e: any) => {
+        console.log(e)
+      })
+  }
+
   const handleCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>,
-    id: string
+    id: number
   ) => {
     const newReport = report.items.map((item) => {
-      if (item.student.id === id) {
+      if (item.student.numId === id) {
         return {
           ...item,
           isChecked: event.target.checked,
@@ -123,7 +143,7 @@ const Classification = () => {
         const newItems = res.reportListData.items.map((item) => {
           return {
             student: {
-              id: item.student.userId,
+              numId: item.student.numId,
               name: item.student.name,
             },
             assessment: {
@@ -134,7 +154,7 @@ const Classification = () => {
           }
         })
         setReport({
-          id: res.reportListData.courseId,
+          id: res.reportListData.reportId,
           title: res.reportListData.courseName,
           items: newItems,
         })
@@ -164,7 +184,7 @@ const Classification = () => {
     if (report) {
       const checkedReportIds = report.items
         .filter((item) => item.isChecked)
-        .map((item) => item.student.id)
+        .map((item) => item.student.numId)
       setSelectedStudentIds(checkedReportIds)
     }
   }, [report])
@@ -213,13 +233,13 @@ const Classification = () => {
   }
 
   const draggingItem = report.items.find(
-    (item) => item.student.id === draggingSubmissionId
+    (item) => item.student.numId === draggingSubmissionId
   )
   const notHasAssessmentItem = report.items
-    .filter((item) => item.student.id !== draggingSubmissionId)
+    .filter((item) => item.student.numId !== draggingSubmissionId)
     .filter((item) => item.assessment.grade == null)
   const hasAssessmentItem = report.items
-    .filter((item) => item.student.id !== draggingSubmissionId)
+    .filter((item) => item.student.numId !== draggingSubmissionId)
     .filter(
       (item) => item.assessment.grade != null && item.assessment.rank != null
     )
@@ -247,9 +267,9 @@ const Classification = () => {
               return (
                 <SubmissionCard
                   key={idx}
-                  id={item.student.id}
+                  id={item.student.numId}
                   item={item}
-                  onChange={(e) => handleCheckboxChange(e, item.student.id)}
+                  onChange={(e) => handleCheckboxChange(e, item.student.numId)}
                 />
               )
             })}
@@ -298,10 +318,10 @@ const Classification = () => {
                             .map((item, index) => (
                               <SubmissionCard
                                 key={index}
-                                id={item.student.id}
+                                id={item.student.numId}
                                 item={item}
                                 onChange={(e) =>
-                                  handleCheckboxChange(e, item.student.id)
+                                  handleCheckboxChange(e, item.student.numId)
                                 }
                               />
                             ))}

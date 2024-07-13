@@ -1,4 +1,4 @@
 interface Student {
-  id: string
+  numId: number
   name: string
 }

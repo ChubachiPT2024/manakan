@@ -3,7 +3,7 @@ import { FaRegFolder } from 'react-icons/fa'
 import { Item } from 'src/presentation/types/report'
 
 interface SubmissionCardProps {
-  id: string
+  id: number
   item: Item
   onChange(e: React.ChangeEvent<HTMLInputElement>): void
 }
@@ -31,7 +31,7 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
         <input type="checkbox" onChange={onChange} checked={item.isChecked} />
         <FaRegFolder className="ml-3 mt-1 w-6 h-6" />
         <div className="ml-2 pl-2">
-          <p className="text-xs">学修番号：{item.student.id}</p>
+          <p className="text-xs">学修番号：{item.student.numId}</p>
           <p className="text-xs">{item.student.name}</p>
         </div>
       </div>
