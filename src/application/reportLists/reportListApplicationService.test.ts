@@ -62,7 +62,7 @@ describe('import', () => {
     expect(report.courseId).toBe(27048)
     expect(report.id).toBe(35677)
     expect(report.title).toBe('個人レポート課題')
-    expect(report.reportListFolderAbsoultePath).toBe(
+    expect(report.reportListFolderAbsolutePath).toBe(
       path.join(__dirname, 'reportListImportTestFiles')
     )
   })

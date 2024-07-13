@@ -44,7 +44,7 @@ export class SubmissionSummaryApplicationService {
         async (studentNumId) =>
           await this.getSubmissionSummaryAsync(
             report.id,
-            report.reportListFolderAbsoultePath,
+            report.reportListFolderAbsolutePath,
             studentNumId
           )
       )
