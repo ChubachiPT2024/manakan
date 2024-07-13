@@ -17,6 +17,6 @@ export class AssessmentClassifyCommand {
     public readonly reportId: number,
     public readonly studentNumId: number,
     public readonly grade: AssessmentGrade,
-    public readonly rank: AssessmentRank
+    public readonly rank?: AssessmentRank
   ) {}
 }
