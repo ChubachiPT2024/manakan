@@ -1,5 +1,5 @@
-import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -8,15 +8,18 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-import { SelectedSubmissionsContext } from '../classification/components/SelectSubmissionsContext';
+
 
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Review = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
+  // console.log(location.state)
 
   const handleBack = () => {
-    navigate('/Classification'); 
+    navigate(`/classification/${location.state.reportId}`); 
   };
 
   // 評点の状態
@@ -28,12 +31,6 @@ const Review = () => {
     setGrade(Number(event.target.value));
   };
 
-  // 選択された提出物の情報を取得
-  const { selectedSubmissions } = useContext(SelectedSubmissionsContext)
-  
-  useEffect(() => {
-    console.log('選択された提出物:', selectedSubmissions)
-  }, [selectedSubmissions])
   
   return (
     <>
@@ -223,16 +220,8 @@ const Review = () => {
             <div className='flex flex-col m-1'>
               <h2 className="text-xl font-bold mb-2">提出者情報</h2>
               <ul className="pl-3">
-              {selectedSubmissions.map((submission) => (
-                <li className='mb-2' key={submission.id}>
-                  学生名： {submission.studentName}
-                </li>
-                ))}
-              {selectedSubmissions.map((submission) => (
-                <li className='mb-2' key={submission.id}>
-                  学籍番号: {submission.id}
-                </li>
-                ))}
+                <li className='mb-2'>学生名：ほげ</li>
+                <li className='mb-2'>学籍番号：0000000000</li>
                 <li className='mb-2'>提出日時：2021/09/01 12:00</li>
               </ul>
             </div>

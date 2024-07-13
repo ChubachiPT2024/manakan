@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DndContext,
   DragEndEvent,
@@ -17,7 +17,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
-import { SelectedSubmissionsContext } from '../classification/components/SelectSubmissionsContext'
 
 const Classification = () => {
   const { id } = useParams()
@@ -225,13 +224,11 @@ const Classification = () => {
       (item) => item.assessment.grade != null && item.assessment.rank != null
     )
 
-  // 選択された提出物情報を取得
-  const { setSelectedSubmissions } = useContext(SelectedSubmissionsContext)
-
   const handleOpenSelected = () => {
     const selectedSubmissions = report.items.filter((item) => item.isChecked)
-    setSelectedSubmissions(selectedSubmissions)
-    navigate('/review')
+    navigate('/review', {
+      state: { reportId: id, studentNumIds: selectedStudentIds },
+    })
   }
 
   return (
