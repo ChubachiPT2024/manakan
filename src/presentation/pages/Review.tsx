@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -7,6 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import { SelectedSubmissionsContext } from '../classification/components/SelectSubmissionsContext';
 
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
@@ -19,6 +20,13 @@ const Review = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setGrade(Number(event.target.value));
   };
+
+  // 選択された提出物の情報を取得
+  const { selectedSubmissions } = useContext(SelectedSubmissionsContext)
+  
+  useEffect(() => {
+    console.log('選択された提出物:', selectedSubmissions)
+  }, [selectedSubmissions])
   
   return (
     <>
@@ -206,8 +214,16 @@ const Review = () => {
             <div className='flex flex-col m-1'>
               <h2 className="text-xl font-bold mb-2">提出者情報</h2>
               <ul className="pl-3">
-                <li className='mb-2'>学生名：学生1</li>
-                <li className='mb-2'>学籍番号：0000000</li>
+              {selectedSubmissions.map((submission) => (
+                <li className='mb-2' key={submission.id}>
+                  学生名： {submission.studentName}
+                </li>
+                ))}
+              {selectedSubmissions.map((submission) => (
+                <li className='mb-2' key={submission.id}>
+                  学籍番号: {submission.id}
+                </li>
+                ))}
                 <li className='mb-2'>提出日時：2021/09/01 12:00</li>
               </ul>
             </div>

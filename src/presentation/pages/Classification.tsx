@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import {
   DndContext,
   DragEndEvent,
@@ -14,6 +14,7 @@ import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
 import { useNavigate } from 'react-router-dom'
+import { SelectedSubmissionsContext } from '../classification/components/SelectSubmissionsContext'
 
 const Classification = () => {
   const navigate = useNavigate()
@@ -145,7 +146,14 @@ const Classification = () => {
     .filter((submission) => submission.id !== draggingSubmissionId)
     .filter((submission) => submission.columnId != null)
 
+  // 選択された提出物情報を取得
+  const { setSelectedSubmissions } = useContext(SelectedSubmissionsContext)
+
   const handleOpenSelected = () => {
+    const selectedSubmissions = submissions.filter(
+      (submission) => submission.isChecked
+    )
+    setSelectedSubmissions(selectedSubmissions)
     navigate('/review')
   }
 
