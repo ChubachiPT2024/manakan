@@ -224,6 +224,13 @@ const Classification = () => {
       (item) => item.assessment.grade != null && item.assessment.rank != null
     )
 
+  const handleOpenSelected = () => {
+    const selectedSubmissions = report.items.filter((item) => item.isChecked)
+    navigate('/review', {
+      state: { reportId: id, studentNumIds: selectedStudentIds },
+    })
+  }
+
   return (
     <>
       <DndContext
@@ -263,9 +270,7 @@ const Classification = () => {
                     styles="bg-sky-400"
                     title="複数開く"
                     isDisabled={selectedStudentIds.length === 0}
-                    onClick={() => {
-                      //TODO: navigate('/review')
-                    }}
+                    onClick={handleOpenSelected}
                   />
                   <SelectedButton
                     styles="bg-red-400"

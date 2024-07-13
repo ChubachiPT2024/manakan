@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -8,9 +9,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 
+
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Review = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
+  // console.log(location.state)
+
+  const handleBack = () => {
+    navigate(`/classification/${location.state.reportId}`); 
+  };
+
   // 評点の状態
   const [grade, setGrade] = useState<number>(0);
 
@@ -19,6 +30,7 @@ const Review = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setGrade(Number(event.target.value));
   };
+
   
   return (
     <>
@@ -26,7 +38,9 @@ const Review = () => {
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
-          <MdKeyboardDoubleArrowLeft className='w-12 h-12' color={"#a9a9a9"} />
+          <MdKeyboardDoubleArrowLeft className='w-12 h-12 cursor-pointer transition duration-200 ease-in-out  hover:scale-110'
+            color={"#a9a9a9"}
+            onClick={handleBack} />
         </div>
 
         {/* メインコンテンツ */}
@@ -206,8 +220,8 @@ const Review = () => {
             <div className='flex flex-col m-1'>
               <h2 className="text-xl font-bold mb-2">提出者情報</h2>
               <ul className="pl-3">
-                <li className='mb-2'>学生名：学生1</li>
-                <li className='mb-2'>学籍番号：0000000</li>
+                <li className='mb-2'>学生名：ほげ</li>
+                <li className='mb-2'>学籍番号：0000000000</li>
                 <li className='mb-2'>提出日時：2021/09/01 12:00</li>
               </ul>
             </div>
