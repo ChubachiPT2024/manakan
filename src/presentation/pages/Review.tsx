@@ -12,12 +12,23 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import { MdKeyboardDoubleArrowLeft } from 'react-icons/md'
 import PdfView from '../review/components/PdfView'
+import { SubmissionSummariesGetCommand } from 'src/application/submissionSummaries/submissionSummariesGetCommand'
 
 const Review = () => {
   const navigate = useNavigate()
   const location = useLocation()
   // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
-  console.log(location.state)
+  // console.log(location.state)
+  const { reportId, studentNumIds } = location.state
+  console.log('reportId: ', reportId)
+  console.log('studentNumIds: ', studentNumIds)
+  window.electronAPI
+    .getSubmissionSummariesAsync(
+      new SubmissionSummariesGetCommand(reportId, studentNumIds)
+    )
+    .then((res) => {
+      console.log(res)
+    })
 
   const handleBack = () => {
     navigate(`/classification/${location.state.reportId}`)
