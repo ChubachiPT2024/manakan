@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -12,6 +13,12 @@ import { SelectedSubmissionsContext } from '../classification/components/SelectS
 import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 const Review = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/Classification'); 
+  };
+
   // 評点の状態
   const [grade, setGrade] = useState<number>(0);
 
@@ -34,7 +41,9 @@ const Review = () => {
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
-          <MdKeyboardDoubleArrowLeft className='w-12 h-12' color={"#a9a9a9"} />
+          <MdKeyboardDoubleArrowLeft className='w-12 h-12 cursor-pointer transition duration-200 ease-in-out  hover:scale-110'
+            color={"#a9a9a9"}
+            onClick={handleBack} />
         </div>
 
         {/* メインコンテンツ */}
