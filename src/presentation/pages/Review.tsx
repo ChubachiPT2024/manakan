@@ -1,6 +1,6 @@
 // ReviewPage.tsx
-
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import Radio from '@mui/material/Radio'
@@ -17,7 +17,7 @@ const Review = () => {
   const navigate = useNavigate()
   const location = useLocation()
   // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
-  // console.log(location.state)
+  console.log(location.state)
 
   const handleBack = () => {
     navigate(`/classification/${location.state.reportId}`)
