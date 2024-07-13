@@ -13,6 +13,34 @@ describe('classify', () => {
     expect(classified.grade).toBe(1)
     expect(classified.rank).toBe('+-')
   })
+
+  test('Can set the grade to 0 and the rank to undefined.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act
+    const classified = assessment.classify(0, undefined)
+
+    // Assert
+    expect(classified.grade).toBe(0)
+    expect(classified.rank).toBe(undefined)
+  })
+
+  test('Cannot set the grade to 0 and the rank to defined.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act, Assert
+    expect(() => assessment.classify(0, '+-')).toThrowError()
+  })
+
+  test('Cannot set the grade to defined and the rank to undefined.', async () => {
+    // Arrange
+    const assessment = new Assessment(0, 0)
+
+    // Act, Assert
+    expect(() => assessment.classify(1, undefined)).toThrowError()
+  })
 })
 
 describe('update feedback', () => {
