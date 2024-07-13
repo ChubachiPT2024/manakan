@@ -1,3 +1,4 @@
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { AssessmentRank } from 'src/domain/models/assessments/assessmentRank'
 
 /**
@@ -15,7 +16,7 @@ export class AssessmentClassifyCommand {
   public constructor(
     public readonly reportId: number,
     public readonly studentNumId: number,
-    public readonly grade: number,
-    public readonly rank: AssessmentRank
+    public readonly grade: AssessmentGrade,
+    public readonly rank?: AssessmentRank
   ) {}
 }

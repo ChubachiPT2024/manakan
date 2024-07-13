@@ -1,3 +1,4 @@
+import { AssessmentGrade } from './assessmentGrade'
 import { AssessmentRank } from './assessmentRank'
 
 /**
@@ -20,12 +21,17 @@ export class Assessment {
     public readonly studentNumId: number,
     public readonly feedback?: string,
     public readonly memo?: string,
-    public readonly grade?: number,
+    public readonly grade?: AssessmentGrade,
     public readonly rank?: AssessmentRank,
     public readonly score?: number
   ) {
-    if (!grade && (grade < 0 || grade > 5)) {
-      throw new TypeError('The grade must be in [0, 5].')
+    if (grade === 0 && rank !== undefined) {
+      throw new TypeError('The rank must be undefined if the grade is 0.')
+    }
+    if ([1, 2, 3, 4, 5].includes(grade) && rank === undefined) {
+      throw new TypeError(
+        'The rank must be defined if the grade is defined and not 0.'
+      )
     }
 
     if (!score && (score < 0 || score > 100)) {
@@ -40,7 +46,7 @@ export class Assessment {
    * @param rank 評点内の位置
    * @returns 分類後の個別評価
    */
-  public classify(grade: number, rank: AssessmentRank) {
+  public classify(grade: AssessmentGrade, rank?: AssessmentRank) {
     return new Assessment(
       this.reportId,
       this.studentNumId,

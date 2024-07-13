@@ -1,4 +1,5 @@
 import { Assessment } from 'src/domain/models/assessments/assessment'
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { AssessmentRank } from 'src/domain/models/assessments/assessmentRank'
 
 /**
@@ -18,7 +19,7 @@ export class SubmissionSummaryAssessmentData {
   /**
    * 評点
    */
-  public readonly grade?: number
+  public readonly grade?: AssessmentGrade
 
   /**
    * 評点内の位置
