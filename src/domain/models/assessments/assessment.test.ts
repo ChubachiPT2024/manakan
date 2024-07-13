@@ -7,11 +7,11 @@ describe('classify', () => {
     const assessment = new Assessment(0, 0)
 
     // Act
-    const classified = assessment.classify(1, 2)
+    const classified = assessment.classify(1, '+-')
 
     // Assert
     expect(classified.grade).toBe(1)
-    expect(classified.rank).toBe(2)
+    expect(classified.rank).toBe('+-')
   })
 })
 
