@@ -6,15 +6,18 @@ import { InMemoryStudentRepository } from './infrastructure/inMemory/students/in
 import { InMemoryReportRepository } from './infrastructure/inMemory/reports/inMemoryReportRepository'
 import { InMemoryCourseRepository } from './infrastructure/inMemory/courses/inMemoryCourseRepository'
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
-import { ReportGetCommand } from './application/reports/reportGetCommand'
-import { ReportApplicationService } from './application/reports/reportApplicationService'
-import { CourseGetCommand } from './application/courses/courseGetCommand'
-import { CourseApplicationService } from './application/courses/courseApplicationService'
 import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
 import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessments/inMemoryAssessmentRepository'
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
+import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand'
+import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
+import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
+import { SubmissionSummaryApplicationService } from './application/submissionSummaries/submissionSummaryApplicationService'
+import { SubmissionSummariesGetCommand } from './application/submissionSummaries/submissionSummariesGetCommand'
+import { SubmissionFileApplicationService } from './application/submissionFiles/submissionFileApplicationService'
+import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -58,10 +61,19 @@ const reportListApplicationService = new ReportListApplicationService(
   submissionRepository,
   assessmentRepository
 )
-const reportApplicationService = new ReportApplicationService(reportRepository)
-const courseApplicationService = new CourseApplicationService(courseRepository)
 const assessmentApplicationService = new AssessmentApplicationService(
   assessmentRepository
+)
+const submissionSummaryApplicationService =
+  new SubmissionSummaryApplicationService(
+    reportRepository,
+    submissionRepository,
+    studentRepository,
+    assessmentRepository
+  )
+const submissionFileApplicationService = new SubmissionFileApplicationService(
+  reportRepository,
+  submissionRepository
 )
 
 // This method will be called when Electron has finished
@@ -81,23 +93,43 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
-    'getReportAsync',
-    async (_, reportGetCommand: ReportGetCommand) =>
-      await reportApplicationService.getAsync(reportGetCommand)
-  )
-
-  ipcMain.handle(
-    'getCourseAsync',
-    async (_, courseGetCommand: CourseGetCommand) =>
-      await courseApplicationService.getAsync(courseGetCommand)
-  )
-
-  ipcMain.handle(
     'classifyAssessmentAsync',
     async (_, assessmentClassifyCommand: AssessmentClassifyCommand) =>
       await assessmentApplicationService.classifyAsync(
         assessmentClassifyCommand
       )
+  )
+
+  ipcMain.handle(
+    'updateAssessmentFeedbackAsync',
+    async (_, command: AssessmentFeedbackUpdateCommand) =>
+      await assessmentApplicationService.updateFeedbackAsync(command)
+  )
+
+  ipcMain.handle(
+    'updateAssessmentMemoAsync',
+    async (_, command: AssessmentMemoUpdateCommand) =>
+      await assessmentApplicationService.updateMemoAsync(command)
+  )
+
+  ipcMain.handle(
+    'updateAssessmentScoreAsync',
+    async (_, command: AssessmentScoreUpdateCommand) =>
+      await assessmentApplicationService.updateScoreAsync(command)
+  )
+
+  ipcMain.handle(
+    'getSubmissionSummariesAsync',
+    async (_, command: SubmissionSummariesGetCommand) =>
+      await submissionSummaryApplicationService.getSubmissionSummariesAsync(
+        command
+      )
+  )
+
+  ipcMain.handle(
+    'getSubmissionFileAsync',
+    async (_, command: SubmissionFileGetCommand) =>
+      await submissionFileApplicationService.getAsync(command)
   )
 
   createWindow()

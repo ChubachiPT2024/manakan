@@ -62,7 +62,7 @@ describe('import', () => {
     expect(report.courseId).toBe(27048)
     expect(report.id).toBe(35677)
     expect(report.title).toBe('個人レポート課題')
-    expect(report.reportListFolderAbsoultePath).toBe(
+    expect(report.reportListFolderAbsolutePath).toBe(
       path.join(__dirname, 'reportListImportTestFiles')
     )
   })
@@ -136,7 +136,7 @@ describe('import', () => {
 
     await service.importAsync(command)
 
-    const submissions = await submissionRepository.findAsync(35677)
+    const submissions = await submissionRepository.findByReportIdAsync(35677)
     const submission = submissions.find((x) => x.studentNumId === 23745148)
     expect(submission.reportId).toBe(35677)
     expect(submission.studentNumId).toBe(23745148)

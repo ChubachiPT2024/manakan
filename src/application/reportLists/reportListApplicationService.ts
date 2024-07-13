@@ -114,7 +114,7 @@ export class ReportListApplicationService {
     command: ReportListGetCommand
   ): Promise<ReportListGetResult> {
     // 対象のレポートについて、学籍番号を Key, 提出物を Value とする Map を作成
-    const submissions = await this.submissionRepository.findAsync(
+    const submissions = await this.submissionRepository.findByReportIdAsync(
       command.reportId
     )
     const submissionMap = new Map(submissions.map((x) => [x.studentNumId, x]))

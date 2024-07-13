@@ -1,7 +1,6 @@
-interface Submission {
-  id: number
-  studentName: string
-  isChecked: boolean
-  columnId: number
-  rowId: number
+export interface Assessment {
+  grade: number
+  rank: AssessmentRank
 }
+
+export type AssessmentRank = '++' | '+' | '+-' | '-' | '--'
