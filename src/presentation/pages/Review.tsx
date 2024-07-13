@@ -17,14 +17,14 @@ import { SubmissionSummariesGetCommand } from 'src/application/submissionSummari
 const Review = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
   // console.log(location.state)
   const { reportId, studentNumIds } = location.state
   console.log('reportId: ', reportId)
+  console.log(typeof reportId)
   console.log('studentNumIds: ', studentNumIds)
   window.electronAPI
     .getSubmissionSummariesAsync(
-      new SubmissionSummariesGetCommand(reportId, studentNumIds)
+      new SubmissionSummariesGetCommand(Number(reportId), studentNumIds)
     )
     .then((res) => {
       console.log(res)
