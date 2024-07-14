@@ -22,6 +22,7 @@ const Review = () => {
   console.log('reportId: ', reportId)
   console.log(typeof reportId)
   console.log('studentNumIds: ', studentNumIds)
+  console.log(typeof studentNumIds)
   window.electronAPI
     .getSubmissionSummariesAsync(
       new SubmissionSummariesGetCommand(Number(reportId), studentNumIds)
