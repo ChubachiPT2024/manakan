@@ -14,7 +14,6 @@ export class Assessment {
    * @param memo メモ
    * @param grade 評点
    * @param rank 評点内の位置
-   * @param score 点数
    */
   public constructor(
     public readonly reportId: number,
@@ -22,8 +21,7 @@ export class Assessment {
     public readonly feedback?: string,
     public readonly memo?: string,
     public readonly grade?: AssessmentGrade,
-    public readonly rank?: AssessmentRank,
-    public readonly score?: number
+    public readonly rank?: AssessmentRank
   ) {
     if (grade === 0 && rank !== undefined) {
       throw new TypeError('The rank must be undefined if the grade is 0.')
@@ -32,10 +30,6 @@ export class Assessment {
       throw new TypeError(
         'The rank must be defined if the grade is defined and not 0.'
       )
-    }
-
-    if (!score && (score < 0 || score > 100)) {
-      throw new TypeError('The score must be in [0, 100].')
     }
   }
 
@@ -53,8 +47,7 @@ export class Assessment {
       this.feedback,
       this.memo,
       grade,
-      rank,
-      this.score
+      rank
     )
   }
 
@@ -71,8 +64,7 @@ export class Assessment {
       feedback,
       this.memo,
       this.grade,
-      this.rank,
-      this.score
+      this.rank
     )
   }
 
@@ -89,8 +81,7 @@ export class Assessment {
       this.feedback,
       memo,
       this.grade,
-      this.rank,
-      this.score
+      this.rank
     )
   }
 

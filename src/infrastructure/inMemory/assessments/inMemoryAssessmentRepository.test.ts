@@ -17,7 +17,7 @@ describe('save', () => {
     expect(actual[0].memo).toBe(expected.memo)
     expect(actual[0].grade).toBe(expected.grade)
     expect(actual[0].rank).toBe(expected.rank)
-    expect(actual[0].score).toBe(expected.score)
+    expect(actual[0].getScore()).toBe(expected.getScore())
   })
 })
 
@@ -41,7 +41,7 @@ describe('find', () => {
     expect(actual.memo).toBe(expected.memo)
     expect(actual.grade).toBe(expected.grade)
     expect(actual.rank).toBe(expected.rank)
-    expect(actual.score).toBe(expected.score)
+    expect(actual.getScore()).toBe(expected.getScore())
   })
 
   test('The unsaved assessment is not found.', async () => {
