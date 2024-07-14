@@ -3,7 +3,6 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
-import { SubmissionFileGetResult } from 'src/application/submissionFiles/submissionFileGetResult'
 
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`
@@ -32,7 +31,7 @@ const PdfView: React.FC<PdfViewProps> = ({
   width,
   pageHeight,
 }) => {
-  const [pdfDatas, setPdfDatas] = useState<Uint8Array[]>([])
+  const [pdfDatas, setPdfDatas] = useState<string[]>([])
   const [numPages, setNumPages] = useState<number[]>([])
 
   useEffect(() => {
@@ -42,11 +41,17 @@ const PdfView: React.FC<PdfViewProps> = ({
           new SubmissionFileGetCommand(reportId, student.numId, file)
         )
         console.log(`File: ${file}, Data Length: ${response.content.length}`)
-        return new Uint8Array(response.content)
+        const blob = new Blob([response.content], { type: 'application/pdf' })
+        return URL.createObjectURL(blob)
       })
 
       const pdfDataArray = await Promise.all(pdfDataPromises)
       setPdfDatas(pdfDataArray)
+
+      return () => {
+        // クリーンアップ: URLオブジェクトを解放
+        pdfDataArray.forEach(URL.revokeObjectURL)
+      }
     }
 
     fetchPdfFiles()
@@ -61,8 +66,17 @@ const PdfView: React.FC<PdfViewProps> = ({
   }, [])
 
   const memoizedFiles = useMemo(() => {
-    return pdfDatas.map((data, index) => ({ file: { data }, index }))
+    return pdfDatas.map((data, index) => ({ file: data, index }))
   }, [pdfDatas])
+
+  const memoizedOptions = useMemo(
+    () => ({
+      // pdfjs のフォントエラーを回避する為に外部サイトを指定
+      cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+      cMapPacked: true,
+    }),
+    []
+  )
 
   return (
     <div className="text-center" style={{ height, width }}>
@@ -77,10 +91,7 @@ const PdfView: React.FC<PdfViewProps> = ({
             <Document
               file={file}
               onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
-              options={{
-                cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
-                cMapPacked: true,
-              }}
+              options={memoizedOptions}
             >
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
