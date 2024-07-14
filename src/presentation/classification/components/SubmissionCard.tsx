@@ -19,10 +19,15 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
       }
     : {}
 
+  const issubmitted = false // 提出かどうかの判定
+  const cardStyle = issubmitted
+    ? 'h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer'
+    : 'h-18 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer'
+
   return (
     <div
       ref={setNodeRef}
-      className="h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer"
+      className={cardStyle}
       style={style}
       {...attributes}
       {...listeners}
@@ -35,6 +40,13 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
           <p className="text-xs">{item.student.name}</p>
         </div>
       </div>
+      {!issubmitted && (
+        <div className="flex justify-end  p-1">
+          <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+            未提出
+          </span>
+        </div>
+      )}
     </div>
   )
 }
