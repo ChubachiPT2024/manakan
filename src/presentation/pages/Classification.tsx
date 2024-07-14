@@ -8,12 +8,12 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SubmissionCard } from '../classification/components/SubmissionCard'
 import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
-import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
