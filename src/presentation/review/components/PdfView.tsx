@@ -77,6 +77,10 @@ const PdfView: React.FC<PdfViewProps> = ({
             <Document
               file={file}
               onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
+              options={{
+                cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
+                cMapPacked: true,
+              }}
             >
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
