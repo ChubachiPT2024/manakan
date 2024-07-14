@@ -2,7 +2,7 @@ name: Weekly Release Merge PR Creation
 
 on:
   schedule:
-    - cron: '0 6 * * 0'
+    - cron: '0 15 * * 0'
 
 permissions:
   contents: write
@@ -29,4 +29,4 @@ jobs:
           git push origin release
 
       - name: Call release workflow
-        uses: ./.github/workflows/main.yml
+        uses: ./.github/workflows/main.yml@main
