@@ -40,7 +40,6 @@ const PdfView: React.FC<PdfViewProps> = ({
         const response = await window.electronAPI.getSubmissionFileAsync(
           new SubmissionFileGetCommand(reportId, student.numId, file)
         )
-        console.log(`File: ${file}, Data Length: ${response.content.length}`)
         const blob = new Blob([response.content], { type: 'application/pdf' })
         return URL.createObjectURL(blob)
       })
