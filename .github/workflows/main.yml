@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - release
+  workflow_call:
 
 permissions:
   contents: write
@@ -30,7 +31,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -58,7 +59,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
@@ -78,8 +79,9 @@ jobs:
     needs:
       - mac-linux-build
       - windows-build
-
-    if: github.event_name == 'push' && github.ref == 'refs/heads/release'
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/release') ||
+      github.event_name == 'workflow_call'
 
     runs-on: ubuntu-latest
 
