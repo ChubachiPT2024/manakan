@@ -1,5 +1,5 @@
 // ReviewPage.tsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
@@ -17,19 +17,18 @@ import { SubmissionSummariesGetCommand } from 'src/application/submissionSummari
 const Review = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  // console.log(location.state)
   const { reportId, studentNumIds } = location.state
-  console.log('reportId: ', reportId)
-  console.log(typeof reportId)
-  console.log('studentNumIds: ', studentNumIds)
-  console.log(typeof studentNumIds)
-  window.electronAPI
-    .getSubmissionSummariesAsync(
-      new SubmissionSummariesGetCommand(Number(reportId), studentNumIds)
-    )
-    .then((res) => {
-      console.log(res)
-    })
+  const [submissionSummaries, setSubmissionSummaries] = useState([])
+
+  useEffect(() => {
+    window.electronAPI
+      .getSubmissionSummariesAsync(
+        new SubmissionSummariesGetCommand(Number(reportId), studentNumIds)
+      )
+      .then((res) => {
+        setSubmissionSummaries(res.submissionSummaries)
+      })
+  }, [reportId, studentNumIds])
 
   const handleBack = () => {
     navigate(`/classification/${location.state.reportId}`)
@@ -47,23 +46,18 @@ const Review = () => {
   const students = [
     {
       name: '学生1',
-      pdfPaths: ['./sample1.pdf', './sample2.pdf', './sample3.pdf'],
     },
     {
       name: '学生2',
-      pdfPaths: ['./sample2.pdf', './sample3.pdf', './sample4.pdf'],
     },
     {
       name: '学生3',
-      pdfPaths: ['./sample3.pdf', './sample4.pdf', './sample5.pdf'],
     },
     {
       name: '学生4',
-      pdfPaths: ['./sample4.pdf', './sample5.pdf', './sample1.pdf'],
     },
     {
       name: '学生5',
-      pdfPaths: ['./sample5.pdf', './sample1.pdf', './sample2.pdf'],
     },
   ]
 
@@ -84,16 +78,24 @@ const Review = () => {
         <div className="flex mt-14" style={{ height: 'calc(100vh - 4rem)' }}>
           {/* PDF表示 */}
           <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
-            {students.map((student, index) => (
-              <PdfView
-                key={index}
-                studentName={student.name}
-                pdfPaths={student.pdfPaths}
-                height="calc(100vh - 4rem)"
-                width={900}
-                pageHeight={1000}
-              />
-            ))}
+            {submissionSummaries.map(
+              (summary, index) => (
+                // console.log(Number(reportId)),
+                // console.log(summary.student),
+                console.log(summary.files),
+                (
+                  <PdfView
+                    key={index}
+                    reportId={Number(reportId)}
+                    student={summary.student}
+                    files={summary.files}
+                    height="calc(100vh - 4rem)"
+                    width={900}
+                    pageHeight={1000}
+                  />
+                )
+              )
+            )}
           </div>
 
           {/* sidebar */}

@@ -2,13 +2,27 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
+import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
+import { SubmissionFileGetResult } from 'src/application/submissionFiles/submissionFileGetResult'
 
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`
 
+interface Student {
+  name: string
+  numId: number
+  userId: string
+}
+
+interface File {
+  fileName: string
+}
+
 interface PdfViewProps {
-  studentName: string
-  pdfPaths: string[]
+  reportId: number
+  student: Student
+  // files: string[]
+  files: File[]
   height: string
   width: number
   pageHeight: number
@@ -16,8 +30,9 @@ interface PdfViewProps {
 
 // 以下の Props を学籍番号を受けとる様に修正し、useEffect内で API 経由でPDFファイルを取得するように修正予定
 const PdfView: React.FC<PdfViewProps> = ({
-  studentName,
-  pdfPaths,
+  reportId,
+  student,
+  files,
   height,
   width,
   pageHeight,
@@ -27,10 +42,16 @@ const PdfView: React.FC<PdfViewProps> = ({
 
   useEffect(() => {
     const fetchPdfFiles = async () => {
-      const pdfDataPromises = pdfPaths.map(async (path) => {
-        const response = await fetch(path)
-        const arrayBuffer = await response.arrayBuffer()
-        return new Uint8Array(arrayBuffer)
+      const pdfDataPromises = files.map(async (file) => {
+        const response = await window.electronAPI.getSubmissionFileAsync(
+          new SubmissionFileGetCommand(reportId, student.numId, file.fileName)
+        )
+        // return new SubmissionFileGetResult(response)
+
+        console.log(
+          `File: ${file.fileName}, Data Length: ${response.content.length}`
+        )
+        return new Uint8Array(response.content)
       })
 
       const pdfDataArray = await Promise.all(pdfDataPromises)
@@ -38,7 +59,7 @@ const PdfView: React.FC<PdfViewProps> = ({
     }
 
     fetchPdfFiles()
-  }, [pdfPaths])
+  }, [reportId, student.numId, files])
 
   const onDocumentLoadSuccess = useCallback((index: number, pdf: any) => {
     setNumPages((prevNumPages) => {
@@ -54,7 +75,7 @@ const PdfView: React.FC<PdfViewProps> = ({
 
   return (
     <div className="text-center" style={{ height, width }}>
-      <h2 className="text-2xl font-bold">{studentName}</h2>
+      <h2 className="text-2xl font-bold">{student.name}</h2>
       <div className="overflow-y-auto" style={{ height }}>
         {memoizedFiles.map(({ file, index }) => (
           <div
@@ -68,7 +89,7 @@ const PdfView: React.FC<PdfViewProps> = ({
             >
               {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
                 <Page
-                  key={`${studentName}-page-${index}-${pageIndex + 1}`}
+                  key={`${student.name}-page-${index}-${pageIndex + 1}`}
                   pageNumber={pageIndex + 1}
                   width={width}
                   height={pageHeight}
