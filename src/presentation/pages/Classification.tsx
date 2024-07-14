@@ -252,9 +252,7 @@ const Classification = () => {
     .filter((item) => item.assessment.grade == null)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter(
-      (item) => item.assessment.grade != null && item.assessment.rank != null
-    )
+    .filter((item) => item.assessment.grade != null)
 
   const handleOpenSelected = () => {
     const selectedSubmissions = report.items.filter((item) => item.isChecked)
@@ -293,9 +291,9 @@ const Classification = () => {
     } else {
       return (
         <>
-          <RankRow key={0} id={`${gradeId}:`} title={''}>
+          <RankRow key={''} id={`${gradeId}:`} title={''}>
             {hasAssessmentItem
-              .filter((item) => `${item.assessment.grade}` === `${gradeId}`)
+              .filter((item) => `${item.assessment.grade}:` === `${gradeId}:`)
               .map((item, index) => (
                 <SubmissionCard
                   key={index}
