@@ -171,7 +171,7 @@ describe('import', () => {
     expect(assessment.memo).toBeUndefined()
     expect(assessment.grade).toBeUndefined()
     expect(assessment.rank).toBeUndefined()
-    expect(assessment.score).toBeUndefined()
+    expect(assessment.getScore()).toBeUndefined()
   })
 })
 

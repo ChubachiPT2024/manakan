@@ -41,6 +41,6 @@ export class SubmissionSummaryAssessmentData {
     this.memo = assessment.memo
     this.grade = assessment.grade
     this.rank = assessment.rank
-    this.score = assessment.score
+    this.score = assessment.getScore()
   }
 }
