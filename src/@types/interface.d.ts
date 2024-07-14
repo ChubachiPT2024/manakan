@@ -36,7 +36,7 @@ export interface IElectronAPI {
   ) => Promise<SubmissionSummariesGetResult>
 
   getSubmissionFileAsync: (
-    comman: SubmissionFileGetCommand
+    command: SubmissionFileGetCommand
   ) => Promise<SubmissionFileGetResult>
 }
 
