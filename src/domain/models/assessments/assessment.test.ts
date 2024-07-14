@@ -72,12 +72,15 @@ describe('update memo', () => {
 })
 
 describe('get score', () => {
-  test('Cannot get score if the grade is undefined.', async () => {
+  test('The score is undefined if the grade is undefined.', async () => {
     // Arrange
     const assessment = new Assessment(0, 0)
 
-    // Act, Assert
-    expect(() => assessment.getScore()).toThrowError()
+    // Act
+    const score = assessment.getScore()
+
+    // Assert
+    expect(score).toBeUndefined()
   })
 
   test.each([

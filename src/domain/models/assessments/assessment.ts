@@ -99,9 +99,9 @@ export class Assessment {
    *
    * @returns 点数
    */
-  public getScore(): number {
+  public getScore(): number | undefined {
     if (this.grade === undefined) {
-      throw new Error('The grade must be defined.')
+      return undefined
     }
 
     if (this.grade === 0) {
