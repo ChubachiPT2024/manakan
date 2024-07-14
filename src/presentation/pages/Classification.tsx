@@ -35,11 +35,12 @@ const Classification = () => {
       submissionNum: number
     }[]
   >([
-    { id: 1, submissionNum: 0 },
-    { id: 2, submissionNum: 0 },
-    { id: 3, submissionNum: 0 },
-    { id: 4, submissionNum: 0 },
     { id: 5, submissionNum: 0 },
+    { id: 4, submissionNum: 0 },
+    { id: 3, submissionNum: 0 },
+    { id: 2, submissionNum: 0 },
+    { id: 1, submissionNum: 0 },
+    { id: 0, submissionNum: 0 },
   ])
 
   const assessmentRanks = ['++', '+', '+-', '-', '--']
