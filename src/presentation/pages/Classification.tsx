@@ -18,6 +18,7 @@ import { ReportListGetCommand } from 'src/application/reportLists/reportListGetC
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 
 const Classification = () => {
   const { id } = useParams()
@@ -51,7 +52,7 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: number | null = null
+    let grade: AssessmentGrade | null = null
     let rank: AssessmentRank | null = null
 
     if (over && active.id !== over?.id) {
@@ -59,7 +60,7 @@ const Classification = () => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
             const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade)
+            grade = Number(newGrade) as AssessmentGrade
             rank = newRank as AssessmentRank
           }
 
@@ -89,7 +90,7 @@ const Classification = () => {
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: number,
+    grade: AssessmentGrade,
     rank: AssessmentRank
   ) => {
     await window.electronAPI
