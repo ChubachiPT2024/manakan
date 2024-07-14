@@ -18,6 +18,8 @@ import { ReportListItemAssessmentData } from './reportListItemAssessmentData'
 import { ReportListItemStudentData } from './reportListItemStudentData'
 import { ReportListData } from './reportListData'
 import path from 'path'
+import { ReportListExportCommand } from './reportListExportCommand'
+import { ReportListExportResult } from './reportListExportResult'
 
 /**
  * レポートリストアプリケーションサービス
@@ -142,6 +144,63 @@ export class ReportListApplicationService {
 
     return new ReportListGetResult(
       new ReportListData(course.id, course.name, report.id, report.title, items)
+    )
+  }
+
+  /**
+   * レポートリストをエクスポートする
+   *
+   * @param command レポートリストエクスポートコマンド
+   * @returns レポートリストエクスポート結果
+   */
+  public async exportAsync(
+    command: ReportListExportCommand
+  ): Promise<ReportListExportResult> {
+    const report = await this.reportRepository.findAsync(command.reportId)
+
+    const workbook = new Excel.Workbook()
+    await workbook.xlsx.readFile(
+      path.join(report.reportListFolderAbsolutePath, 'reportlist.xlsx')
+    )
+
+    // id によるアクセスは非推奨らしいので、名前でアクセス
+    // https://github.com/exceljs/exceljs?tab=readme-ov-file#access-worksheets
+    const worksheet = workbook.getWorksheet('Sheet1')
+    if (!worksheet) {
+      throw new Error('The Worksheet Sheet1 is not found.')
+    }
+
+    for (let i = 8; ; i++) {
+      const row = worksheet.getRow(i)
+      const role = row.getCell('A').text
+      if (role === '#end') {
+        break
+      }
+      if (role !== '履修生') {
+        continue
+      }
+
+      const studentNumId = Number(row.getCell('C').text)
+      const assessment = await this.assessmentRepository.findAsync(
+        command.reportId,
+        studentNumId
+      )
+
+      if (assessment.getScore() !== undefined) {
+        row.getCell('G').value = assessment.getScore()
+      }
+      if (assessment.grade !== undefined) {
+        row.getCell('H').value = assessment.grade
+      }
+      if (assessment.feedback !== undefined) {
+        row.getCell('I').value = assessment.feedback
+      }
+    }
+
+    return new ReportListExportResult(
+      new Blob([await workbook.xlsx.writeBuffer()], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
     )
   }
 }
