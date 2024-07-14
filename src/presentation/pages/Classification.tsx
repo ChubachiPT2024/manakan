@@ -92,15 +92,25 @@ const Classification = () => {
     reportId: number,
     studentId: number,
     grade: AssessmentGrade,
-    rank: AssessmentRank
+    rank?: AssessmentRank
   ) => {
-    await window.electronAPI
-      .classifyAssessmentAsync(
-        new AssessmentClassifyCommand(reportId, studentId, grade, rank)
-      )
-      .catch((e: any) => {
-        console.log(e)
-      })
+    if (rank) {
+      await window.electronAPI
+        .classifyAssessmentAsync(
+          new AssessmentClassifyCommand(reportId, studentId, grade, rank)
+        )
+        .catch((e: any) => {
+          console.log(e)
+        })
+    } else {
+      await window.electronAPI
+        .classifyAssessmentAsync(
+          new AssessmentClassifyCommand(reportId, studentId, grade)
+        )
+        .catch((e: any) => {
+          console.log(e)
+        })
+    }
   }
 
   const handleCheckboxChange = (
@@ -253,6 +263,53 @@ const Classification = () => {
     })
   }
 
+  const renderRankRow = (gradeId: number) => {
+    const hasrank = gradeId !== 0
+    if (hasrank) {
+      return (
+        <>
+          {assessmentRanks.map((rank, index) => (
+            <RankRow key={index} id={`${gradeId}:${rank}`} title={rank}>
+              {hasAssessmentItem
+                .filter(
+                  (item) =>
+                    `${item.assessment.grade}:${item.assessment.rank}` ===
+                    `${gradeId}:${rank}`
+                )
+                .map((item, index) => (
+                  <SubmissionCard
+                    key={index}
+                    id={item.student.numId}
+                    item={item}
+                    onChange={(e) =>
+                      handleCheckboxChange(e, item.student.numId)
+                    }
+                  />
+                ))}
+            </RankRow>
+          ))}
+        </>
+      )
+    } else {
+      return (
+        <>
+          <RankRow key={0} id={`${gradeId}:`} title={''}>
+            {hasAssessmentItem
+              .filter((item) => `${item.assessment.grade}` === `${gradeId}`)
+              .map((item, index) => (
+                <SubmissionCard
+                  key={index}
+                  id={item.student.numId}
+                  item={item}
+                  onChange={(e) => handleCheckboxChange(e, item.student.numId)}
+                />
+              ))}
+          </RankRow>
+        </>
+      )
+    }
+  }
+
   return (
     <>
       <DndContext
@@ -310,30 +367,7 @@ const Classification = () => {
                       title={grade.id.toString()}
                       submissionNum={grade.submissionNum}
                     >
-                      {assessmentRanks.map((rank, index) => (
-                        <RankRow
-                          key={index}
-                          id={`${grade.id}:${rank}`}
-                          title={rank}
-                        >
-                          {hasAssessmentItem
-                            .filter(
-                              (item) =>
-                                `${item.assessment.grade}:${item.assessment.rank}` ===
-                                `${grade.id}:${rank}`
-                            )
-                            .map((item, index) => (
-                              <SubmissionCard
-                                key={index}
-                                id={item.student.numId}
-                                item={item}
-                                onChange={(e) =>
-                                  handleCheckboxChange(e, item.student.numId)
-                                }
-                              />
-                            ))}
-                        </RankRow>
-                      ))}
+                      {renderRankRow(grade.id)}
                     </GradeColumn>
                   ))}
                 </div>
