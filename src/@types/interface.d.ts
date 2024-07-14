@@ -1,7 +1,6 @@
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
 import { AssessmentFeedbackUpdateCommand } from 'src/application/assessments/assessmentFeedbackUpdateCommand.'
 import { AssessmentMemoUpdateCommand } from 'src/application/assessments/assessmentMemoUpdateCommand'
-import { AssessmentScoreUpdateCommand } from 'src/application/assessments/assessmentScoreUpdateCommand'
 import { ReportListGetResult } from 'src/application/reportLists/reportListGetResult'
 import { ReportListImportCommand } from 'src/application/reportLists/reportListImportCommand'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
@@ -30,10 +29,6 @@ export interface IElectronAPI {
 
   updateAssessmentMemoAsync: (
     command: AssessmentMemoUpdateCommand
-  ) => Promise<void>
-
-  updateAssessmentScoreAsync: (
-    command: AssessmentScoreUpdateCommand
   ) => Promise<void>
 
   getSubmissionSummariesAsync: (

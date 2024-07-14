@@ -13,7 +13,6 @@ import { AssessmentClassifyCommand } from './application/assessments/assessmentC
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
 import { AssessmentFeedbackUpdateCommand } from './application/assessments/assessmentFeedbackUpdateCommand'
 import { AssessmentMemoUpdateCommand } from './application/assessments/assessmentMemoUpdateCommand'
-import { AssessmentScoreUpdateCommand } from './application/assessments/assessmentScoreUpdateCommand'
 import { SubmissionSummaryApplicationService } from './application/submissionSummaries/submissionSummaryApplicationService'
 import { SubmissionSummariesGetCommand } from './application/submissionSummaries/submissionSummariesGetCommand'
 import { SubmissionFileApplicationService } from './application/submissionFiles/submissionFileApplicationService'
@@ -110,12 +109,6 @@ app.whenReady().then(() => {
     'updateAssessmentMemoAsync',
     async (_, command: AssessmentMemoUpdateCommand) =>
       await assessmentApplicationService.updateMemoAsync(command)
-  )
-
-  ipcMain.handle(
-    'updateAssessmentScoreAsync',
-    async (_, command: AssessmentScoreUpdateCommand) =>
-      await assessmentApplicationService.updateScoreAsync(command)
   )
 
   ipcMain.handle(
