@@ -95,24 +95,6 @@ export class Assessment {
   }
 
   /**
-   * 点数を更新する
-   *
-   * @param score 点数
-   * @returns 点数更新後の個別評価
-   */
-  public updateScore(score: number) {
-    return new Assessment(
-      this.reportId,
-      this.studentNumId,
-      this.feedback,
-      this.memo,
-      this.grade,
-      this.rank,
-      score
-    )
-  }
-
-  /**
    * 点数を取得する
    *
    * @returns 点数

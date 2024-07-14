@@ -71,19 +71,6 @@ describe('update memo', () => {
   })
 })
 
-describe('update score', () => {
-  test('The score is updated.', async () => {
-    // Arrange
-    const assessment = new Assessment(0, 0)
-
-    // Act
-    const classified = assessment.updateScore(0)
-
-    // Assert
-    expect(classified.score).toBe(0)
-  })
-})
-
 describe('get score', () => {
   test('Cannot get score if the grade is undefined.', async () => {
     // Arrange
