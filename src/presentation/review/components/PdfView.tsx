@@ -14,15 +14,10 @@ interface Student {
   userId: string
 }
 
-interface File {
-  fileName: string
-}
-
 interface PdfViewProps {
   reportId: number
   student: Student
-  // files: string[]
-  files: File[]
+  files: string[]
   height: string
   width: number
   pageHeight: number
@@ -44,13 +39,9 @@ const PdfView: React.FC<PdfViewProps> = ({
     const fetchPdfFiles = async () => {
       const pdfDataPromises = files.map(async (file) => {
         const response = await window.electronAPI.getSubmissionFileAsync(
-          new SubmissionFileGetCommand(reportId, student.numId, file.fileName)
+          new SubmissionFileGetCommand(reportId, student.numId, file)
         )
-        // return new SubmissionFileGetResult(response)
-
-        console.log(
-          `File: ${file.fileName}, Data Length: ${response.content.length}`
-        )
+        console.log(`File: ${file}, Data Length: ${response.content.length}`)
         return new Uint8Array(response.content)
       })
 

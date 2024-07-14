@@ -78,24 +78,17 @@ const Review = () => {
         <div className="flex mt-14" style={{ height: 'calc(100vh - 4rem)' }}>
           {/* PDF表示 */}
           <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
-            {submissionSummaries.map(
-              (summary, index) => (
-                // console.log(Number(reportId)),
-                // console.log(summary.student),
-                console.log(summary.files),
-                (
-                  <PdfView
-                    key={index}
-                    reportId={Number(reportId)}
-                    student={summary.student}
-                    files={summary.files}
-                    height="calc(100vh - 4rem)"
-                    width={900}
-                    pageHeight={1000}
-                  />
-                )
-              )
-            )}
+            {submissionSummaries.map((summary, index) => (
+              <PdfView
+                key={index}
+                reportId={Number(reportId)}
+                student={summary.student}
+                files={summary.files}
+                height="calc(100vh - 4rem)"
+                width={900}
+                pageHeight={1000}
+              />
+            ))}
           </div>
 
           {/* sidebar */}
