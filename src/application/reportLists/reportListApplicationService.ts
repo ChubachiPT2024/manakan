@@ -76,16 +76,7 @@ export class ReportListApplicationService {
       new Report(courseId, reportId, reportTitle, reportListFolderAbsolutePath)
     )
 
-    for (let i = 8; ; i++) {
-      const row = worksheet.getRow(i)
-      const role = row.getCell('A').text
-      if (role === '#end') {
-        break
-      }
-      if (role !== '履修生') {
-        continue
-      }
-
+    for (const row of this.getStudentRows(worksheet)) {
       const userId: string = row.getCell('B').text
       const numId: number = Number(row.getCell('C').text)
       const name: string = row.getCell('D').text
@@ -170,16 +161,7 @@ export class ReportListApplicationService {
       throw new Error('The Worksheet Sheet1 is not found.')
     }
 
-    for (let i = 8; ; i++) {
-      const row = worksheet.getRow(i)
-      const role = row.getCell('A').text
-      if (role === '#end') {
-        break
-      }
-      if (role !== '履修生') {
-        continue
-      }
-
+    for (const row of this.getStudentRows(worksheet)) {
       const studentNumId = Number(row.getCell('C').text)
       const assessment = await this.assessmentRepository.findAsync(
         command.reportId,
@@ -202,5 +184,26 @@ export class ReportListApplicationService {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       })
     )
+  }
+
+  /**
+   * 学生の行を取得する
+   *
+   * @param worksheet ワークシート
+   * @returns 学生の行
+   */
+  private getStudentRows(worksheet: Excel.Worksheet): Excel.Row[] {
+    const rows = []
+    for (let i = 8; ; i++) {
+      const row = worksheet.getRow(i)
+      const role = row.getCell('A').text
+      if (role === '#end') {
+        break
+      }
+      if (role === '履修生') {
+        rows.push(row)
+      }
+    }
+    return rows
   }
 }
