@@ -180,9 +180,7 @@ export class ReportListApplicationService {
     }
 
     return new ReportListExportResult(
-      new Blob([await workbook.xlsx.writeBuffer()], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      })
+      new Uint8Array(await workbook.xlsx.writeBuffer())
     )
   }
 

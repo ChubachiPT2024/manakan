@@ -265,7 +265,7 @@ describe('export', () => {
 
     // Assert
     const workbook = new Excel.Workbook()
-    await workbook.xlsx.load(await exportResult.reportList.arrayBuffer())
+    await workbook.xlsx.load(exportResult.content)
 
     // id によるアクセスは非推奨らしいので、名前でアクセス
     // https://github.com/exceljs/exceljs?tab=readme-ov-file#access-worksheets

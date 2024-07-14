@@ -5,7 +5,7 @@ export class ReportListExportResult {
   /**
    * コンストラクタ
    *
-   * @param reportList レポートリスト
+   * @param content 内容
    */
-  public constructor(public readonly reportList: Blob) {}
+  public constructor(public readonly content: Uint8Array) {}
 }
