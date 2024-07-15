@@ -22,7 +22,7 @@ export class SubmissionSummarySubmissionData {
   /**
    * コンストラクタ
    *
-   * @param student 学生
+   * @param submission 提出物
    */
   public constructor(submission: Submission) {
     this.isSubmitted = submission.isSubmitted
