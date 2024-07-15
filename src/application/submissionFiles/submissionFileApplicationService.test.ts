@@ -22,7 +22,14 @@ describe('get', () => {
       path.join(__dirname, 'submissionFileApplicationServiceTestData')
     )
     await reportRepository.saveAsync(report)
-    const submission = new Submission(report.id, 23745148, '23745148@a2348mt')
+    const submission = new Submission(
+      report.id,
+      23745148,
+      true,
+      '2019-02-14 23:18:43',
+      1,
+      '23745148@a2348mt'
+    )
     await submissionRepository.saveAsync(submission)
 
     // Act

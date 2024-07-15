@@ -82,12 +82,30 @@ export class ReportListApplicationService {
       const name: string = row.getCell('D').text
       await this.studentRepository.saveAsync(new Student(userId, numId, name))
 
-      // TODO できればハイパーリンクから取得
-      // なぜか isHyperlink が false, hyperlink が undefined で取得できなかった
-      const folderRelativePath = `${numId}@${userId}`
-      await this.submissionRepository.saveAsync(
-        new Submission(reportId, numId, folderRelativePath)
-      )
+      const isSubmitted = row.getCell('J').text === '提出済'
+      if (isSubmitted) {
+        const submittedDateTime: string = row.getCell('K').text
+        const submissionCount: number = Number(row.getCell('L').text)
+
+        // TODO できればハイパーリンクから取得
+        // なぜか isHyperlink が false, hyperlink が undefined で取得できなかった
+        const folderRelativePath = `${numId}@${userId}`
+
+        await this.submissionRepository.saveAsync(
+          new Submission(
+            reportId,
+            numId,
+            true,
+            submittedDateTime,
+            submissionCount,
+            folderRelativePath
+          )
+        )
+      } else {
+        await this.submissionRepository.saveAsync(
+          new Submission(reportId, numId, false)
+        )
+      }
 
       // レポート ID と学籍番号以外は未定義で作成
       // もし、最初から Excel に値が入っていることがあり得るなら要修正
