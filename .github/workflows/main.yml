@@ -5,15 +5,13 @@ on:
     branches:
       - main
       - release
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: write
 
 jobs:
   mac-linux-build:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -48,8 +46,6 @@ jobs:
           path: out/make/**/*
 
   windows-build:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-
     runs-on: windows-2019
 
     steps:
@@ -82,7 +78,7 @@ jobs:
 
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/release') ||
-      github.event_name == 'workflow_dispatch'
+      github.event_name == 'workflow_call'
 
     runs-on: ubuntu-latest
 
