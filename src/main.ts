@@ -17,6 +17,7 @@ import { SubmissionSummaryApplicationService } from './application/submissionSum
 import { SubmissionSummariesGetCommand } from './application/submissionSummaries/submissionSummariesGetCommand'
 import { SubmissionFileApplicationService } from './application/submissionFiles/submissionFileApplicationService'
 import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
+import { ReportListExportCommand } from './application/reportLists/reportListExportCommand'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -83,6 +84,12 @@ app.whenReady().then(() => {
     'importReportListAsync',
     async (_, reportListImportCommand: ReportListImportCommand) =>
       await reportListApplicationService.importAsync(reportListImportCommand)
+  )
+
+  ipcMain.handle(
+    'exportReportListAsync',
+    async (_, reportListExportCommand: ReportListExportCommand) =>
+      await reportListApplicationService.exportAsync(reportListExportCommand)
   )
 
   ipcMain.handle(
