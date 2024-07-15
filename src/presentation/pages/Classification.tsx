@@ -16,8 +16,12 @@ import { RankRow } from '../classification/components/RankRow'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
-import { AssessmentRank } from '../types/submission'
+import {
+  AssessmentGradeOfFrontend,
+  AssessmentRankOfFrontend,
+} from '../types/submission'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 
 const Classification = () => {
   const { id } = useParams()
@@ -51,16 +55,16 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: number | null = null
-    let rank: AssessmentRank | null = null
+    let grade: AssessmentGradeOfFrontend | null = null
+    let rank: AssessmentRankOfFrontend | null = null
 
     if (over && active.id !== over?.id) {
       const newItems = report.items.map((item) => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
             const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade)
-            rank = newRank as AssessmentRank
+            grade = Number(newGrade) as AssessmentGradeOfFrontend
+            rank = newRank as AssessmentRankOfFrontend
           }
 
           return {
@@ -77,7 +81,8 @@ const Classification = () => {
 
       const item = report.items.find((item) => item.student.numId === active.id)
       const studentNumId = Number(item.student.numId)
-      updateAssessment(report.id, studentNumId, grade, rank)
+      const gradea = grade
+      updateAssessment(report.id, studentNumId, gradea, rank)
 
       setReport({
         ...report,
@@ -89,8 +94,8 @@ const Classification = () => {
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: number,
-    rank: AssessmentRank
+    grade: AssessmentGradeOfFrontend,
+    rank: AssessmentRankOfFrontend
   ) => {
     await window.electronAPI
       .classifyAssessmentAsync(
@@ -147,7 +152,7 @@ const Classification = () => {
               name: item.student.name,
             },
             assessment: {
-              grade: item.assessment.grade,
+              grade: item.assessment.grade as AssessmentGradeOfFrontend,
               rank: item.assessment.rank,
             },
             isChecked: false,
