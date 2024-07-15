@@ -2,14 +2,14 @@ name: Weekly Release Merge PR Creation
 
 on:
   schedule:
-    - cron: '0 6 * * 0'
+    - cron: '0 3 * * 1'
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  merge-main-to-release-and-create-release:
+  merge-main-to-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,5 +28,13 @@ jobs:
           git merge --no-ff origin/main -m "Weekly merge main into release"
           git push origin release
 
-      - name: Call release workflow
-        uses: ./.github/workflows/main.yml
+  trigger-build:
+    needs: merge-main-to-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Trigger build
+        uses: ./.github/workflows/main.yml@release

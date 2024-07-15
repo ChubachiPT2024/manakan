@@ -13,6 +13,8 @@ import { ReportListGetCommand } from './reportListGetCommand'
 import { Student } from 'src/domain/models/students/student'
 import { Submission } from 'src/domain/models/submissions/submission'
 import { Assessment } from 'src/domain/models/assessments/assessment'
+import { ReportListExportCommand } from './reportListExportCommand'
+import * as Excel from 'exceljs'
 
 describe('import', () => {
   test('The course of the report is saved.', async () => {
@@ -227,5 +229,55 @@ describe('get', () => {
     expect(item.assessment.grade).toBeUndefined()
     expect(item.assessment.rank).toBeUndefined()
     expect(item.assessment.score).toBeUndefined()
+  })
+})
+
+describe('export', () => {
+  test('The assessment is exported.', async () => {
+    // Arrange
+    const courseRepository = new InMemoryCourseRepository()
+    const reportRepository = new InMemoryReportRepository()
+    const studentRepository = new InMemoryStudentRepository()
+    const submissionRepository = new InMemorySubmissionRepository()
+    const assessmentRepository = new InMemoryAssessmentRepository()
+    const service = new ReportListApplicationService(
+      courseRepository,
+      reportRepository,
+      studentRepository,
+      submissionRepository,
+      assessmentRepository
+    )
+    const importCommand = new ReportListImportCommand(
+      path.join(__dirname, 'reportListExportTestFiles', 'reportlist.xlsx')
+    )
+    const reportId = await service.importAsync(importCommand)
+
+    const assessment = await assessmentRepository.findAsync(reportId, 23745148)
+    const updatedAssessment = assessment
+      .classify(5, '+-')
+      .updateFeedback('feedback')
+    await assessmentRepository.saveAsync(updatedAssessment)
+
+    // Act
+    const exportResult = await service.exportAsync(
+      new ReportListExportCommand(reportId)
+    )
+
+    // Assert
+    const workbook = new Excel.Workbook()
+    await workbook.xlsx.load(exportResult.content)
+
+    // id によるアクセスは非推奨らしいので、名前でアクセス
+    // https://github.com/exceljs/exceljs?tab=readme-ov-file#access-worksheets
+    const worksheet = workbook.getWorksheet('Sheet1')
+    if (!worksheet) {
+      throw new Error('The Worksheet Sheet1 is not found.')
+    }
+
+    // 最初の履修生の行を取得
+    const row = worksheet.getRow(8)
+    expect(row.getCell('G').value).toBe(updatedAssessment.getScore())
+    expect(row.getCell('H').value).toBe(updatedAssessment.grade)
+    expect(row.getCell('I').value).toBe(updatedAssessment.feedback)
   })
 })

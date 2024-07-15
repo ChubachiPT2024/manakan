@@ -12,8 +12,6 @@ permissions:
 
 jobs:
   mac-linux-build:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -48,8 +46,6 @@ jobs:
           path: out/make/**/*
 
   windows-build:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release')
-
     runs-on: windows-2019
 
     steps:
@@ -79,6 +75,7 @@ jobs:
     needs:
       - mac-linux-build
       - windows-build
+
     if: |
       (github.event_name == 'push' && github.ref == 'refs/heads/release') ||
       github.event_name == 'workflow_call'
