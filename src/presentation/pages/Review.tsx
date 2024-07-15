@@ -13,45 +13,15 @@ import { SubmissionSummariesGetCommand } from 'src/application/submissionSummari
 
 const Review = () => {
   const location = useLocation()
-  const { reportId, studentNumIds } = location.state
-  const [submissionSummaries, setSubmissionSummaries] = useState([])
 
-  useEffect(() => {
-    window.electronAPI
-      .getSubmissionSummariesAsync(
-        new SubmissionSummariesGetCommand(Number(reportId), studentNumIds)
-      )
-      .then((res) => {
-        setSubmissionSummaries(res.submissionSummaries)
-      })
-  }, [reportId, studentNumIds])
+  // 提出物サマリーを取得
+  const { submissionSummaries, error, isLoading } = useSubmissionSummaries(
+    reportId,
+    studentNumIds
+  )
 
-  // 評点の状態
-  const [grade, setGrade] = useState<number>(0)
-
-  // 評点が変更された時の処理
-  const handleChange = (event: SelectChangeEvent) => {
-    setGrade(Number(event.target.value))
-  }
-
-  // 学生名と対応するPDFファイルのパスを含むオブジェクトの配列
-  const students = [
-    {
-      name: '学生1',
-    },
-    {
-      name: '学生2',
-    },
-    {
-      name: '学生3',
-    },
-    {
-      name: '学生4',
-    },
-    {
-      name: '学生5',
-    },
-  ]
+  if (isLoading) return <Loading />
+  if (error) return <Error />
 
   return (
     <>
