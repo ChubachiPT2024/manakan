@@ -4,8 +4,8 @@ import { SubmissionSummaryData } from 'src/application/submissionSummaries/submi
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
 import StudentSelectionRadioGroup from 'src/presentation/review/components/StudentSelectionRadioGroup'
 import GradeSelect from 'src/presentation/review/components/GradeSelect'
-import MemoTextarea from './MemoTextarea'
-import FeedbackTextarea from './FeedbackTextarea'
+import MemoTextarea from 'src/presentation/review/components/MemoTextarea'
+import FeedbackTextarea from 'src/presentation/review/components/FeedbackTextarea'
 
 // サイドバーのProps
 interface IPropsSidebar {
