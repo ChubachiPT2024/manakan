@@ -1,4 +1,4 @@
-import { Assessment } from './submission'
+import { Assessment, submission } from './submission'
 
 export interface Report {
   id: number
@@ -8,6 +8,7 @@ export interface Report {
 
 export interface Item {
   student: Student
+  submission: submission
   assessment: Assessment
   isChecked: boolean
 }

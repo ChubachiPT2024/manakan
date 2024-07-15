@@ -19,7 +19,7 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
       }
     : {}
 
-  const issubmitted = false // 提出かどうかの判定
+  const issubmitted = item.submission.isSubmitted // 提出かどうかの判定
   const cardStyle = issubmitted
     ? 'h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer'
     : 'h-18 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer'

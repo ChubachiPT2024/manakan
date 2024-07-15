@@ -3,4 +3,8 @@ export interface Assessment {
   rank: AssessmentRank
 }
 
+export interface submission {
+  isSubmitted: boolean
+}
+
 export type AssessmentRank = '++' | '+' | '+-' | '-' | '--'

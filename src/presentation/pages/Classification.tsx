@@ -158,6 +158,9 @@ const Classification = () => {
               numId: item.student.numId,
               name: item.student.name,
             },
+            submission: {
+              isSubmitted: item.submission.isSubmitted,
+            },
             assessment: {
               grade: item.assessment.grade,
               rank: item.assessment.rank,
