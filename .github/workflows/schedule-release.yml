@@ -29,4 +29,5 @@ jobs:
           git push origin release
 
   trigger-build:
-    uses: ./.github/workflows/main.yml@main
+    needs: merge-main-to-release
+    uses: ChubachiPT2024/manakan/.github/workflows/main.yml@main
