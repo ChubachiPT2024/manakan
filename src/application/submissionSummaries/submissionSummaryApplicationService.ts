@@ -8,6 +8,7 @@ import { AssessmentRepository } from 'src/domain/models/assessments/assessmentRe
 import { SubmissionFolderScanner } from './submissionFolderScanner'
 import { SubmissionSummaryStudentData } from './submissionSummaryStudentData'
 import { SubmissionSummaryAssessmentData } from './submissionSummaryAssessmentData'
+import { SubmissionSummarySubmissionData } from './submissionSummarySubmissionData'
 
 /**
  * 提出物サマリアプリケーションサービス
@@ -73,6 +74,20 @@ export class SubmissionSummaryApplicationService {
       reportId,
       studentNumId
     )
+    const student = await this.studentRepository.findAsync(studentNumId)
+    const assessment = await this.assessmentRepository.findAsync(
+      reportId,
+      studentNumId
+    )
+
+    if (!submission.isSubmitted) {
+      return new SubmissionSummaryData(
+        [],
+        new SubmissionSummarySubmissionData(submission),
+        new SubmissionSummaryStudentData(student),
+        new SubmissionSummaryAssessmentData(assessment)
+      )
+    }
 
     const scanner = new SubmissionFolderScanner(
       reportListFolderAbsolutePath,
@@ -80,14 +95,9 @@ export class SubmissionSummaryApplicationService {
     )
     const files = await scanner.scanAsync()
 
-    const student = await this.studentRepository.findAsync(studentNumId)
-    const assessment = await this.assessmentRepository.findAsync(
-      reportId,
-      studentNumId
-    )
-
     return new SubmissionSummaryData(
       files,
+      new SubmissionSummarySubmissionData(submission),
       new SubmissionSummaryStudentData(student),
       new SubmissionSummaryAssessmentData(assessment)
     )

@@ -1,18 +1,23 @@
 import { Submission } from 'src/domain/models/submissions/submission'
 
 /**
- * レポートリスト項目の提出物データ（DTO）
+ * 提出物サマリ提出物データ
  */
-export class ReportListItemSubmissionData {
+export class SubmissionSummarySubmissionData {
   /**
    * 提出済かどうか
    */
   public readonly isSubmitted: boolean
 
   /**
-   * 提出物フォルダの相対パス
+   *　提出日時
    */
-  public readonly folderRelativePath?: string
+  public readonly submissionDateTime?: string
+
+  /**
+   * 提出回数
+   */
+  public readonly submissionCount?: number
 
   /**
    * コンストラクタ
@@ -21,6 +26,7 @@ export class ReportListItemSubmissionData {
    */
   public constructor(submission: Submission) {
     this.isSubmitted = submission.isSubmitted
-    this.folderRelativePath = submission.folderRelativePath
+    this.submissionDateTime = submission.submissionDateTime
+    this.submissionCount = submission.submissionCount
   }
 }

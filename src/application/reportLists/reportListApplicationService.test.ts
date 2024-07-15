@@ -142,7 +142,39 @@ describe('import', () => {
     const submission = submissions.find((x) => x.studentNumId === 23745148)
     expect(submission.reportId).toBe(35677)
     expect(submission.studentNumId).toBe(23745148)
+    expect(submission.isSubmitted).toBe(true)
+    expect(submission.submissionDateTime).toBe('2019-02-14 23:18:43')
+    expect(submission.submissionCount).toBe(1)
     expect(submission.folderRelativePath).toBe('23745148@a2348mt')
+  })
+
+  test('The unsubmitted submission is saved.', async () => {
+    const courseRepository = new InMemoryCourseRepository()
+    const reportRepository = new InMemoryReportRepository()
+    const studentRepository = new InMemoryStudentRepository()
+    const submissionRepository = new InMemorySubmissionRepository()
+    const assessmentRepository = new InMemoryAssessmentRepository()
+    const service = new ReportListApplicationService(
+      courseRepository,
+      reportRepository,
+      studentRepository,
+      submissionRepository,
+      assessmentRepository
+    )
+    const command = new ReportListImportCommand(
+      path.join(__dirname, 'reportListImportTestFiles', 'unsubmitted.xlsx')
+    )
+
+    await service.importAsync(command)
+
+    const submissions = await submissionRepository.findByReportIdAsync(35677)
+    const submission = submissions.find((x) => x.studentNumId === 23745148)
+    expect(submission.reportId).toBe(35677)
+    expect(submission.studentNumId).toBe(23745148)
+    expect(submission.isSubmitted).toBe(false)
+    expect(submission.submissionDateTime).toBeUndefined()
+    expect(submission.submissionCount).toBeUndefined()
+    expect(submission.folderRelativePath).toBeUndefined()
   })
 
   test('The first assessment is saved.', async () => {
@@ -205,6 +237,9 @@ describe('get', () => {
     const submission = new Submission(
       report.id,
       student.numId,
+      true,
+      '2019-02-14 23:18:43',
+      1,
       '23745148@a2348mt'
     )
     await submissionRepository.saveAsync(submission)
@@ -223,6 +258,7 @@ describe('get', () => {
     expect(item.student.userId).toBe('a2348mt')
     expect(item.student.numId).toBe(23745148)
     expect(item.student.name).toBe('田中　真')
+    expect(item.submission.isSubmitted).toBe(true)
     expect(item.submission.folderRelativePath).toBe('23745148@a2348mt')
     expect(item.assessment.feedback).toBeUndefined()
     expect(item.assessment.memo).toBeUndefined()
