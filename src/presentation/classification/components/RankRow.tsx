@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 interface RankRowProps {
   id: string
-  title: string
+  title: string | null
   children: ReactNode
 }
 
