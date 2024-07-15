@@ -261,53 +261,6 @@ const Classification = () => {
     })
   }
 
-  const renderRankRow = (gradeId: number) => {
-    const hasrank = gradeId !== 0
-    if (hasrank) {
-      return (
-        <>
-          {assessmentRanks.map((rank, index) => (
-            <RankRow key={index} id={`${gradeId}:${rank}`} title={rank}>
-              {hasAssessmentItem
-                .filter(
-                  (item) =>
-                    `${item.assessment.grade}:${item.assessment.rank}` ===
-                    `${gradeId}:${rank}`
-                )
-                .map((item, index) => (
-                  <SubmissionCard
-                    key={index}
-                    id={item.student.numId}
-                    item={item}
-                    onChange={(e) =>
-                      handleCheckboxChange(e, item.student.numId)
-                    }
-                  />
-                ))}
-            </RankRow>
-          ))}
-        </>
-      )
-    } else {
-      return (
-        <>
-          <RankRow key={''} id={`${gradeId}:`} title={''}>
-            {hasAssessmentItem
-              .filter((item) => `${item.assessment.grade}:` === `${gradeId}:`)
-              .map((item, index) => (
-                <SubmissionCard
-                  key={index}
-                  id={item.student.numId}
-                  item={item}
-                  onChange={(e) => handleCheckboxChange(e, item.student.numId)}
-                />
-              ))}
-          </RankRow>
-        </>
-      )
-    }
-  }
-
   return (
     <>
       <DndContext
@@ -365,7 +318,50 @@ const Classification = () => {
                       title={grade.id.toString()}
                       submissionNum={grade.submissionNum}
                     >
-                      {renderRankRow(grade.id)}
+                      {grade.id !== 0 ? (
+                        assessmentRanks.map((rank, index) => (
+                          <RankRow
+                            key={index}
+                            id={`${grade.id}:${rank}`}
+                            title={rank}
+                          >
+                            {hasAssessmentItem
+                              .filter(
+                                (item) =>
+                                  `${item.assessment.grade}:${item.assessment.rank}` ===
+                                  `${grade.id}:${rank}`
+                              )
+                              .map((item, index) => (
+                                <SubmissionCard
+                                  key={index}
+                                  id={item.student.numId}
+                                  item={item}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(e, item.student.numId)
+                                  }
+                                />
+                              ))}
+                          </RankRow>
+                        ))
+                      ) : (
+                        <RankRow key={grade.id} id={`${grade.id}:`} title={''}>
+                          {hasAssessmentItem
+                            .filter(
+                              (item) =>
+                                `${item.assessment.grade}:` === `${grade.id}:`
+                            )
+                            .map((item, index) => (
+                              <SubmissionCard
+                                key={index}
+                                id={item.student.numId}
+                                item={item}
+                                onChange={(e) =>
+                                  handleCheckboxChange(e, item.student.numId)
+                                }
+                              />
+                            ))}
+                        </RankRow>
+                      )}
                     </GradeColumn>
                   ))}
                 </div>
