@@ -1,6 +1,6 @@
 // ReviewPage.tsx
 import { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -8,12 +8,10 @@ import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
-import { MdKeyboardDoubleArrowLeft } from 'react-icons/md'
 import PdfView from '../review/components/PdfView'
 import { SubmissionSummariesGetCommand } from 'src/application/submissionSummaries/submissionSummariesGetCommand'
 
 const Review = () => {
-  const navigate = useNavigate()
   const location = useLocation()
   const { reportId, studentNumIds } = location.state
   const [submissionSummaries, setSubmissionSummaries] = useState([])
@@ -27,10 +25,6 @@ const Review = () => {
         setSubmissionSummaries(res.submissionSummaries)
       })
   }, [reportId, studentNumIds])
-
-  const handleBack = () => {
-    navigate(`/classification/${location.state.reportId}`)
-  }
 
   // 評点の状態
   const [grade, setGrade] = useState<number>(0)
@@ -65,11 +59,7 @@ const Review = () => {
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
-          <MdKeyboardDoubleArrowLeft
-            className="w-12 h-12 cursor-pointer transition duration-200 ease-in-out  hover:scale-110"
-            color={'#a9a9a9'}
-            onClick={handleBack}
-          />
+          <BackButton href={`/classification/${reportId}`} />
         </div>
 
         {/* メインコンテンツ */}
