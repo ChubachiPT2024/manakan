@@ -36,8 +36,14 @@ const Sidebar: React.FC<IPropsSidebar> = ({
         <ul className="pl-3">
           <li className="mb-2">学生名：{selectedStudent.name}</li>
           <li className="mb-2">学籍番号：{selectedStudent.numId}</li>
-          {/* TODO 提出者情報の取得 */}
-          <li className="mb-2">提出日時：2021/09/01 12:00</li>
+          <li className="mb-2">
+            提出日時：
+            {
+              submissionSummaries.find(
+                (summary) => summary.student.numId === selectedStudent.numId
+              )?.submission.submissionDateTime
+            }
+          </li>
         </ul>
       </div>
 
