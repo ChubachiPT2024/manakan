@@ -96,23 +96,13 @@ const Classification = () => {
     grade: AssessmentGrade,
     rank?: AssessmentRank
   ) => {
-    if (rank) {
-      await window.electronAPI
-        .classifyAssessmentAsync(
-          new AssessmentClassifyCommand(reportId, studentId, grade, rank)
-        )
-        .catch((e: any) => {
-          console.log(e)
-        })
-    } else {
-      await window.electronAPI
-        .classifyAssessmentAsync(
-          new AssessmentClassifyCommand(reportId, studentId, grade)
-        )
-        .catch((e: any) => {
-          console.log(e)
-        })
-    }
+    await window.electronAPI
+      .classifyAssessmentAsync(
+        new AssessmentClassifyCommand(reportId, studentId, grade, rank)
+      )
+      .catch((e: any) => {
+        console.log(e)
+      })
   }
 
   const handleCheckboxChange = (
