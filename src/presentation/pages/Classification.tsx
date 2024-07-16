@@ -277,7 +277,7 @@ const Classification = () => {
                 <div>
                   <SelectedButton
                     styles="bg-sky-400"
-                    title="複数開く"
+                    title="開く"
                     isDisabled={selectedStudentIds.length === 0}
                     onClick={handleOpenSelected}
                   />
