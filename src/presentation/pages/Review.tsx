@@ -25,7 +25,6 @@ const Review = () => {
 
   if (isLoading) return <Loading />
   if (error) return <Error />
-
   return (
     <>
       <div className="h-full overflow-hidden">
@@ -48,6 +47,7 @@ const Review = () => {
                 height="calc(100vh - 4rem)"
                 width={900}
                 pageHeight={1000}
+                submission={summary.submission}
               />
             ))}
           </div>
