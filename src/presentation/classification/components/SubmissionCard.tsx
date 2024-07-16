@@ -19,7 +19,7 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
       }
     : {}
 
-  const issubmitted = item.submission.isSubmitted
+  const isSubmitted = item.submission.isSubmitted
 
   return (
     <div
@@ -37,7 +37,7 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
           <p className="text-xs">{item.student.name}</p>
         </div>
       </div>
-      {!issubmitted && (
+      {!isSubmitted && (
         <div className="flex justify-end -mt-2">
           <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
             未提出

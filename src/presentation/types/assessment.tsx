@@ -3,7 +3,7 @@ export interface Assessment {
   rank: AssessmentRank
 }
 
-export interface submission {
+export interface Submission {
   isSubmitted: boolean
 }
 
