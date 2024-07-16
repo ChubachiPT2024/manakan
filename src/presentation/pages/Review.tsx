@@ -25,7 +25,6 @@ const Review = () => {
 
   if (isLoading) return <Loading />
   if (error) return <Error />
-  console.log('Review.tsx: submissionSummaries', submissionSummaries)
   return (
     <>
       <div className="h-full overflow-hidden">

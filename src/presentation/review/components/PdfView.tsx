@@ -41,7 +41,7 @@ const PdfView: React.FC<PdfViewProps> = ({
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
-      <div className="text-center" style={{ height, width }}>
+      <div className="text-center p-4 border-x" style={{ height, width }}>
         <h2 className="text-2xl font-bold">{student.name}</h2>
         <p>未提出の為、表示するデータがありません</p>
       </div>
@@ -95,7 +95,7 @@ const PdfView: React.FC<PdfViewProps> = ({
   )
 
   return (
-    <div className="text-center" style={{ height, width }}>
+    <div className="text-center p-4 border-x" style={{ height, width }}>
       <h2 className="text-2xl font-bold">{student.name}</h2>
       <div className="overflow-y-auto" style={{ height }}>
         {memoizedFiles.map(({ file, index }) => (
