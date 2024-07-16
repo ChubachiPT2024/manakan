@@ -93,6 +93,11 @@ app.whenReady().then(() => {
   )
 
   ipcMain.handle(
+    'getReportCourseAsync',
+    async () => await reportListApplicationService.getReportCourseAsync()
+  )
+
+  ipcMain.handle(
     'getReportListAsync',
     async (_, reportListGetCommand: ReportListGetCommand) =>
       await reportListApplicationService.getAsync(reportListGetCommand)
