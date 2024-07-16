@@ -3,7 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
-
+// import { Submission } from 'src/domain/models/submissions/submission'
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
@@ -20,6 +20,13 @@ interface PdfViewProps {
   height: string
   width: number
   pageHeight: number
+  submission: Submission
+}
+
+interface Submission {
+  isSubmitted: boolean
+  submissionDateTime?: string
+  submissionCount?: number
 }
 
 // 以下の Props を学籍番号を受けとる様に修正し、useEffect内で API 経由でPDFファイルを取得するように修正予定
@@ -30,7 +37,18 @@ const PdfView: React.FC<PdfViewProps> = ({
   height,
   width,
   pageHeight,
+  submission,
 }) => {
+  console.log(submission)
+  if (!submission.isSubmitted) {
+    return (
+      <div className="text-center" style={{ height, width }}>
+        <h2 className="text-2xl font-bold">{student.name}</h2>
+        <p>未提出の為、表示するデータがありません</p>
+      </div>
+    )
+  }
+
   const [pdfDatas, setPdfDatas] = useState<string[]>([])
   const [numPages, setNumPages] = useState<number[]>([])
 
