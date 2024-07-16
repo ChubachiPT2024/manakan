@@ -266,6 +266,38 @@ describe('get', () => {
     expect(item.assessment.rank).toBeUndefined()
     expect(item.assessment.score).toBeUndefined()
   })
+
+  test('Can get report course', async () => {
+    const courseRepository = new InMemoryCourseRepository()
+    const reportRepository = new InMemoryReportRepository()
+    const studentRepository = new InMemoryStudentRepository()
+    const submissionRepository = new InMemorySubmissionRepository()
+    const assessmentRepository = new InMemoryAssessmentRepository()
+    const service = new ReportListApplicationService(
+      courseRepository,
+      reportRepository,
+      studentRepository,
+      submissionRepository,
+      assessmentRepository
+    )
+    const course = new Course(27048, 'コミュニケーション技術特論2')
+    await courseRepository.saveAsync(course)
+    const report = new Report(
+      course.id,
+      35677,
+      '個人レポート課題',
+      'folderAbsolutePath'
+    )
+    await reportRepository.saveAsync(report)
+
+    const getResult = await service.getReportCourseAsync()
+
+    expect(getResult.length).toBe(1)
+    expect(getResult[0].courseId).toBe(27048)
+    expect(getResult[0].courseName).toBe('コミュニケーション技術特論2')
+    expect(getResult[0].reportId).toBe(35677)
+    expect(getResult[0].reportTitle).toBe('個人レポート課題')
+  })
 })
 
 describe('export', () => {

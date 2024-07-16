@@ -20,6 +20,7 @@ import { ReportListData } from './reportListData'
 import path from 'path'
 import { ReportListExportCommand } from './reportListExportCommand'
 import { ReportListExportResult } from './reportListExportResult'
+import { ReportCourseData } from './reportCourseData'
 
 /**
  * レポートリストアプリケーションサービス
@@ -113,6 +114,26 @@ export class ReportListApplicationService {
     }
 
     return reportId
+  }
+
+  /**
+   * レポートとコースのデータを取得する
+   *
+   * @returns レポートとコースのデータ
+   */
+  public async getReportCourseAsync(): Promise<ReportCourseData[]> {
+    const reports = await this.reportRepository.findAllAsync()
+    const courses = await this.courseRepository.findAllAsync()
+
+    const reportCourseDataList: ReportCourseData[] = []
+    for (const report of reports) {
+      const course = courses.find((course) => course.id === report.courseId)
+      reportCourseDataList.push(
+        new ReportCourseData(course.id, course.name, report.id, report.title)
+      )
+    }
+
+    return reportCourseDataList
   }
 
   /**
