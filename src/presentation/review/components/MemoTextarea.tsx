@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
+import { AssessmentMemoUpdateCommand } from 'src/application/assessments/assessmentMemoUpdateCommand'
 
 // メモ入力欄のProps
 interface MemoTextareaProps {
@@ -15,12 +17,40 @@ const MemoTextarea: React.FC<MemoTextareaProps> = ({
   submissionSummaries,
   selectedStudent,
 }) => {
-  // メモの値
-  const memoValue =
+  // 初期メモの値
+  const initialMemoValue =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
         summary.student.numId === selectedStudent.numId
     )?.assessment.memo || ''
+
+  // メモの値を状態として管理
+  const [memoValue, setMemoValue] = useState<string>(initialMemoValue)
+
+  // selectedStudent が変わるたびにメモの値を更新
+  useEffect(() => {
+    const newMemoValue =
+      submissionSummaries.find(
+        (summary: SubmissionSummaryData) =>
+          summary.student.numId === selectedStudent.numId
+      )?.assessment.memo || ''
+    setMemoValue(newMemoValue)
+  }, [selectedStudent])
+
+  // フォーカスが外れたら、メモを更新する
+  const handleBlur = async () => {
+    try {
+      await window.electronAPI.updateAssessmentMemoAsync(
+        new AssessmentMemoUpdateCommand(
+          Number(reportId),
+          selectedStudent.numId,
+          memoValue
+        )
+      )
+    } catch (e: Error | any) {
+      console.log(e)
+    }
+  }
 
   return (
     <div className="m-1">
@@ -34,6 +64,8 @@ const MemoTextarea: React.FC<MemoTextareaProps> = ({
           value={memoValue}
           sx={{ m: '0' }}
           fullWidth
+          onChange={(e) => setMemoValue(e.target.value)}
+          onBlur={handleBlur}
         />
       </div>
     </div>
