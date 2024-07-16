@@ -5,7 +5,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
-pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`
+pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
 interface Student {
   name: string
