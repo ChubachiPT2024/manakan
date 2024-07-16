@@ -3,7 +3,6 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
-// import { Submission } from 'src/domain/models/submissions/submission'
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
@@ -39,7 +38,7 @@ const PdfView: React.FC<PdfViewProps> = ({
   pageHeight,
   submission,
 }) => {
-  console.log(submission)
+  // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
       <div className="text-center" style={{ height, width }}>
@@ -101,7 +100,7 @@ const PdfView: React.FC<PdfViewProps> = ({
       <div className="overflow-y-auto" style={{ height }}>
         {memoizedFiles.map(({ file, index }) => (
           <div
-            key={index}
+            key={`${student.userId}-${index}`}
             className="mb-5 overflow-y-auto"
             style={{ width, height: pageHeight }}
           >
