@@ -18,6 +18,8 @@ import { ReportListGetCommand } from 'src/application/reportLists/reportListGetC
 import { Report } from '../types/report'
 import { AssessmentRank } from '../types/submission'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import Loading from '../common/isLoading/Loading'
+import Error from '../common/error/Error'
 
 const Classification = () => {
   const { id } = useParams()
@@ -199,37 +201,11 @@ const Classification = () => {
   )
 
   if (process === 'loading') {
-    return (
-      <>
-        <div
-          className="flex justify-center items-center h-screen"
-          aria-label="読み込み中"
-        >
-          <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-        </div>
-      </>
-    )
+    return <Loading />
   }
 
   if (process === 'error') {
-    return (
-      <>
-        <div
-          className="flex justify-center items-center h-screen"
-          aria-label="読み込み中"
-        >
-          <div className="text-center">
-            <h1 className="text-2xl mb-5">エラーが発生しました</h1>
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => navigate('/')}
-            >
-              ホームへ戻る
-            </button>
-          </div>
-        </div>
-      </>
-    )
+    return <Error />
   }
 
   const draggingItem = report.items.find(
