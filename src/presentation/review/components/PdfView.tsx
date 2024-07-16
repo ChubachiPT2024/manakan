@@ -43,7 +43,9 @@ const PdfView: React.FC<PdfViewProps> = ({
     return (
       <div className="text-center p-4 border-x" style={{ height, width }}>
         <h2 className="text-2xl font-bold">{student.name}</h2>
-        <p>未提出の為、表示するデータがありません</p>
+        <p className="border border-gray-300 p-4 rounded bg-gray-100">
+          未提出の為、表示するデータがありません
+        </p>
       </div>
     )
   }
