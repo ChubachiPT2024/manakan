@@ -1,46 +1,38 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'
+import PdfView from '../review/components/PdfView'
+import Sidebar from '../review/components/Sidebar'
+import { useSubmissionSummaries } from '../review/hooks/useSubmissionSummaries'
+import { BackButton } from '../common/button/BackButton'
+import Loading from '../common/isLoading/Loading'
+import Error from '../common/error/Error'
 
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-
-
-import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
+// ルーティング時に渡される情報の型
+type LocationState = {
+  reportId: string
+  studentNumIds: number[]
+}
 
 const Review = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  // 高嶋さん向け。location.stateには前のページから渡された値が入っている。
-  // console.log(location.state)
+  // ルーティング時に渡された情報を取得
+  const location = useLocation()
+  const { reportId, studentNumIds } = location.state as LocationState
 
-  const handleBack = () => {
-    navigate(`/classification/${location.state.reportId}`); 
-  };
+  // 提出物サマリーを取得
+  const { submissionSummaries, error, isLoading } = useSubmissionSummaries(
+    reportId,
+    studentNumIds
+  )
 
-  // 評点の状態
-  const [grade, setGrade] = useState<number>(0);
+  if (isLoading) return <Loading />
+  if (error) return <Error />
 
-
-  // 評点が変更された時の処理
-  const handleChange = (event: SelectChangeEvent) => {
-    setGrade(Number(event.target.value));
-  };
-
-  
   return (
     <>
       <div className="h-full overflow-hidden">
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
-          <MdKeyboardDoubleArrowLeft className='w-12 h-12 cursor-pointer transition duration-200 ease-in-out  hover:scale-110'
-            color={"#a9a9a9"}
-            onClick={handleBack} />
+          <BackButton href={`/classification/${reportId}`} />
         </div>
 
         {/* メインコンテンツ */}
@@ -195,85 +187,10 @@ const Review = () => {
             </div>
           </div>
 
-          {/* sidebar */}
-          <div className="w-96 p-4 m-2 border-l-4 flex flex-col justify-start overflow-y-auto">
-
-            {/* 学生選択のラジオボタン */}
-            <div className="flex flex-col m-1">
-              <FormControl>
-                <h2 className="text-xl font-bold mb-1">学生選択</h2>
-                <RadioGroup
-                  aria-labelledby="radio-buttons-group-label"
-                  defaultValue="学生1"
-                  name="radio-buttons-group"
-                >
-                  <FormControlLabel value="学生1" control={<Radio />} label="学生1" sx={{m: "0"}}/>
-                  <FormControlLabel value="学生2" control={<Radio />} label="学生2" sx={{m: "0"}}/>
-                  <FormControlLabel value="学生3" control={<Radio />} label="学生3" sx={{m: "0"}}/>
-                  <FormControlLabel value="学生4" control={<Radio />} label="学生4" sx={{m: "0"}}/>
-                  <FormControlLabel value="学生5" control={<Radio />} label="学生5" sx={{m: "0"}}/>
-                </RadioGroup>
-              </FormControl>
-            </div>
-
-            {/* 提出者情報 */}
-            <div className='flex flex-col m-1'>
-              <h2 className="text-xl font-bold mb-2">提出者情報</h2>
-              <ul className="pl-3">
-                <li className='mb-2'>学生名：ほげ</li>
-                <li className='mb-2'>学籍番号：0000000000</li>
-                <li className='mb-2'>提出日時：2021/09/01 12:00</li>
-              </ul>
-            </div>
-
-            {/* 分類 セレクトボタン*/}
-            <div className='m-1'>
-              <h2 className="text-xl font-bold mb-2">分類</h2>
-              <div className='pl-3'>
-              <FormControl fullWidth>
-                <Select
-                  id="select"
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  value={grade.toString()}
-                  onChange={handleChange}
-                >
-                  <MenuItem value={5}>5</MenuItem>
-                  <MenuItem value={4}>4</MenuItem>
-                  <MenuItem value={3}>3</MenuItem>
-                  <MenuItem value={2}>2</MenuItem>
-                  <MenuItem value={1}>1</MenuItem>
-                  <MenuItem value={0}>0</MenuItem>
-                </Select>
-              </FormControl>
-              </div>
-            </div>
-
-            {/* 点数 */}
-            <div className='m-1'>
-              <h2 className="text-xl font-bold mb-2">点数</h2>
-              <div className='pl-3'>
-                <TextField id="score" type='number' value={100} variant="outlined" fullWidth inputProps={{ 'aria-label': 'Without label', min: 0, max: 100 }}/>
-              </div>
-            </div>
-
-            {/* メモ テキストエリア*/}
-            <div className='m-1'>
-              <h2 className="text-xl font-bold mb-2">メモ</h2>
-              <div className='pl-3'>
-                {/* TODO: placeholderを相談 */}
-                <TextField id="memo" multiline rows={4} placeholder="評価の為の一時的なメモを記述して下さい。このデータはmanabaには反映されません。" sx={{m: "0"}} fullWidth />
-              </div>
-            </div>
-
-            {/* フィードバック テキストエリア*/}
-            <div className='m-1'>
-              <h2 className="text-xl font-bold mb-2">フィードバック</h2>
-              <div className='pl-3'>
-                {/* TODO: placeholderを相談 */}
-                <TextField id="feedback" multiline rows={4}  placeholder="学生に伝える為のフィードバックを記述して下さい。" fullWidth/>
-              </div>
-            </div>
-          </div>
+          <Sidebar
+            reportId={reportId}
+            submissionSummaries={submissionSummaries}
+          />
         </div>
       </div>
     </>
