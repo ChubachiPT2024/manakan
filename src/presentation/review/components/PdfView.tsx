@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
-import { Document, Page, pdfjs } from 'react-pdf'
+import React, { useEffect, useState } from 'react'
+import { pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 import StudentHeader from './StudentHeader'
 import SubmissionContainer from './SubmissionContainer'
+import PdfContainer from './PdfContainer' // 新しいコンポーネントをインポート
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
@@ -53,7 +54,6 @@ const PdfView: React.FC<PdfViewProps> = ({
   }
 
   const [pdfUrls, setPdfUrls] = useState<string[]>([])
-  const [numPages, setNumPages] = useState<number[]>([])
 
   useEffect(() => {
     const fetchPdfFiles = async () => {
@@ -77,52 +77,10 @@ const PdfView: React.FC<PdfViewProps> = ({
     fetchPdfFiles()
   }, [reportId, student.numId, files])
 
-  const onDocumentLoadSuccess = useCallback((index: number, pdf: any) => {
-    setNumPages((prevNumPages) => {
-      const newNumPages = [...prevNumPages]
-      newNumPages[index] = pdf.numPages
-      return newNumPages
-    })
-  }, [])
-
-  const memoizedFiles = useMemo(() => {
-    return pdfUrls.map((url, index) => ({ url, index }))
-  }, [pdfUrls])
-
-  const memoizedOptions = useMemo(
-    () => ({
-      // pdfjs のフォントエラーを回避する為に外部サイトを指定
-      cMapUrl: `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/cmaps/`,
-      cMapPacked: true,
-    }),
-    []
-  )
-
   return (
     <StudentHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
-        {memoizedFiles.map(({ url, index }) => (
-          <div
-            key={`${student.userId}-${index}`}
-            className="mb-5 overflow-y-auto"
-            style={{ width, height: pageHeight }}
-          >
-            <Document
-              file={url}
-              onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
-              options={memoizedOptions}
-            >
-              {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
-                <Page
-                  key={`${student.name}-page-${index}-${pageIndex + 1}`}
-                  pageNumber={pageIndex + 1}
-                  width={width}
-                  height={pageHeight}
-                />
-              ))}
-            </Document>
-          </div>
-        ))}
+        <PdfContainer files={pdfUrls} width={width} pageHeight={pageHeight} />
       </SubmissionContainer>
     </StudentHeader>
   )
