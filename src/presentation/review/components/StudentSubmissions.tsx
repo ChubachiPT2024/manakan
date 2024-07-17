@@ -5,6 +5,7 @@ import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submis
 import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
+import SubmissionTextContainer from './SubmissionTextContainer'
 
 interface Student {
   name: string
@@ -37,16 +38,14 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   pageHeight,
   submission,
 }) => {
-  // 未提出の場合は例外テキストを表示
+  // 未提出の場合、例外テキストを表示
   if (!submission.isSubmitted) {
     return (
-      <StudentSubmissionsHeader student={student} style={{ height, width }}>
-        <SubmissionContainer height={height}>
-          <p className="border border-gray-300 p-4 rounded bg-gray-100">
-            未提出の為、表示するデータがありません
-          </p>
-        </SubmissionContainer>
-      </StudentSubmissionsHeader>
+      <SubmissionTextContainer height={height} width={width} student={student}>
+        <p className="border border-gray-300 p-4 rounded bg-gray-100">
+          未提出の為、表示するデータがありません
+        </p>
+      </SubmissionTextContainer>
     )
   }
 
