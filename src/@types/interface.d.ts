@@ -21,7 +21,7 @@ export interface IElectronAPI {
     reportListExportCommand: ReportListExportCommand
   ) => Promise<ReportListExportResult>
 
-  getReportCourseAsync: () => Promise<ReportCourseGetResult[]>
+  getReportCourseAsync: () => Promise<ReportCourseGetResult>
 
   getReportListAsync: (
     reportListGetCommand: ReportListGetCommand
