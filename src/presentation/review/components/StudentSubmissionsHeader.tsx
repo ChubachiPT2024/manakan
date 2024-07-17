@@ -6,13 +6,13 @@ interface Student {
   userId: string
 }
 
-interface StudentHeaderProps {
+interface StudentSubmissionsHeaderProps {
   student: Student
   style: React.CSSProperties
   children?: React.ReactNode
 }
 
-const StudentHeader: React.FC<StudentHeaderProps> = ({
+const StudentSubmissionsHeader: React.FC<StudentSubmissionsHeaderProps> = ({
   student,
   style,
   children,
@@ -23,4 +23,4 @@ const StudentHeader: React.FC<StudentHeaderProps> = ({
   </div>
 )
 
-export default StudentHeader
+export default StudentSubmissionsHeader

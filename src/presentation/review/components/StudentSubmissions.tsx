@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
-import StudentHeader from './StudentHeader'
+import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
 
@@ -40,13 +40,13 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
-      <StudentHeader student={student} style={{ height, width }}>
+      <StudentSubmissionsHeader student={student} style={{ height, width }}>
         <SubmissionContainer height={height}>
           <p className="border border-gray-300 p-4 rounded bg-gray-100">
             未提出の為、表示するデータがありません
           </p>
         </SubmissionContainer>
-      </StudentHeader>
+      </StudentSubmissionsHeader>
     )
   }
 
@@ -75,7 +75,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   }, [reportId, student.numId, files])
 
   return (
-    <StudentHeader student={student} style={{ height, width }}>
+    <StudentSubmissionsHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
           files={pdfUrls}
@@ -83,7 +83,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
           pageHeight={pageHeight}
         />
       </SubmissionContainer>
-    </StudentHeader>
+    </StudentSubmissionsHeader>
   )
 }
 
