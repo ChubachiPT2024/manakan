@@ -7,7 +7,7 @@ import StudentHeader from './StudentHeader'
 import SubmissionContainer from './SubmissionContainer'
 import PdfContainer from './PdfContainer' // 新しいコンポーネントをインポート
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
-pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
+// pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
 interface Student {
   name: string
@@ -31,7 +31,7 @@ interface Submission {
   submissionCount?: number
 }
 
-const PdfView: React.FC<StudentSubmissionsProps> = ({
+const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   reportId,
   student,
   files,
@@ -86,4 +86,4 @@ const PdfView: React.FC<StudentSubmissionsProps> = ({
   )
 }
 
-export default PdfView
+export default StudentSubmissions
