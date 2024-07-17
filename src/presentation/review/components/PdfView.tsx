@@ -30,7 +30,6 @@ interface Submission {
   submissionCount?: number
 }
 
-// 以下の Props を学籍番号を受けとる様に修正し、useEffect内で API 経由でPDFファイルを取得するように修正予定
 const PdfView: React.FC<PdfViewProps> = ({
   reportId,
   student,
@@ -53,7 +52,7 @@ const PdfView: React.FC<PdfViewProps> = ({
     )
   }
 
-  const [pdfDatas, setPdfDatas] = useState<string[]>([])
+  const [pdfUrls, setPdfUrls] = useState<string[]>([])
   const [numPages, setNumPages] = useState<number[]>([])
 
   useEffect(() => {
@@ -66,12 +65,12 @@ const PdfView: React.FC<PdfViewProps> = ({
         return URL.createObjectURL(blob)
       })
 
-      const pdfDataArray = await Promise.all(pdfDataPromises)
-      setPdfDatas(pdfDataArray)
+      const pdfUrlsArray = await Promise.all(pdfDataPromises)
+      setPdfUrls(pdfUrlsArray)
 
       return () => {
         // クリーンアップ: URLオブジェクトを解放
-        pdfDataArray.forEach(URL.revokeObjectURL)
+        pdfUrlsArray.forEach(URL.revokeObjectURL)
       }
     }
 
@@ -87,8 +86,8 @@ const PdfView: React.FC<PdfViewProps> = ({
   }, [])
 
   const memoizedFiles = useMemo(() => {
-    return pdfDatas.map((data, index) => ({ file: data, index }))
-  }, [pdfDatas])
+    return pdfUrls.map((url, index) => ({ url, index }))
+  }, [pdfUrls])
 
   const memoizedOptions = useMemo(
     () => ({
@@ -100,18 +99,16 @@ const PdfView: React.FC<PdfViewProps> = ({
   )
 
   return (
-    // <div className="text-center p-4 border-x" style={{ height, width }}>
-    //   <h2 className="text-2xl font-bold">{student.name}</h2>
     <StudentHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
-        {memoizedFiles.map(({ file, index }) => (
+        {memoizedFiles.map(({ url, index }) => (
           <div
             key={`${student.userId}-${index}`}
             className="mb-5 overflow-y-auto"
             style={{ width, height: pageHeight }}
           >
             <Document
-              file={file}
+              file={url}
               onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
               options={memoizedOptions}
             >
