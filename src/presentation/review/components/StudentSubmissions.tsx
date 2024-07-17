@@ -4,7 +4,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 import StudentHeader from './StudentHeader'
 import SubmissionContainer from './SubmissionContainer'
-import PdfContainer from './PdfContainer' // 新しいコンポーネントをインポート
+import SubmissionPdfContainer from './SubmissionPdfContainer'
 
 interface Student {
   name: string
@@ -77,7 +77,11 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   return (
     <StudentHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
-        <PdfContainer files={pdfUrls} width={width} pageHeight={pageHeight} />
+        <SubmissionPdfContainer
+          files={pdfUrls}
+          width={width}
+          pageHeight={pageHeight}
+        />
       </SubmissionContainer>
     </StudentHeader>
   )

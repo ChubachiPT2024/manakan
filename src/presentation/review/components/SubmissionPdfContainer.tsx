@@ -3,13 +3,13 @@ import { Document, Page, pdfjs } from 'react-pdf'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
-interface PdfContainerProps {
+interface SubmissionPdfContainerProps {
   files: string[]
   width: number
   pageHeight: number
 }
 
-const PdfContainer: React.FC<PdfContainerProps> = ({
+const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
   files,
   width,
   pageHeight,
@@ -64,4 +64,4 @@ const PdfContainer: React.FC<PdfContainerProps> = ({
   )
 }
 
-export default PdfContainer
+export default SubmissionPdfContainer
