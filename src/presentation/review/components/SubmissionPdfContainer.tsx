@@ -4,7 +4,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
 interface SubmissionPdfContainerProps {
-  files: string[]
+  files: { name: string; url: string }[]
   width: number
   pageHeight: number
 }
@@ -25,7 +25,11 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
   }, [])
 
   const memoizedFiles = useMemo(() => {
-    return files.map((url, index) => ({ url, index }))
+    return files.map((file, index) => ({
+      fileName: file.name,
+      url: file.url,
+      index,
+    }))
   }, [files])
 
   const memoizedOptions = useMemo(
@@ -38,12 +42,15 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
 
   return (
     <>
-      {memoizedFiles.map(({ url, index }) => (
+      {memoizedFiles.map(({ fileName, url, index }) => (
         <div
           key={`pdf-${index}`}
           className="mb-5 overflow-y-auto"
           style={{ width, height: pageHeight }}
         >
+          <div className="ont-bold mb-2 p-2 border border-gray-300 rounded bg-gray-100">
+            {fileName}
+          </div>
           <Document
             file={url}
             onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
