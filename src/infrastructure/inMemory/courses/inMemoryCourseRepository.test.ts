@@ -13,4 +13,16 @@ describe('save', () => {
     expect(actual.id).toBe(expected.id)
     expect(actual.name).toBe(expected.name)
   })
+
+  test('should return all courses', async () => {
+    const repository = new InMemoryCourseRepository()
+    const expected1 = new Course(1, 'name')
+    const expected2 = new Course(2, 'name')
+
+    await repository.saveAsync(expected1)
+    await repository.saveAsync(expected2)
+
+    const actual = await repository.findAllAsync()
+    expect(actual.length).toBe(2)
+  })
 })

@@ -18,6 +18,7 @@ import { SubmissionSummariesGetCommand } from './application/submissionSummaries
 import { SubmissionFileApplicationService } from './application/submissionFiles/submissionFileApplicationService'
 import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 import { ReportListExportCommand } from './application/reportLists/reportListExportCommand'
+import { ReportCourseApplicationService } from './application/reportCourse/reportCourseApplicationService'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -75,6 +76,10 @@ const submissionFileApplicationService = new SubmissionFileApplicationService(
   reportRepository,
   submissionRepository
 )
+const reportCourseApplicationService = new ReportCourseApplicationService(
+  courseRepository,
+  reportRepository
+)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -90,6 +95,11 @@ app.whenReady().then(() => {
     'exportReportListAsync',
     async (_, reportListExportCommand: ReportListExportCommand) =>
       await reportListApplicationService.exportAsync(reportListExportCommand)
+  )
+
+  ipcMain.handle(
+    'getReportCourseAsync',
+    async () => await reportCourseApplicationService.getReportCourseAsync()
   )
 
   ipcMain.handle(

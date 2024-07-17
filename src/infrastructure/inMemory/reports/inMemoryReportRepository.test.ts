@@ -17,4 +17,26 @@ describe('save', () => {
       expected.reportListFolderAbsolutePath
     )
   })
+
+  test('should return all reports', async () => {
+    const repository = new InMemoryReportRepository()
+    const expected1 = new Report(
+      1,
+      1,
+      'title1',
+      'reportListFolderAbsolutePath1'
+    )
+    const expected2 = new Report(
+      2,
+      2,
+      'title2',
+      'reportListFolderAbsolutePath2'
+    )
+
+    await repository.saveAsync(expected1)
+    await repository.saveAsync(expected2)
+
+    const actual = await repository.findAllAsync()
+    expect(actual.length).toBe(2)
+  })
 })

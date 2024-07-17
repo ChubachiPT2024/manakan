@@ -17,4 +17,10 @@ export interface ReportRepository {
    * @param id ID
    */
   findAsync(id: number): Promise<Report>
+
+  /**
+   * レポートを全件取得する
+   *
+   */
+  findAllAsync(): Promise<Report[]>
 }
