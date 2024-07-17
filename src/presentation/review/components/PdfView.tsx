@@ -3,6 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
+import StudentHeader from './StudentHeader'
 // pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
@@ -41,12 +42,11 @@ const PdfView: React.FC<PdfViewProps> = ({
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
-      <div className="text-center p-4 border-x" style={{ height, width }}>
-        <h2 className="text-2xl font-bold">{student.name}</h2>
+      <StudentHeader student={student} style={{ height, width }}>
         <p className="border border-gray-300 p-4 rounded bg-gray-100">
           未提出の為、表示するデータがありません
         </p>
-      </div>
+      </StudentHeader>
     )
   }
 
@@ -97,8 +97,9 @@ const PdfView: React.FC<PdfViewProps> = ({
   )
 
   return (
-    <div className="text-center p-4 border-x" style={{ height, width }}>
-      <h2 className="text-2xl font-bold">{student.name}</h2>
+    // <div className="text-center p-4 border-x" style={{ height, width }}>
+    //   <h2 className="text-2xl font-bold">{student.name}</h2>
+    <StudentHeader student={student} style={{ height, width }}>
       <div className="overflow-y-auto" style={{ height }}>
         {memoizedFiles.map(({ file, index }) => (
           <div
@@ -123,7 +124,8 @@ const PdfView: React.FC<PdfViewProps> = ({
           </div>
         ))}
       </div>
-    </div>
+      {/* </div> */}
+    </StudentHeader>
   )
 }
 
