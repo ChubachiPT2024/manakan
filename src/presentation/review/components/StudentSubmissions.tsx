@@ -15,7 +15,7 @@ interface Student {
   userId: string
 }
 
-interface PdfViewProps {
+interface StudentSubmissionsProps {
   reportId: number
   student: Student
   files: string[]
@@ -31,7 +31,7 @@ interface Submission {
   submissionCount?: number
 }
 
-const PdfView: React.FC<PdfViewProps> = ({
+const PdfView: React.FC<StudentSubmissionsProps> = ({
   reportId,
   student,
   files,
