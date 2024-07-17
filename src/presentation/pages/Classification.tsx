@@ -8,16 +8,17 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SubmissionCard } from '../classification/components/SubmissionCard'
 import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
-import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
-import { AssessmentRank } from '../types/submission'
+import { AssessmentRank } from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import Loading from '../common/isLoading/Loading'
 import Error from '../common/error/Error'
 
@@ -36,11 +37,12 @@ const Classification = () => {
       submissionNum: number
     }[]
   >([
-    { id: 1, submissionNum: 0 },
-    { id: 2, submissionNum: 0 },
-    { id: 3, submissionNum: 0 },
-    { id: 4, submissionNum: 0 },
     { id: 5, submissionNum: 0 },
+    { id: 4, submissionNum: 0 },
+    { id: 3, submissionNum: 0 },
+    { id: 2, submissionNum: 0 },
+    { id: 1, submissionNum: 0 },
+    { id: 0, submissionNum: 0 },
   ])
 
   const assessmentRanks = ['++', '+', '+-', '-', '--']
@@ -53,7 +55,7 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: number | null = null
+    let grade: AssessmentGrade | null = null
     let rank: AssessmentRank | null = null
 
     if (over && active.id !== over?.id) {
@@ -61,7 +63,7 @@ const Classification = () => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
             const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade)
+            grade = Number(newGrade) as AssessmentGrade
             rank = newRank as AssessmentRank
           }
 
@@ -91,8 +93,8 @@ const Classification = () => {
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: number,
-    rank: AssessmentRank
+    grade: AssessmentGrade,
+    rank?: AssessmentRank
   ) => {
     await window.electronAPI
       .classifyAssessmentAsync(
@@ -147,6 +149,9 @@ const Classification = () => {
             student: {
               numId: item.student.numId,
               name: item.student.name,
+            },
+            submission: {
+              isSubmitted: item.submission.isSubmitted,
             },
             assessment: {
               grade: item.assessment.grade,
@@ -216,9 +221,7 @@ const Classification = () => {
     .filter((item) => item.assessment.grade == null)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter(
-      (item) => item.assessment.grade != null && item.assessment.rank != null
-    )
+    .filter((item) => item.assessment.grade != null)
 
   const handleOpenSelected = () => {
     const selectedSubmissions = report.items.filter((item) => item.isChecked)
@@ -264,7 +267,7 @@ const Classification = () => {
                 <div>
                   <SelectedButton
                     styles="bg-sky-400"
-                    title="複数開く"
+                    title="開く"
                     isDisabled={selectedStudentIds.length === 0}
                     onClick={handleOpenSelected}
                   />
@@ -284,17 +287,37 @@ const Classification = () => {
                       title={grade.id.toString()}
                       submissionNum={grade.submissionNum}
                     >
-                      {assessmentRanks.map((rank, index) => (
-                        <RankRow
-                          key={index}
-                          id={`${grade.id}:${rank}`}
-                          title={rank}
-                        >
+                      {grade.id !== 0 ? (
+                        assessmentRanks.map((rank, index) => (
+                          <RankRow
+                            key={index}
+                            id={`${grade.id}:${rank}`}
+                            title={rank}
+                          >
+                            {hasAssessmentItem
+                              .filter(
+                                (item) =>
+                                  `${item.assessment.grade}:${item.assessment.rank}` ===
+                                  `${grade.id}:${rank}`
+                              )
+                              .map((item, index) => (
+                                <SubmissionCard
+                                  key={index}
+                                  id={item.student.numId}
+                                  item={item}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(e, item.student.numId)
+                                  }
+                                />
+                              ))}
+                          </RankRow>
+                        ))
+                      ) : (
+                        <RankRow key={grade.id} id={`${grade.id}:`} title={''}>
                           {hasAssessmentItem
                             .filter(
                               (item) =>
-                                `${item.assessment.grade}:${item.assessment.rank}` ===
-                                `${grade.id}:${rank}`
+                                `${item.assessment.grade}:` === `${grade.id}:`
                             )
                             .map((item, index) => (
                               <SubmissionCard
@@ -307,7 +330,7 @@ const Classification = () => {
                               />
                             ))}
                         </RankRow>
-                      ))}
+                      )}
                     </GradeColumn>
                   ))}
                 </div>
