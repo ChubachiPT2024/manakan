@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 import StudentHeader from './StudentHeader'
 import SubmissionContainer from './SubmissionContainer'
 import PdfContainer from './PdfContainer' // 新しいコンポーネントをインポート
-// pdfjs-distからpdf.worker.min.jsファイルへのパスを設定
-// pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
 interface Student {
   name: string
