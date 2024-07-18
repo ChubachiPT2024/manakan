@@ -22,10 +22,14 @@ export class JsonCourseRepository implements CourseRepository {
   public async saveAsync(course: Course): Promise<void> {
     const courses = await this.readFromJsonFileAsync()
 
-    const courseMap = new Map<number, Course>(courses.map((x) => [x.id, x]))
-    courseMap.set(course.id, course)
+    const index = courses.findIndex((x) => x.id === course.id)
+    if (index === -1) {
+      courses.push(course)
+    } else {
+      courses[index] = course
+    }
 
-    await this.writeToJsonFileAsync(Array.from(courseMap.values()))
+    await this.writeToJsonFileAsync(courses)
   }
 
   /**
