@@ -15,11 +15,8 @@ const RecentReports = () => {
         <h3 className="text-lg font-semibold mb-1">最近使用したデータ</h3>
         <Suspense fallback={<Loading />}>
           <ul>
-            {/* より最近にインポートされたのものが上に来るようにしています */}
-            {data.reportCourseDataList
-              .slice()
-              .reverse()
-              .map((reportCourseData: ReportCourseData) => (
+            {data.reportCourseDataList.map(
+              (reportCourseData: ReportCourseData) => (
                 <li
                   key={reportCourseData.reportId}
                   className="py-2 flex justify-between items-center w-full"
@@ -36,7 +33,8 @@ const RecentReports = () => {
                     {/* <span className="text-gray-500 text-sm block">2024-06-30</span> */}
                   </Link>
                 </li>
-              ))}
+              )
+            )}
           </ul>
         </Suspense>
       </div>
