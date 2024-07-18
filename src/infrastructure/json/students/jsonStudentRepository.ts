@@ -21,12 +21,15 @@ export class JsonStudentRepository implements StudentRepository {
    */
   public async saveAsync(student: Student): Promise<void> {
     const students = await this.readFromJsonFileAsync()
-    const studentMap = new Map<number, Student>(
-      students.map((x) => [x.numId, x])
-    )
-    studentMap.set(student.numId, student)
 
-    await this.writeToJsonFileAsync(Array.from(studentMap.values()))
+    const index = students.findIndex((x) => x.numId === student.numId)
+    if (index === -1) {
+      students.push(student)
+    } else {
+      students[index] = student
+    }
+
+    await this.writeToJsonFileAsync(students)
   }
 
   /**
