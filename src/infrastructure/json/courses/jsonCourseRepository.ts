@@ -53,9 +53,9 @@ export class JsonCourseRepository implements CourseRepository {
   }
 
   /**
-   * コースリストを JSON ファイルから読み込む
+   * コースを JSON ファイルから読み込む
    *
-   * @returns コースリスト
+   * @returns コース
    */
   private async readFromJsonFileAsync(): Promise<Course[]> {
     try {
@@ -67,9 +67,9 @@ export class JsonCourseRepository implements CourseRepository {
   }
 
   /**
-   * コースリストをJSON ファイルに書き込む
+   * コースを JSON ファイルに書き込む
    *
-   * @param courses コースリスト
+   * @param courses コース
    */
   private async writeToJsonFileAsync(courses: Course[]): Promise<void> {
     await writeFile(this.jsonFileAbsolutePath, JSON.stringify(courses))
