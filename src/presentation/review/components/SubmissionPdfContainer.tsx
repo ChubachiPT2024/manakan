@@ -69,20 +69,28 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
             {fileName}
           </div>
           {fileTypes[url] === 'application/pdf' ? (
-            <Document
-              file={url}
-              onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
-              options={memoizedOptions}
+            <div
+              style={{
+                width,
+                height: pageHeight,
+                overflowY: 'auto',
+              }}
             >
-              {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
-                <Page
-                  key={`page-${index}-${pageIndex + 1}`}
-                  pageNumber={pageIndex + 1}
-                  width={width}
-                  height={pageHeight}
-                />
-              ))}
-            </Document>
+              <Document
+                file={url}
+                onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
+                options={memoizedOptions}
+              >
+                {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
+                  <Page
+                    key={`page-${index}-${pageIndex + 1}`}
+                    pageNumber={pageIndex + 1}
+                    width={width}
+                    height={pageHeight}
+                  />
+                ))}
+              </Document>
+            </div>
           ) : (
             <div className="border border-gray-300 p-4 rounded bg-gray-100">
               このファイルタイプの表示はサポートされていません。
