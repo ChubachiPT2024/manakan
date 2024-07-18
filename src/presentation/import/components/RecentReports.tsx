@@ -11,7 +11,7 @@ const RecentReports = () => {
   if (error) console.log(error)
   return (
     <>
-      <div className="w-full max-w-lg rounded-lg p-4 pt-8">
+      <div className="w-screen max-w-lg rounded-lg p-4 pt-8">
         <h3 className="text-lg font-semibold mb-1">最近使用したデータ</h3>
         <Suspense fallback={<Loading />}>
           <ul>
