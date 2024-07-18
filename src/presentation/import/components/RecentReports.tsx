@@ -28,10 +28,9 @@ const RecentReports = () => {
                     to={`/classification/${reportCourseData.reportId}`}
                     className="flex justify-between text-black hover:text-blue-600 bg-white hover:bg-gray-100 rounded-lg p-4 transition-colors duration-300 w-full border border-gray-500"
                   >
-                    <div>
-                      {reportCourseData.courseName +
-                        ' ' +
-                        reportCourseData.reportTitle}
+                    <div className="flex flex-col">
+                      <p>{reportCourseData.courseName}</p>
+                      <p>{reportCourseData.reportTitle}</p>
                     </div>
                     {/* ToDo: 最終編集日の取得 */}
                     {/* <span className="text-gray-500 text-sm block">2024-06-30</span> */}
