@@ -27,7 +27,7 @@ const Review = () => {
   if (error) return <Error />
   return (
     <>
-      <div className="h-full overflow-hidden">
+      <div className="h-full overflow-y-auto">
         {/* navbar */}
         <div className="z-50 bg-white fixed top-0 flex items-center w-full p-2 border-b shadow-sm">
           {/* 戻るボタン */}
@@ -37,7 +37,7 @@ const Review = () => {
         {/* メインコンテンツ */}
         <div className="flex mt-14" style={{ height: 'calc(100vh - 4rem)' }}>
           {/* PDF表示 */}
-          <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
+          <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex">
             {submissionSummaries.map((summary, index) => (
               <StudentSubmissions
                 key={index}
@@ -45,8 +45,8 @@ const Review = () => {
                 student={summary.student}
                 files={summary.files}
                 height="calc(100vh - 4rem)"
-                width={900}
-                pageHeight={1000}
+                width={1000}
+                pageHeight={1200}
                 submission={summary.submission}
               />
             ))}

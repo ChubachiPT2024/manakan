@@ -17,7 +17,10 @@ const StudentSubmissionsHeader: React.FC<StudentSubmissionsHeaderProps> = ({
   style,
   children,
 }) => (
-  <div className="text-center p-4 border-x" style={style}>
+  <div
+    className="text-center p-4 border-x overflow-x-auto overflow-y-hidden"
+    style={style}
+  >
     <h2 className="text-2xl font-bold">{student.name}</h2>
     {children}
   </div>
