@@ -8,7 +8,8 @@ async function getReportCourse(): Promise<ReportCourseGetResult> {
 export const useReportCourse = () => {
   const { data, error, isLoading } = useSWR<ReportCourseGetResult>(
     'ReportCourse',
-    () => getReportCourse()
+    () => getReportCourse(),
+    { suspense: true }
   )
 
   return {
