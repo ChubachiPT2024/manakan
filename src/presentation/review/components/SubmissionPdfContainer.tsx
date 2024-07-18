@@ -1,5 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
+import { filetypeinfo } from 'magic-bytes.js'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 
@@ -15,6 +16,7 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
   pageHeight,
 }) => {
   const [numPages, setNumPages] = useState<number[]>([])
+  const [fileTypes, setFileTypes] = useState<{ [key: string]: string }>({})
 
   const onDocumentLoadSuccess = useCallback((index: number, pdf: any) => {
     setNumPages((prevNumPages) => {
@@ -40,6 +42,21 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
     []
   )
 
+  useEffect(() => {
+    const fetchFileTypes = async () => {
+      const newFileTypes: { [key: string]: string } = {}
+      for (const file of files) {
+        const response = await fetch(file.url)
+        const buffer = new Uint8Array(await response.arrayBuffer())
+        const fileType = filetypeinfo(buffer)
+        const mimeType = fileType.length > 0 ? fileType[0].mime : 'Unknown'
+        newFileTypes[file.url] = mimeType
+      }
+      setFileTypes(newFileTypes)
+    }
+    fetchFileTypes()
+  }, [files])
+
   return (
     <>
       {memoizedFiles.map(({ fileName, url, index }) => (
@@ -48,23 +65,29 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
           className="mb-5 overflow-y-auto"
           style={{ width, height: pageHeight }}
         >
-          <div className="ont-bold mb-2 p-2 border border-gray-300 rounded bg-gray-100">
+          <div className="font-bold mb-2 p-2 border border-gray-300 rounded bg-gray-100">
             {fileName}
           </div>
-          <Document
-            file={url}
-            onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
-            options={memoizedOptions}
-          >
-            {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
-              <Page
-                key={`page-${index}-${pageIndex + 1}`}
-                pageNumber={pageIndex + 1}
-                width={width}
-                height={pageHeight}
-              />
-            ))}
-          </Document>
+          {fileTypes[url] === 'application/pdf' ? (
+            <Document
+              file={url}
+              onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
+              options={memoizedOptions}
+            >
+              {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
+                <Page
+                  key={`page-${index}-${pageIndex + 1}`}
+                  pageNumber={pageIndex + 1}
+                  width={width}
+                  height={pageHeight}
+                />
+              ))}
+            </Document>
+          ) : (
+            <div className="border border-gray-300 p-4 rounded bg-gray-100">
+              このファイルタイプの表示はサポートされていません。
+            </div>
+          )}
         </div>
       ))}
     </>
