@@ -67,7 +67,7 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
           {fileTypes[url] === 'application/pdf' ? (
             <div
               style={{
-                // width,
+                width,
                 height: pageHeight,
                 overflowY: 'auto',
                 border: '1px solid #ccc',
