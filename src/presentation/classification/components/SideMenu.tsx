@@ -1,13 +1,15 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { SubmissionCard } from './SubmissionCard'
 import { useDroppable } from '@dnd-kit/core'
+import { ExportButton } from './ReportListExport'
 
 interface SideMenuProps {
   children: ReactNode
   isDisabled: boolean
+  reportId: number
 }
 
-export function SideMenu({ children, isDisabled }: SideMenuProps) {
+export function SideMenu({ children, isDisabled, reportId }: SideMenuProps) {
   const { setNodeRef } = useDroppable({ id: 'has-not-grade' })
 
   return (
@@ -25,15 +27,8 @@ export function SideMenu({ children, isDisabled }: SideMenuProps) {
         {children}
       </div>
       <div className="p-3">
-        <button
-          type="button"
-          className={`text-white bg-black hover:bg-black-800 font-medium rounded-md text-md w-full py-2.5 ${
-            isDisabled ? '' : 'opacity-50 cursor-not-allowed'
-          }`}
-          disabled={isDisabled}
-        >
-          エクスポートする
-        </button>
+        {/* TODO：もともとの書式に合わせる */}
+        <ExportButton reportId={reportId} isDisabled={isDisabled} />
       </div>
     </div>
   )
