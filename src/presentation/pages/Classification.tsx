@@ -65,8 +65,9 @@ const Classification = () => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
             const [newGrade, newRank] = (over.id as string).split(':')
+            const finalNewRank = newRank === '' ? undefined : newRank
             grade = Number(newGrade) as AssessmentGradeOfFrontend
-            rank = newRank as AssessmentRankOfFrontend
+            rank = finalNewRank as AssessmentRankOfFrontend
           }
 
           return {
