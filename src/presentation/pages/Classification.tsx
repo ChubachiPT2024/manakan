@@ -22,7 +22,6 @@ import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { BackButton } from '../common/button/BackButton'
 import Loading from '../common/isLoading/Loading'
 import Error from '../common/error/Error'
-import { ReportCourseData } from 'src/application/reportCourse/reportCourseData'
 
 const Classification = () => {
   const { id } = useParams()
@@ -33,9 +32,7 @@ const Classification = () => {
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([])
   const [report, setReport] = useState<Report | null>(null)
-  const [reportCourse, setReportCourse] = useState<ReportCourseData>(
-    new ReportCourseData(0, '', 0, '')
-  )
+  const [courseName, setCourseName] = useState<string>('')
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
       id: number
@@ -167,27 +164,10 @@ const Classification = () => {
         })
         setReport({
           id: res.reportListData.reportId,
-          title: res.reportListData.courseName,
+          title: res.reportListData.reportTitle,
           items: newItems,
         })
-        setProcess('success')
-      })
-      .catch((err) => {
-        setProcess('error')
-      })
-      .finally(() => {
-        setProcess('success')
-      })
-  }, [id])
-
-  useEffect(() => {
-    window.electronAPI
-      .getReportCourseAsync()
-      .then((res) => {
-        const newReportCourse = res.reportCourseDataList.find(
-          (data: ReportCourseData) => data.reportId === Number(id)
-        )
-        setReportCourse(newReportCourse)
+        setCourseName(res.reportListData.courseName)
         setProcess('success')
       })
       .catch((err) => {
@@ -292,12 +272,12 @@ const Classification = () => {
                     {/* courseName */}
                     <h1 className="flex ml-2 text-xl">
                       <p className="mr-2">コース名</p>
-                      {reportCourse.courseName}
+                      {courseName}
                     </h1>
                     {/* courseName */}
                     <h2 className="flex ml-2 text-base">
                       <p className="mr-2">レポート名</p>
-                      {reportCourse.reportTitle}
+                      {report.title}
                     </h2>
                   </div>
                 </div>
