@@ -1,6 +1,7 @@
 import { ReportRepository } from 'src/domain/models/reports/reportRepository'
 import { Report } from 'src/domain/models/reports/report'
 import { readFile, writeFile } from 'node:fs/promises'
+import { JsonReportObject } from './jsonReportObject'
 
 /**
  * JSON レポートリポジトリ
@@ -59,7 +60,13 @@ export class JsonReportRepository implements ReportRepository {
    */
   private async readFromJsonFileAsync(): Promise<Report[]> {
     try {
-      return JSON.parse(await readFile(this.jsonFileAbsolutePath, 'utf8'))
+      const objects: Object[] = JSON.parse(
+        await readFile(this.jsonFileAbsolutePath, 'utf8')
+      )
+      // https://www.geeksforgeeks.org/how-to-cast-a-json-object-inside-of-typescript-class/
+      return objects.map((x) =>
+        Object.assign(new JsonReportObject(), x).ToReport()
+      )
     } catch {
       // まだファイルが存在しない場合
       return []

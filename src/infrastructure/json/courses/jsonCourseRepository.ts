@@ -1,6 +1,7 @@
 import { Course } from 'src/domain/models/courses/course'
 import { CourseRepository } from 'src/domain/models/courses/courseRepository'
 import { readFile, writeFile } from 'node:fs/promises'
+import { JsonCourseObject } from './jsonCourseObject'
 
 /**
  * JSON コースリポジトリ
@@ -59,7 +60,13 @@ export class JsonCourseRepository implements CourseRepository {
    */
   private async readFromJsonFileAsync(): Promise<Course[]> {
     try {
-      return JSON.parse(await readFile(this.jsonFileAbsolutePath, 'utf8'))
+      const objects: Object[] = JSON.parse(
+        await readFile(this.jsonFileAbsolutePath, 'utf8')
+      )
+      // https://www.geeksforgeeks.org/how-to-cast-a-json-object-inside-of-typescript-class/
+      return objects.map((x) =>
+        Object.assign(new JsonCourseObject(), x).ToCourse()
+      )
     } catch {
       // まだファイルが存在しない場合
       return []

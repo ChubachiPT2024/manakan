@@ -1,6 +1,7 @@
 import { Submission } from 'src/domain/models/submissions/submission'
 import { SubmissionRepository } from 'src/domain/models/submissions/submissionRepository'
 import { readFile, writeFile } from 'node:fs/promises'
+import { JsonSubmissionObject } from './jsonSubmissionObject'
 
 /**
  * JSON 提出物リポジトリ
@@ -74,7 +75,13 @@ export class JsonSubmissionRepository implements SubmissionRepository {
    */
   private async readFromJsonFileAsync(): Promise<Submission[]> {
     try {
-      return JSON.parse(await readFile(this.jsonFileAbsolutePath, 'utf8'))
+      const objects: Object[] = JSON.parse(
+        await readFile(this.jsonFileAbsolutePath, 'utf8')
+      )
+      // https://www.geeksforgeeks.org/how-to-cast-a-json-object-inside-of-typescript-class/
+      return objects.map((x) =>
+        Object.assign(new JsonSubmissionObject(), x).ToSubmission()
+      )
     } catch {
       // まだファイルが存在しない場合
       return []
