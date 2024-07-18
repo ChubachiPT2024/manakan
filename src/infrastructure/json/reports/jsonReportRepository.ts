@@ -53,9 +53,9 @@ export class JsonReportRepository implements ReportRepository {
   }
 
   /**
-   * レポートリストを JSON ファイルから読み込む
+   * レポートを JSON ファイルから読み込む
    *
-   * @returns レポートリスト
+   * @returns レポート
    */
   private async readFromJsonFileAsync(): Promise<Report[]> {
     try {
