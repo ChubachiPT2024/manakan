@@ -22,10 +22,14 @@ export class JsonReportRepository implements ReportRepository {
   public async saveAsync(report: Report): Promise<void> {
     const reports = await this.readFromJsonFileAsync()
 
-    const reportMap = new Map<number, Report>(reports.map((x) => [x.id, x]))
-    reportMap.set(report.id, report)
+    const index = reports.findIndex((x) => x.id === report.id)
+    if (index === -1) {
+      reports.push(report)
+    } else {
+      reports[index] = report
+    }
 
-    await this.writeToJsonFileAsync(Array.from(reportMap.values()))
+    await this.writeToJsonFileAsync(reports)
   }
 
   /**
