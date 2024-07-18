@@ -45,7 +45,7 @@ const Review = () => {
                 student={summary.student}
                 files={summary.files}
                 height="calc(100vh - 4rem)"
-                width={1000}
+                width={1100}
                 pageHeight={1200}
                 submission={summary.submission}
               />

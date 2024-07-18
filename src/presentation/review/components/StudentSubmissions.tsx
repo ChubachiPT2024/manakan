@@ -40,7 +40,10 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
-      <StudentSubmissionsHeader student={student} style={{ height, width }}>
+      <StudentSubmissionsHeader
+        student={student}
+        style={{ height, width, flexShrink: 0 }}
+      >
         <SubmissionContainer height={height}>
           <p className="border border-gray-300 p-4 rounded bg-gray-100">
             未提出の為、表示するデータがありません
@@ -75,11 +78,14 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   }, [reportId, student.numId, files])
 
   return (
-    <StudentSubmissionsHeader student={student} style={{ height, width }}>
+    <StudentSubmissionsHeader
+      student={student}
+      style={{ height, width, flexShrink: 0 }}
+    >
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
           files={pdfFiles}
-          width={width}
+          width={width - 50}
           pageHeight={pageHeight}
         />
       </SubmissionContainer>
