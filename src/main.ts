@@ -2,12 +2,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { ReportListApplicationService } from './application/reportLists/reportListApplicationService'
-import { InMemoryStudentRepository } from './infrastructure/inMemory/students/inMemoryStudentRepository'
-import { InMemoryReportRepository } from './infrastructure/inMemory/reports/inMemoryReportRepository'
-import { InMemoryCourseRepository } from './infrastructure/inMemory/courses/inMemoryCourseRepository'
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
-import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
-import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessments/inMemoryAssessmentRepository'
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
@@ -19,6 +14,13 @@ import { SubmissionFileApplicationService } from './application/submissionFiles/
 import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 import { ReportListExportCommand } from './application/reportLists/reportListExportCommand'
 import { ReportCourseApplicationService } from './application/reportCourse/reportCourseApplicationService'
+import { JsonCourseRepository } from './infrastructure/json/courses/jsonCourseRepository'
+import { resolve } from 'node:path'
+import { mkdirSync } from 'node:fs'
+import { JsonReportRepository } from './infrastructure/json/reports/jsonReportRepository'
+import { JsonStudentRepository } from './infrastructure/json/students/jsonStudentRepository'
+import { JsonSubmissionRepository } from './infrastructure/json/submissions/jsonSubmissionRepository'
+import { JsonAssessmentRepository } from './infrastructure/json/assessments/jsonAssessmentRepository'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -50,11 +52,22 @@ const createWindow = () => {
 
 // TODO 定義場所の検討
 // TODO DI フレームワークの利用を検討
-const courseRepository = new InMemoryCourseRepository()
-const reportRepository = new InMemoryReportRepository()
-const studentRepository = new InMemoryStudentRepository()
-const submissionRepository = new InMemorySubmissionRepository()
-const assessmentRepository = new InMemoryAssessmentRepository()
+mkdirSync(resolve('repositories', 'jsons'), { recursive: true })
+const courseRepository = new JsonCourseRepository(
+  resolve('repositories', 'jsons', 'courses.json')
+)
+const reportRepository = new JsonReportRepository(
+  resolve('repositories', 'jsons', 'reports.json')
+)
+const studentRepository = new JsonStudentRepository(
+  resolve('repositories', 'jsons', 'students.json')
+)
+const submissionRepository = new JsonSubmissionRepository(
+  resolve('repositories', 'jsons', 'submissions.json')
+)
+const assessmentRepository = new JsonAssessmentRepository(
+  resolve('repositories', 'jsons', 'assessments.json')
+)
 const reportListApplicationService = new ReportListApplicationService(
   courseRepository,
   reportRepository,
