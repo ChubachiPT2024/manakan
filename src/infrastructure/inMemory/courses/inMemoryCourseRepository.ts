@@ -32,4 +32,13 @@ export class InMemoryCourseRepository implements CourseRepository {
     }
     return course
   }
+
+  /**
+   * コースを全件取得する
+   *
+   * @returns コース
+   */
+  public async findAllAsync(): Promise<Course[]> {
+    return Array.from(this.courses.values())
+  }
 }

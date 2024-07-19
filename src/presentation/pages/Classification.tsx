@@ -19,6 +19,7 @@ import { Report } from '../types/report'
 import { AssessmentRank } from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
 import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
+import { BackButton } from '../common/button/BackButton'
 import Loading from '../common/isLoading/Loading'
 import Error from '../common/error/Error'
 
@@ -261,9 +262,12 @@ const Classification = () => {
           </SideMenu>
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
-              <div className="pb-7 flex justify-between">
-                <h1 className="text-2xl">{report.title}</h1>
-                <div>
+              <div className="flex justify-between">
+                <div className="flex justify-between">
+                  <BackButton href={`/`} />
+                  <h1 className="ml-2 text-2xl">{report.title}</h1>
+                </div>
+                <div className="mt-2">
                   <SelectedButton
                     styles="bg-sky-400"
                     title="開く"

@@ -32,4 +32,13 @@ export class InMemoryReportRepository implements ReportRepository {
     }
     return report
   }
+
+  /**
+   * レポートを全件取得する
+   *
+   * @returns レポート
+   */
+  public async findAllAsync(): Promise<Report[]> {
+    return Array.from(this.reports.values())
+  }
 }
