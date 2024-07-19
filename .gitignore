@@ -90,6 +90,3 @@ typings/
 
 # Electron-Forge
 out/
-
-# リポジトリによるデータ保存先
-repositories/

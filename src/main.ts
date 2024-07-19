@@ -15,12 +15,12 @@ import { SubmissionFileGetCommand } from './application/submissionFiles/submissi
 import { ReportListExportCommand } from './application/reportLists/reportListExportCommand'
 import { ReportCourseApplicationService } from './application/reportCourse/reportCourseApplicationService'
 import { JsonCourseRepository } from './infrastructure/json/courses/jsonCourseRepository'
-import { resolve } from 'node:path'
-import { mkdirSync } from 'node:fs'
 import { JsonReportRepository } from './infrastructure/json/reports/jsonReportRepository'
 import { JsonStudentRepository } from './infrastructure/json/students/jsonStudentRepository'
 import { JsonSubmissionRepository } from './infrastructure/json/submissions/jsonSubmissionRepository'
 import { JsonAssessmentRepository } from './infrastructure/json/assessments/jsonAssessmentRepository'
+import { mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -52,21 +52,26 @@ const createWindow = () => {
 
 // TODO 定義場所の検討
 // TODO DI フレームワークの利用を検討
-mkdirSync(resolve('repositories', 'jsons'), { recursive: true })
+const jsonsFolderAbsolutePath = join(
+  app.getPath('userData'),
+  'repositories',
+  'jsons'
+)
+mkdirSync(jsonsFolderAbsolutePath, { recursive: true })
 const courseRepository = new JsonCourseRepository(
-  resolve('repositories', 'jsons', 'courses.json')
+  join(jsonsFolderAbsolutePath, 'courses.json')
 )
 const reportRepository = new JsonReportRepository(
-  resolve('repositories', 'jsons', 'reports.json')
+  join(jsonsFolderAbsolutePath, 'reports.json')
 )
 const studentRepository = new JsonStudentRepository(
-  resolve('repositories', 'jsons', 'students.json')
+  join(jsonsFolderAbsolutePath, 'students.json')
 )
 const submissionRepository = new JsonSubmissionRepository(
-  resolve('repositories', 'jsons', 'submissions.json')
+  join(jsonsFolderAbsolutePath, 'submissions.json')
 )
 const assessmentRepository = new JsonAssessmentRepository(
-  resolve('repositories', 'jsons', 'assessments.json')
+  join(jsonsFolderAbsolutePath, 'assessments.json')
 )
 const reportListApplicationService = new ReportListApplicationService(
   courseRepository,
