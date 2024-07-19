@@ -18,7 +18,7 @@ const MemoTextarea: React.FC<MemoTextareaProps> = ({
   submissionSummaries,
   selectedStudent,
 }) => {
-  // 初期メモの値
+  // 選択された学生のメモ
   const initialMemoValue =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>

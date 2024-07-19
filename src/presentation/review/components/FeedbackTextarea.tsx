@@ -18,7 +18,7 @@ const FeedbackTextarea: React.FC<FeedbackTextareaProps> = ({
   submissionSummaries,
   selectedStudent,
 }) => {
-  // フィードバックの値
+  // 選択された学生のフィードバック
   const initialFeedbackValue =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
