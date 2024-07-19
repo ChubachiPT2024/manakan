@@ -8,6 +8,7 @@ import { SubmissionSummaryStudentData } from 'src/application/submissionSummarie
 import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { AssessmentRank } from 'src/domain/models/assessments/assessmentRank'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import { mutate } from 'swr'
 
 // 分類選択コンポーネントのProps
 interface ClassificationSelectProps {
@@ -35,21 +36,21 @@ const ClassificationSelect: React.FC<ClassificationSelectProps> = ({
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
         summary.student.numId === selectedStudent.numId
-    )?.assessment.grade || ''
+    )?.assessment.grade ?? ''
 
   // 選択された学生の評点内の位置
   const initialSelectedRank =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
         summary.student.numId === selectedStudent.numId
-    )?.assessment.rank || ''
+    )?.assessment.rank ?? ''
 
   // 選択された学生の点数
-  const initialScore =
+  const initialSelectedScore =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
         summary.student.numId === selectedStudent.numId
-    )?.assessment.score || 0
+    )?.assessment.score ?? 0
 
   // 評点の値を状態として管理
   const [selectedGradeRank, setSelectedGradeRank] = useState<string>(
@@ -57,73 +58,55 @@ const ClassificationSelect: React.FC<ClassificationSelectProps> = ({
   )
 
   // 点数の値を状態として管理
-  const [score, setScore] = useState<number>(initialScore)
-
-  // selectedStudent が変わるたびにGradeとRankとScoreの値を更新
-  useEffect(() => {
-    const newGrade =
-      submissionSummaries.find(
-        (summary: SubmissionSummaryData) =>
-          summary.student.numId === selectedStudent.numId
-      )?.assessment.grade || ''
-    const newRank =
-      submissionSummaries.find(
-        (summary: SubmissionSummaryData) =>
-          summary.student.numId === selectedStudent.numId
-      )?.assessment.rank || ''
-    const newScore =
-      submissionSummaries.find(
-        (summary: SubmissionSummaryData) =>
-          summary.student.numId === selectedStudent.numId
-      )?.assessment.score || 0
-
-    setSelectedGradeRank(newGrade + newRank)
-    setScore(newScore)
-  }, [selectedStudent])
+  const [selectedScode, setSelectedScore] =
+    useState<number>(initialSelectedScore)
 
   // 評点が変更されたら、評点を更新する
   const handleChange = async (event: SelectChangeEvent<string>) => {
     const newSelectedGradeRank = event.target.value as string
     setSelectedGradeRank(newSelectedGradeRank)
-    setScore(
-      getScore(Number(newSelectedGradeRank[0]), newSelectedGradeRank.slice(1))
-    )
     try {
       await window.electronAPI.classifyAssessmentAsync(
         new AssessmentClassifyCommand(
           Number(reportId),
           selectedStudent.numId,
-          Number(selectedGradeRank[0]) as AssessmentGrade,
-          selectedGradeRank.slice(1) as AssessmentRank
+          Number(newSelectedGradeRank[0]) as AssessmentGrade,
+          newSelectedGradeRank.slice(1) as AssessmentRank
         )
       )
+      // SWRのキャッシュを更新
+      mutate('SubmissionSummaries')
+
+      // Todo: 点数の更新
+      // 評点が変わったら、即座に点数も更新したいが、
+      // メインプロセスからもってくる方針だとレンダリングされない
     } catch (e: Error | any) {
       console.log(e)
     }
   }
 
-  // スコアを計算する関数 レンダリング用にドメイン層にあったものをコピー
-  const getScore = (grade: number, rank: string): number => {
-    if (grade === 0) {
-      return 0
-    }
+  // selectedStudent が変わるたびにGradeとRankとScoreの値を更新
+  // それぞれ、新しい学生の値を取得して、状態にセット
+  useEffect(() => {
+    const newGrade =
+      submissionSummaries.find(
+        (summary: SubmissionSummaryData) =>
+          summary.student.numId === selectedStudent.numId
+      )?.assessment.grade ?? ''
+    const newRank =
+      submissionSummaries.find(
+        (summary: SubmissionSummaryData) =>
+          summary.student.numId === selectedStudent.numId
+      )?.assessment.rank ?? ''
+    const newScore =
+      submissionSummaries.find(
+        (summary: SubmissionSummaryData) =>
+          summary.student.numId === selectedStudent.numId
+      )?.assessment.score ?? 0
 
-    const rankIndex = ['--', '-', '+-', '+', '++'].indexOf(rank)
-
-    switch (grade) {
-      case 1:
-        return 10 + 10 * rankIndex
-      case 2:
-        return 60 + 2 * rankIndex
-      case 3:
-        return 70 + 2 * rankIndex
-      case 4:
-        return 80 + 2 * rankIndex
-      case 5:
-        // '++' のとき 100 点になるようにする
-        return Math.round(90 + 2.5 * rankIndex)
-    }
-  }
+    setSelectedGradeRank(newGrade + newRank)
+    setSelectedScore(newScore)
+  }, [selectedStudent])
 
   return (
     <>
@@ -160,7 +143,7 @@ const ClassificationSelect: React.FC<ClassificationSelectProps> = ({
             id="score"
             type="number"
             disabled
-            value={score}
+            value={selectedScode}
             variant="outlined"
             fullWidth
             inputProps={{
