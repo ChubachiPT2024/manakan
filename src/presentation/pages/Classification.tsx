@@ -16,9 +16,14 @@ import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
-import { AssessmentRank } from '../types/assessment'
+import {
+  AssessmentGradeOfFrontend,
+  AssessmentRankOfFrontend,
+} from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+
 import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
+import { BackButton } from '../common/button/BackButton'
 import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
 
@@ -31,6 +36,7 @@ const Classification = () => {
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([])
   const [report, setReport] = useState<Report | null>(null)
+  const [courseName, setCourseName] = useState<string>('')
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
       id: number
@@ -55,16 +61,17 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: AssessmentGrade | null = null
-    let rank: AssessmentRank | null = null
+    let grade: AssessmentGradeOfFrontend | null = null
+    let rank: AssessmentRankOfFrontend | null = null
 
     if (over && active.id !== over?.id) {
       const newItems = report.items.map((item) => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
-            const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade) as AssessmentGrade
-            rank = newRank as AssessmentRank
+            let [newGrade, newRank] = (over.id as string).split(':')
+            newRank = newRank === '' ? undefined : newRank
+            grade = Number(newGrade) as AssessmentGradeOfFrontend
+            rank = newRank as AssessmentRankOfFrontend
           }
 
           return {
@@ -93,8 +100,8 @@ const Classification = () => {
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: AssessmentGrade,
-    rank?: AssessmentRank
+    grade: AssessmentGradeOfFrontend,
+    rank?: AssessmentRankOfFrontend
   ) => {
     await window.electronAPI
       .classifyAssessmentAsync(
@@ -162,9 +169,10 @@ const Classification = () => {
         })
         setReport({
           id: res.reportListData.reportId,
-          title: res.reportListData.courseName,
+          title: res.reportListData.reportTitle,
           items: newItems,
         })
+        setCourseName(res.reportListData.courseName)
         setProcess('success')
       })
       .catch((err) => {
@@ -262,9 +270,23 @@ const Classification = () => {
           </SideMenu>
           <div className="flex-1 overflow-hidden">
             <div className="pt-3 pl-3 h-full flex flex-col">
-              <div className="pb-7 flex justify-between">
-                <h1 className="text-2xl">{report.title}</h1>
-                <div>
+              <div className="flex justify-between">
+                <div className="flex justify-between">
+                  <BackButton href={`/`} />
+                  <div>
+                    {/* courseName */}
+                    <h1 className="flex ml-2 text-xl">
+                      <p className="mr-2">コース名</p>
+                      {courseName}
+                    </h1>
+                    {/* courseName */}
+                    <h2 className="flex ml-2 text-base">
+                      <p className="mr-2">レポート名</p>
+                      {report.title}
+                    </h2>
+                  </div>
+                </div>
+                <div className="mt-2">
                   <SelectedButton
                     styles="bg-sky-400"
                     title="開く"

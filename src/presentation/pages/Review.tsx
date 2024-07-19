@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import PdfView from '../review/components/PdfView'
+import StudentSubmissions from '../review/components/StudentSubmissions'
 import Sidebar from '../review/components/Sidebar'
 import { useSubmissionSummaries } from '../review/hooks/useSubmissionSummaries'
 import { BackButton } from '../common/button/BackButton'
@@ -39,7 +39,7 @@ const Review = () => {
           {/* PDF表示 */}
           <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
             {submissionSummaries.map((summary, index) => (
-              <PdfView
+              <StudentSubmissions
                 key={index}
                 reportId={Number(reportId)}
                 student={summary.student}
