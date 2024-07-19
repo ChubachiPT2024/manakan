@@ -64,7 +64,7 @@ const Classification = () => {
       const newItems = report.items.map((item) => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
-            const [newGrade, newRank] = (over.id as string).split(':')
+            let [newGrade, newRank] = (over.id as string).split(':')
             newRank = newRank === '' ? undefined : newRank
             grade = Number(newGrade) as AssessmentGradeOfFrontend
             rank = newRank as AssessmentRankOfFrontend
