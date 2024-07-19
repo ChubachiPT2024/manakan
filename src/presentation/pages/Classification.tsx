@@ -21,8 +21,10 @@ import {
   AssessmentRankOfFrontend,
 } from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+
+import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { BackButton } from '../common/button/BackButton'
-import Loading from '../common/isLoading/Loading'
+import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
 
 const Classification = () => {
@@ -212,7 +214,7 @@ const Classification = () => {
   )
 
   if (process === 'loading') {
-    return <Loading />
+    return <Spinner />
   }
 
   if (process === 'error') {

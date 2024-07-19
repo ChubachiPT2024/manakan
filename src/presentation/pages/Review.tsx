@@ -3,7 +3,7 @@ import StudentSubmissions from '../review/components/StudentSubmissions'
 import Sidebar from '../review/components/Sidebar'
 import { useSubmissionSummaries } from '../review/hooks/useSubmissionSummaries'
 import { BackButton } from '../common/button/BackButton'
-import Loading from '../common/isLoading/Loading'
+import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
 
 // ルーティング時に渡される情報の型
@@ -23,7 +23,7 @@ const Review = () => {
     studentNumIds
   )
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <Spinner />
   if (error) return <Error />
   return (
     <>
