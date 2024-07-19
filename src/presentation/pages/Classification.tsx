@@ -16,9 +16,11 @@ import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
-import { AssessmentRank } from '../types/assessment'
+import {
+  AssessmentGradeOfFrontend,
+  AssessmentRankOfFrontend,
+} from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
-import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { BackButton } from '../common/button/BackButton'
 import Loading from '../common/isLoading/Loading'
 import Error from '../common/error/Error'
@@ -57,16 +59,17 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: AssessmentGrade | null = null
-    let rank: AssessmentRank | null = null
+    let grade: AssessmentGradeOfFrontend | null = null
+    let rank: AssessmentRankOfFrontend | null = null
 
     if (over && active.id !== over?.id) {
       const newItems = report.items.map((item) => {
         if (item.student.numId === active.id) {
           if (over.id !== 'has-not-grade') {
-            const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade) as AssessmentGrade
-            rank = newRank as AssessmentRank
+            let [newGrade, newRank] = (over.id as string).split(':')
+            newRank = newRank === '' ? undefined : newRank
+            grade = Number(newGrade) as AssessmentGradeOfFrontend
+            rank = newRank as AssessmentRankOfFrontend
           }
 
           return {
@@ -95,8 +98,8 @@ const Classification = () => {
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: AssessmentGrade,
-    rank?: AssessmentRank
+    grade: AssessmentGradeOfFrontend,
+    rank?: AssessmentRankOfFrontend
   ) => {
     await window.electronAPI
       .classifyAssessmentAsync(
