@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
 import { AssessmentMemoUpdateCommand } from 'src/application/assessments/assessmentMemoUpdateCommand'
+import { mutate } from 'swr'
 
 // メモ入力欄のProps
 interface MemoTextareaProps {
@@ -47,6 +48,8 @@ const MemoTextarea: React.FC<MemoTextareaProps> = ({
           memoValue
         )
       )
+      // SWRのキャッシュを更新
+      mutate('SubmissionSummaries')
     } catch (e: Error | any) {
       console.log(e)
     }

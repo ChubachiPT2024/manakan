@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
 import { AssessmentFeedbackUpdateCommand } from 'src/application/assessments/assessmentFeedbackUpdateCommand'
+import { mutate } from 'swr'
 
 // フィードバック入力欄のProps
 interface FeedbackTextareaProps {
@@ -48,6 +49,8 @@ const FeedbackTextarea: React.FC<FeedbackTextareaProps> = ({
           feedbackValue
         )
       )
+      // SWRのキャッシュを更新
+      mutate('SubmissionSummaries')
     } catch (e: Error | any) {
       console.log(e)
     }
