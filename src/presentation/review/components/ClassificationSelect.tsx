@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import FormControl from '@mui/material/FormControl'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import TextField from '@mui/material/TextField'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
 import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
@@ -110,31 +109,6 @@ const ClassificationSelect: React.FC<ClassificationSelectProps> = ({
               ))}
             </Select>
           </FormControl>
-        </div>
-      </div>
-
-      {/* 点数 */}
-      <div className="m-1">
-        <h2 className="text-xl font-bold mb-2">点数</h2>
-        <div className="pl-3">
-          <TextField
-            id="score"
-            type="number"
-            disabled
-            value={
-              submissionSummaries.find(
-                (summary: SubmissionSummaryData) =>
-                  summary.student.numId === selectedStudent.numId
-              )?.assessment.score ?? 0
-            }
-            variant="outlined"
-            fullWidth
-            inputProps={{
-              'aria-label': 'Without label',
-              min: 0,
-              max: 100,
-            }}
-          />
         </div>
       </div>
     </>

@@ -5,6 +5,7 @@ import StudentSelectionRadioGroup from 'src/presentation/review/components/Stude
 import ClassificationSelect from 'src/presentation/review/components/ClassificationSelect'
 import MemoTextarea from 'src/presentation/review/components/MemoTextarea'
 import FeedbackTextarea from 'src/presentation/review/components/FeedbackTextarea'
+import TextField from '@mui/material/TextField'
 
 // サイドバーのProps
 interface IPropsSidebar {
@@ -53,6 +54,31 @@ const Sidebar: React.FC<IPropsSidebar> = ({
         submissionSummaries={submissionSummaries}
         selectedStudent={selectedStudent}
       />
+
+      {/* 点数 */}
+      <div className="m-1">
+        <h2 className="text-xl font-bold mb-2">点数</h2>
+        <div className="pl-3">
+          <TextField
+            id="score"
+            type="number"
+            disabled
+            value={
+              submissionSummaries.find(
+                (summary: SubmissionSummaryData) =>
+                  summary.student.numId === selectedStudent.numId
+              )?.assessment.score ?? 0
+            }
+            variant="outlined"
+            fullWidth
+            inputProps={{
+              'aria-label': 'Without label',
+              min: 0,
+              max: 100,
+            }}
+          />
+        </div>
+      </div>
 
       {/* メモ */}
       <MemoTextarea
