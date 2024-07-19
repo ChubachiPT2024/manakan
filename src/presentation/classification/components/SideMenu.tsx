@@ -1,5 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
-import { SubmissionCard } from './SubmissionCard'
+import { ReactNode } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 
 interface SideMenuProps {

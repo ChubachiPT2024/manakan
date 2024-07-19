@@ -21,8 +21,6 @@ import {
   AssessmentRankOfFrontend,
 } from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
-
-import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { BackButton } from '../common/button/BackButton'
 import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
