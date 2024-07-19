@@ -255,7 +255,7 @@ const Classification = () => {
             />
           </DragOverlay>
         )}
-        <div className="flex h-screen">
+        <div className="flex w-full h-full">
           <SideMenu isDisabled={notHasAssessmentItem.length == 0}>
             {notHasAssessmentItem.map((item, idx) => {
               return (
@@ -268,8 +268,8 @@ const Classification = () => {
               )
             })}
           </SideMenu>
-          <div className="flex-1 overflow-hidden">
-            <div className="pt-3 pl-3 h-full flex flex-col">
+          <div className="flex overflow-hidden">
+            <div className="flex flex-col max-w-full max-h-full pt-3 pl-3">
               <div className="flex justify-between">
                 <div className="flex justify-between">
                   <BackButton href={`/`} />
@@ -301,7 +301,7 @@ const Classification = () => {
                   />
                 </div>
               </div>
-              <div className="flex-1 overflow-x-auto">
+              <div className="grow overflow-x-scroll">
                 <div className="flex h-full">
                   {assessmentGrades.map((grade) => (
                     <GradeColumn
