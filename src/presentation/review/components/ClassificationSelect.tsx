@@ -53,13 +53,24 @@ const ClassificationSelect: React.FC<ClassificationSelectProps> = ({
   const handleChange = async (event: SelectChangeEvent<string>) => {
     const newSelectedGradeRank = event.target.value as string
     setSelectedGradeRank(newSelectedGradeRank)
+
+    // 0の場合は、評点を0に、ランクをundefinedにする
+    // 評点は1桁目、ランクは2桁目以降 (例: 5++ -> 評点5, ランク++, 5+ -> 評点5, ランク+)
+    let [newGrade, newRank] =
+      newSelectedGradeRank.slice(0, 1) === '0'
+        ? [0, undefined]
+        : [
+            Number(newSelectedGradeRank.slice(0, 1)),
+            newSelectedGradeRank.slice(1),
+          ]
+
     try {
       await window.electronAPI.classifyAssessmentAsync(
         new AssessmentClassifyCommand(
           Number(reportId),
           selectedStudent.numId,
-          Number(newSelectedGradeRank[0]) as AssessmentGrade,
-          newSelectedGradeRank.slice(1) as AssessmentRank
+          newGrade as AssessmentGrade,
+          newRank as AssessmentRank
         )
       )
       // SWRのキャッシュを更新
