@@ -79,6 +79,6 @@ describe('update memo', () => {
       assessment.reportId,
       assessment.studentNumId
     )
-    expect(updated.feedback).toBe('memo')
+    expect(updated.memo).toBe('memo')
   })
 })

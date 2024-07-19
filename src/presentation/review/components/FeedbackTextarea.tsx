@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react'
 import TextField from '@mui/material/TextField'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
+import { AssessmentFeedbackUpdateCommand } from 'src/application/assessments/assessmentFeedbackUpdateCommand'
+import { mutate } from 'swr'
 
 // フィードバック入力欄のProps
 interface FeedbackTextareaProps {
@@ -15,12 +18,43 @@ const FeedbackTextarea: React.FC<FeedbackTextareaProps> = ({
   submissionSummaries,
   selectedStudent,
 }) => {
-  // フィードバックの値
-  const feedbackValue =
+  // 選択された学生のフィードバック
+  const initialFeedbackValue =
     submissionSummaries.find(
       (summary: SubmissionSummaryData) =>
         summary.student.numId === selectedStudent.numId
     )?.assessment.feedback || ''
+
+  // フィードバックの値を状態として管理
+  const [feedbackValue, setFeedbackValue] =
+    useState<string>(initialFeedbackValue)
+
+  // selectedStudent が変わるたびにフィードバックの値を更新
+  useEffect(() => {
+    const newFeedbackValue =
+      submissionSummaries.find(
+        (summary: SubmissionSummaryData) =>
+          summary.student.numId === selectedStudent.numId
+      )?.assessment.feedback || ''
+    setFeedbackValue(newFeedbackValue)
+  }, [selectedStudent])
+
+  // フォーカスが外れたら、フィードバックを更新する
+  const handleBlur = async () => {
+    try {
+      await window.electronAPI.updateAssessmentFeedbackAsync(
+        new AssessmentFeedbackUpdateCommand(
+          Number(reportId),
+          selectedStudent.numId,
+          feedbackValue
+        )
+      )
+      // SWRのキャッシュを更新
+      mutate('SubmissionSummaries')
+    } catch (e: Error | any) {
+      console.log(e)
+    }
+  }
 
   return (
     <div className="m-1">
@@ -34,6 +68,8 @@ const FeedbackTextarea: React.FC<FeedbackTextareaProps> = ({
           value={feedbackValue}
           sx={{ m: '0' }}
           fullWidth
+          onChange={(e) => setFeedbackValue(e.target.value)}
+          onBlur={handleBlur}
         />
       </div>
     </div>
