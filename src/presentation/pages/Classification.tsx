@@ -32,6 +32,7 @@ const Classification = () => {
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([])
   const [report, setReport] = useState<Report | null>(null)
+  const [courseName, setCourseName] = useState<string>('')
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
       id: number
@@ -163,9 +164,10 @@ const Classification = () => {
         })
         setReport({
           id: res.reportListData.reportId,
-          title: res.reportListData.courseName,
+          title: res.reportListData.reportTitle,
           items: newItems,
         })
+        setCourseName(res.reportListData.courseName)
         setProcess('success')
       })
       .catch((err) => {
@@ -266,7 +268,18 @@ const Classification = () => {
               <div className="flex justify-between">
                 <div className="flex justify-between">
                   <BackButton href={`/`} />
-                  <h1 className="ml-2 text-2xl">{report.title}</h1>
+                  <div>
+                    {/* courseName */}
+                    <h1 className="flex ml-2 text-xl">
+                      <p className="mr-2">コース名</p>
+                      {courseName}
+                    </h1>
+                    {/* courseName */}
+                    <h2 className="flex ml-2 text-base">
+                      <p className="mr-2">レポート名</p>
+                      {report.title}
+                    </h2>
+                  </div>
                 </div>
                 <div className="mt-2">
                   <SelectedButton
