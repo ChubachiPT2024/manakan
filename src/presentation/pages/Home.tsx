@@ -9,7 +9,10 @@ const Home = () => {
         <DropForm />
 
         {/* 最近使用したデータリスト */}
-        <RecentReports />
+        <div className="w-screen max-w-lg rounded-lg p-4 pt-8">
+          <h3 className="text-lg font-semibold mb-1">最近使用したデータ</h3>
+          <RecentReports />
+        </div>
       </div>
     </>
   )
