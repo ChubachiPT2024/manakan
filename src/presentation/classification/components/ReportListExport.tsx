@@ -1,9 +1,10 @@
+import { dialog } from 'electron';
 import React, { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
-import { ReportListExportCommand } from 'src/application/reportLists/reportListExportCommand';
 import { Download } from 'lucide-react';
-import { dialog } from 'electron';
+import { ReportListExportCommand } from 'src/application/reportLists/reportListExportCommand';
+import * as XLSX from 'xlsx';
 
 interface ExportButtonProps {
   reportId: number;
@@ -11,55 +12,51 @@ interface ExportButtonProps {
 }
 
 export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, isDisabled }) => {
-  const [isExporting, setIsExporting] = useState(false);
-  const [exportError, setExportError] = useState<string | null>(null);
+  const [exportStatus, setExportStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleExport = async () => {
-    setIsExporting(true);
-    setExportError(null);
+    try {
+      const command = new ReportListExportCommand(reportId);
+      const data = await window.electronAPI.exportReportListAsync(command);
+      const workbook = XLSX.read(data.content);
 
-      try {
-        // バックエンドのexportAsyncメソッドを呼び出す
-        const command = new ReportListExportCommand(reportId);
-        const result = await window.electronAPI.exportReportListAsync(command);
-  
-        // ファイルの保存場所を選択させる
-        const { filePath } = await dialog.showSaveDialog({
-          title: 'レポートリストを保存',
-          defaultPath: `report-list-${reportId}.xlsx`,
-          filters: [{ name: 'Excel Files', extensions: ['xlsx'] }],
-        });
+      const result = await dialog.showSaveDialog({
+        title: 'Save file as',
+        filters: [{
+          name: "Spreadsheets",
+          extensions: ["xlsx", "xls", "xlsb"]
+        }]
+      });
 
-      if (filePath) {
-        // 選択されたパスにファイルを保存
-        // TODO: ファイル保存の処理をメインプロセスで実装する必要あり
-        await window.electronAPI.saveFile(filePath, result.content);
-        console.log('File saved successfully');
-      } else {
-        console.log('File save was canceled');
+      if (result.filePath) {
+        XLSX.writeFile(workbook, result.filePath);
+        setExportStatus('success');
       }
     } catch (error) {
-      console.error('Error exporting report list:', error);
-      setExportError('レポートリストのエクスポートに失敗しました。もう一度お試しください。');
-    } finally {
-      setIsExporting(false);
+      console.error('Export failed:', error);
+      setExportStatus('error');
     }
   };
 
   return (
-    <div className="space-y-2">
+    <div>
       <button
         onClick={handleExport}
-        disabled={isDisabled || isExporting}
-        className="w-full flex items-center justify-center space-x-2"
+        disabled={isDisabled}
+        className={`text-white bg-black hover:bg-gray-800 font-medium rounded-md text-md w-full py-2.5 ${
+          isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
       >
-        <Download size={16} />
-        <span>{isExporting ? 'エクスポート中...' : 'エクスポート'}</span>
+        エクスポートする
       </button>
-      {exportError && (
-        <Stack sx={{ width: '100%' }} spacing={2}>
-          <Alert severity="error">{exportError}</Alert>
+      {exportStatus === 'success' && (
+        <Stack spacing={2} direction="row" className="mt-2">
+          <Alert severity="success">Exported successfully</Alert>
+          <Download size={24} />
         </Stack>
+      )}
+      {exportStatus === 'error' && (
+        <Alert severity="error" className="mt-2">Export failed</Alert>
       )}
     </div>
   );
