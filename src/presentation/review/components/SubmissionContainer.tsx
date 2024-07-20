@@ -9,7 +9,7 @@ const SubmissionContainer: React.FC<SubmissionContainerProps> = ({
   height,
   children,
 }) => (
-  <div className="overflow-y-auto" style={{ height }}>
+  <div className="overflow-y-auto pb-4" style={{ height }}>
     {children}
   </div>
 )

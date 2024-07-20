@@ -60,29 +60,34 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
   return (
     <>
       {memoizedFiles.map(({ fileName, url, index }) => (
-        <div
-          key={`pdf-${index}`}
-          className="mb-5 overflow-y-auto"
-          style={{ width, height: pageHeight }}
-        >
+        <div key={`pdf-${index}`} className="mb-5" style={{ width }}>
           <div className="font-bold mb-2 p-2 border border-gray-300 rounded bg-gray-100">
             {fileName}
           </div>
           {fileTypes[url] === 'application/pdf' ? (
-            <Document
-              file={url}
-              onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
-              options={memoizedOptions}
+            <div
+              style={{
+                width,
+                height: pageHeight,
+                overflowY: 'auto',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+              }}
             >
-              {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
-                <Page
-                  key={`page-${index}-${pageIndex + 1}`}
-                  pageNumber={pageIndex + 1}
-                  width={width}
-                  height={pageHeight}
-                />
-              ))}
-            </Document>
+              <Document
+                file={url}
+                onLoadSuccess={(pdf) => onDocumentLoadSuccess(index, pdf)}
+                options={memoizedOptions}
+              >
+                {Array.from(new Array(numPages[index] || 0), (_, pageIndex) => (
+                  <Page
+                    key={`page-${index}-${pageIndex + 1}`}
+                    pageNumber={pageIndex + 1}
+                    width={width}
+                  />
+                ))}
+              </Document>
+            </div>
           ) : (
             <div className="border border-gray-300 p-4 rounded bg-gray-100">
               このファイルタイプの表示はサポートされていません。
