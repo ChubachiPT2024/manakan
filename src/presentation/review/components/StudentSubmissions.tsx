@@ -5,6 +5,7 @@ import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submis
 import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
+import { useSubmissionFile } from '../hooks/useSubmissionFile'
 
 interface Student {
   name: string
@@ -52,33 +53,47 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
 
   const [pdfFiles, setPdfFiles] = useState<{ name: string; url: string }[]>([])
 
-  useEffect(() => {
-    const fetchPdfFiles = async () => {
-      const pdfDataPromises = files.map(async (file) => {
-        const response = await window.electronAPI.getSubmissionFileAsync(
-          new SubmissionFileGetCommand(reportId, student.numId, file)
-        )
-        const blob = new Blob([response.content], { type: 'application/pdf' })
-        return { name: file, url: URL.createObjectURL(blob) }
-      })
+  // useEffect(() => {
+  //   const fetchPdfFiles = async () => {
+  //     const pdfDataPromises = files.map(async (file) => {
+  //       const response = await window.electronAPI.getSubmissionFileAsync(
+  //         new SubmissionFileGetCommand(reportId, student.numId, file)
+  //       )
+  //       const blob = new Blob([response.content], { type: 'application/pdf' })
+  //       return { name: file, url: URL.createObjectURL(blob) }
+  //     })
 
-      const pdfFilesArray = await Promise.all(pdfDataPromises)
-      setPdfFiles(pdfFilesArray)
+  //     const pdfFilesArray = await Promise.all(pdfDataPromises)
+  //     setPdfFiles(pdfFilesArray)
 
-      return () => {
-        // クリーンアップ: URLオブジェクトを解放
-        pdfFilesArray.forEach((file) => URL.revokeObjectURL(file.url))
-      }
-    }
+  //     return () => {
+  //       // クリーンアップ: URLオブジェクトを解放
+  //       pdfFilesArray.forEach((file) => URL.revokeObjectURL(file.url))
+  //     }
+  //   }
 
-    fetchPdfFiles()
-  }, [reportId, student.numId, files])
+  //   fetchPdfFiles()
+  // }, [reportId, student.numId, files])
+
+  const { pdfUrls, error } = useSubmissionFile(reportId, student.numId, files)
+  if (error) {
+    return (
+      <StudentSubmissionsHeader student={student} style={{ height, width }}>
+        <SubmissionContainer height={height}>
+          <p className="border border-gray-300 p-4 rounded bg-gray-100">
+            提出物の取得に失敗しました
+          </p>
+        </SubmissionContainer>
+      </StudentSubmissionsHeader>
+    )
+  }
+  console.log(pdfUrls)
 
   return (
     <StudentSubmissionsHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
-          files={pdfFiles}
+          files={pdfUrls}
           width={width}
           pageHeight={pageHeight}
         />
