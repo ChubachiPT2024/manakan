@@ -52,30 +52,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
     )
   }
 
-  const [pdfFiles, setPdfFiles] = useState<{ name: string; url: string }[]>([])
-
-  // useEffect(() => {
-  //   const fetchPdfFiles = async () => {
-  //     const pdfDataPromises = files.map(async (file) => {
-  //       const response = await window.electronAPI.getSubmissionFileAsync(
-  //         new SubmissionFileGetCommand(reportId, student.numId, file)
-  //       )
-  //       const blob = new Blob([response.content], { type: 'application/pdf' })
-  //       return { name: file, url: URL.createObjectURL(blob) }
-  //     })
-
-  //     const pdfFilesArray = await Promise.all(pdfDataPromises)
-  //     setPdfFiles(pdfFilesArray)
-
-  //     return () => {
-  //       // クリーンアップ: URLオブジェクトを解放
-  //       pdfFilesArray.forEach((file) => URL.revokeObjectURL(file.url))
-  //     }
-  //   }
-
-  //   fetchPdfFiles()
-  // }, [reportId, student.numId, files])
-
+  // 提出物の取得
   const { pdfUrls, error, isLoading } = useSubmissionFile(
     reportId,
     student.numId,
