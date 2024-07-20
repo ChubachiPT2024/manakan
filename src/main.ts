@@ -141,13 +141,6 @@ app.whenReady().then(() => {
     async (_, command: SubmissionFileGetCommand) =>
       await submissionFileApplicationService.getAsync(command)
   )
-
-  ipcMain.handle(
-    'showSaveDialog', 
-    async (_, options) => {
-      await dialog.showSaveDialog(options)
-  });
-
   createWindow()
 })
 
