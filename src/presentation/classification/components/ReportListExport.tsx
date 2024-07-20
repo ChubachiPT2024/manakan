@@ -1,7 +1,3 @@
-import React, { useState } from 'react';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
-import { Download } from 'lucide-react';
 import { ReportListExportCommand } from 'src/application/reportLists/reportListExportCommand';
 
 interface ExportButtonProps {
@@ -10,8 +6,6 @@ interface ExportButtonProps {
 }
 
 export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, enabled }) => {
-  const [exportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  
   const handleExport = async () => {
       const data = await window.electronAPI.exportReportListAsync(new ReportListExportCommand(Number(reportId)));
 
@@ -39,15 +33,6 @@ export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, enabled })
       >
         エクスポートする
       </button>
-      {exportStatus === 'success' && (
-        <Stack spacing={2} direction="row" className="mt-2">
-          <Alert severity="success">Exported successfully</Alert>
-          <Download size={24} />
-        </Stack>
-      )}
-      {exportStatus === 'error' && (
-        <Alert severity="error" className="mt-2">Export failed</Alert>
-      )}
     </div>
   );
 };
