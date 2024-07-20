@@ -1,5 +1,5 @@
 // 'electron/main' から import すると Vite がエラーを出す
-import { app, BrowserWindow, dialog, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { ReportListApplicationService } from './application/reportLists/reportListApplicationService'
 import { InMemoryStudentRepository } from './infrastructure/inMemory/students/inMemoryStudentRepository'
@@ -141,6 +141,7 @@ app.whenReady().then(() => {
     async (_, command: SubmissionFileGetCommand) =>
       await submissionFileApplicationService.getAsync(command)
   )
+  
   createWindow()
 })
 
