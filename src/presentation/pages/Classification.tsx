@@ -226,10 +226,10 @@ const Classification = () => {
   )
   const notHasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade == null)
+    .filter((item) => item.assessment.grade === undefined)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade != null)
+    .filter((item) => item.assessment.grade !== undefined)
 
   const handleOpenSelected = () => {
     const selectedSubmissions = report.items.filter((item) => item.isChecked)
@@ -256,7 +256,10 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex h-screen">
-          <SideMenu isDisabled={notHasAssessmentItem.length == 0}>
+          <SideMenu 
+            enabled={notHasAssessmentItem.length === 0}
+            reportId={id}
+          >
             {notHasAssessmentItem.map((item, idx) => {
               return (
                 <SubmissionCard

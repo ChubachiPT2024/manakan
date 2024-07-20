@@ -1,49 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import { Download } from 'lucide-react';
 import { ReportListExportCommand } from 'src/application/reportLists/reportListExportCommand';
-import * as XLSX from 'xlsx';
 
 interface ExportButtonProps {
-  reportId: number;
-  isDisabled: boolean;
+  reportId: string;
+  enabled: boolean;
 }
 
-export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, isDisabled }) => {
+export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, enabled }) => {
   const [exportStatus, setExportStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
+  
   const handleExport = async () => {
-    try {
-      const command = new ReportListExportCommand(reportId);
-      const data = await window.electronAPI.exportReportListAsync(command);
-      const workbook = XLSX.read(data.content);
+      const data = await window.electronAPI.exportReportListAsync(new ReportListExportCommand(Number(reportId)));
 
-      const result = await window.electronAPI.showSaveDialog({
-        title: 'Save file as',
-        filters: [{
-          name: "Spreadsheets",
-          extensions: ["xlsx", "xls", "xlsb"]
-        }]
+      const blob = new Blob([data.content], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-
-      if (result.filePath) {
-        XLSX.writeFile(workbook, result.filePath);
-        setExportStatus('success');
-      }
-    } catch (error) {
-      console.error('Export failed:', error);
-      setExportStatus('error');
-    }
-  };
+      const fileName = 'reportlist.xlsx';
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', fileName);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+  }
 
   return (
     <div>
       <button
         onClick={handleExport}
-        disabled={isDisabled}
+        disabled={!enabled}
         className={`text-white bg-black hover:bg-gray-800 font-medium rounded-md text-md w-full py-2.5 ${
-          isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+          enabled ? '' : 'opacity-50 cursor-not-allowed'
         }`}
       >
         エクスポートする

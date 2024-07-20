@@ -5,12 +5,15 @@ import { ExportButton } from './ReportListExport'
 
 interface SideMenuProps {
   children: ReactNode
-  isDisabled: boolean
-  reportId: number
+  enabled: boolean
+  reportId: string
 }
 
-export function SideMenu({ children, isDisabled, reportId }: SideMenuProps) {
+export function SideMenu({ children, enabled, reportId }: SideMenuProps) {
   const { setNodeRef } = useDroppable({ id: 'has-not-grade' })
+
+  //確認用
+  console.log('enabled:', enabled)
 
   return (
     <div className="bg-white h-screen w-56 flex flex-col shadow-md">
@@ -27,8 +30,7 @@ export function SideMenu({ children, isDisabled, reportId }: SideMenuProps) {
         {children}
       </div>
       <div className="p-3">
-        {/* TODO：もともとの書式に合わせる */}
-        <ExportButton reportId={reportId} isDisabled={isDisabled} />
+        <ExportButton reportId={reportId} enabled={enabled} />
       </div>
     </div>
   )
