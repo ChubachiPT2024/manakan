@@ -226,10 +226,10 @@ const Classification = () => {
   )
   const notHasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade === null)
+    .filter((item) => item.assessment.grade == null)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade !== null)
+    .filter((item) => item.assessment.grade != null)
 
   const handleOpenSelected = () => {
     navigate('/review', {
