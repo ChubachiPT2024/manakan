@@ -10,15 +10,15 @@ export function SideMenu({ children, isDisabled }: SideMenuProps) {
   const { setNodeRef } = useDroppable({ id: 'has-not-grade' })
 
   return (
-    <div className="bg-white w-60 flex flex-col shadow-md">
-      <header className="pt-3 pl-3 pb-7 flex">
+    <div className="bg-white shadow-md flex flex-col px-2">
+      <header className="pt-3 pb-7 flex">
         <div className="h-7 w-7 bg-pink-500 rounded-2xl"></div>
         <h1 className="text-3xl font-semibold ml-1">Manakan</h1>
       </header>
-      <h2 className="text-xl mb-1 ml-3">未分類</h2>
+      <h2 className="text-xl mb-1">未分類</h2>
       <div
         id="has-not-grade"
-        className="overflow-y-auto ml-3 pt-3 flex-grow"
+        className="overflow-y-auto pt-3 flex-grow"
         ref={setNodeRef}
       >
         {children}
