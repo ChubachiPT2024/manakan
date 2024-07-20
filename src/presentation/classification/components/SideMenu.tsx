@@ -19,6 +19,7 @@ export function SideMenu({ children, isDisabled }: SideMenuProps) {
       <div
         id="has-not-grade"
         className="overflow-y-auto pt-3 flex-grow"
+        style={{ scrollbarWidth: 'none' }}
         ref={setNodeRef}
       >
         {children}
