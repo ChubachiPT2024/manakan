@@ -6,6 +6,7 @@ import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
 import { useSubmissionFile } from '../hooks/useSubmissionFile'
+import Spinner from 'src/presentation/common/isLoading/Spinner'
 
 interface Student {
   name: string
@@ -75,7 +76,11 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   //   fetchPdfFiles()
   // }, [reportId, student.numId, files])
 
-  const { pdfUrls, error } = useSubmissionFile(reportId, student.numId, files)
+  const { pdfUrls, error, isLoading } = useSubmissionFile(
+    reportId,
+    student.numId,
+    files
+  )
   if (error) {
     return (
       <StudentSubmissionsHeader student={student} style={{ height, width }}>
@@ -87,7 +92,8 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
       </StudentSubmissionsHeader>
     )
   }
-  console.log(pdfUrls)
+
+  if (isLoading) return <Spinner />
 
   return (
     <StudentSubmissionsHeader student={student} style={{ height, width }}>

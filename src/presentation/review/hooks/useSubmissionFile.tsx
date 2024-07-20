@@ -13,17 +13,13 @@ import useSWR from 'swr'
 async function getSubmissionFile(
   reportId: number,
   studentNumId: number,
-  files: string[]
+  file: string
 ) {
-  const pdfDataPromises = files.map(async (file) => {
-    const response = await window.electronAPI.getSubmissionFileAsync(
-      new SubmissionFileGetCommand(reportId, studentNumId, file)
-    )
-    const blob = new Blob([response.content], { type: 'application/pdf' })
-    return { name: file, url: URL.createObjectURL(blob) }
-  })
-
-  return await Promise.all(pdfDataPromises)
+  const response = await window.electronAPI.getSubmissionFileAsync(
+    new SubmissionFileGetCommand(reportId, studentNumId, file)
+  )
+  const blob = new Blob([response.content], { type: 'application/pdf' })
+  return { name: file, url: URL.createObjectURL(blob) }
 }
 
 // useSWRを使ったカスタムフック
@@ -32,11 +28,19 @@ export const useSubmissionFile = (
   studentNumId: number,
   files: string[]
 ) => {
-  const { data: pdfUrls, error } = useSWR('submissionFiles', () =>
-    getSubmissionFile(reportId, studentNumId, files)
+  const {
+    data: pdfUrls,
+    error,
+    isLoading,
+  } = useSWR<{ name: string; url: string }[]>('submissionFiles', () =>
+    Promise.all(
+      files.map((file) => getSubmissionFile(reportId, studentNumId, file))
+    )
   )
+
   return {
     pdfUrls,
     error,
+    isLoading,
   }
 }
