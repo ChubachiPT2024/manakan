@@ -1,9 +1,9 @@
 import { useLocation } from 'react-router-dom'
-import PdfView from '../review/components/PdfView'
+import StudentSubmissions from '../review/components/StudentSubmissions'
 import Sidebar from '../review/components/Sidebar'
 import { useSubmissionSummaries } from '../review/hooks/useSubmissionSummaries'
 import { BackButton } from '../common/button/BackButton'
-import Loading from '../common/isLoading/Loading'
+import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
 
 // ルーティング時に渡される情報の型
@@ -23,7 +23,7 @@ const Review = () => {
     studentNumIds
   )
 
-  if (isLoading) return <Loading />
+  if (isLoading) return <Spinner />
   if (error) return <Error />
   return (
     <>
@@ -39,7 +39,7 @@ const Review = () => {
           {/* PDF表示 */}
           <div className="w-10/12 pl-8 pt-5 overflow-x-auto whitespace-nowrap flex overflow-y-hidden">
             {submissionSummaries.map((summary, index) => (
-              <PdfView
+              <StudentSubmissions
                 key={index}
                 reportId={Number(reportId)}
                 student={summary.student}

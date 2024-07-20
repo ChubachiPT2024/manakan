@@ -44,8 +44,8 @@ const DropForm = () => {
         types={['XLSX']}
         hoverTitle=" " // ドラッグ時のタイトル (空文字で非表示)
         children={
-          <div className="rounded-lg bg-gray-100 px-20 py-6 flex flex-col items-center justify-center">
-            <MdOutlineFileUpload size={100} color="gray" />
+          <div className="rounded-lg bg-gray-100 px-60 py-20 flex flex-col items-center justify-center">
+            <MdOutlineFileUpload size={200} color="gray" />
             <p className="text-lg text-gray-600">
               ここにreportlist.xlsxをドロップ
             </p>
