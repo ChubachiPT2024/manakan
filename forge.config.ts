@@ -10,6 +10,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses'
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: 'assets/icon/manakan_icon',
   },
   rebuildConfig: {
     // Windows で `electron-forge start` を実行時、
@@ -18,7 +19,9 @@ const config: ForgeConfig = {
     onlyModules: [],
   },
   makers: [
-    new MakerSquirrel({}),
+    new MakerSquirrel({
+      setupIcon: 'assets/icon/manakan_icon.ico',
+    }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({}),

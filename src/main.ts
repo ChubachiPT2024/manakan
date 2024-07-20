@@ -35,6 +35,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+    icon: path.join(__dirname, '../assets/icon/manakan_icon.png'),
   })
 
   // and load the index.html of the app.
@@ -45,9 +46,6 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     )
   }
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
 }
 
 // TODO 定義場所の検討
