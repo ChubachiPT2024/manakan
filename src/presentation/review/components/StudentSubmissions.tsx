@@ -50,7 +50,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
     )
   }
 
-  const [pdfUrls, setPdfUrls] = useState<string[]>([])
+  const [pdfFiles, setPdfFiles] = useState<{ name: string; url: string }[]>([])
 
   useEffect(() => {
     const fetchPdfFiles = async () => {
@@ -59,15 +59,15 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
           new SubmissionFileGetCommand(reportId, student.numId, file)
         )
         const blob = new Blob([response.content], { type: 'application/pdf' })
-        return URL.createObjectURL(blob)
+        return { name: file, url: URL.createObjectURL(blob) }
       })
 
-      const pdfUrlsArray = await Promise.all(pdfDataPromises)
-      setPdfUrls(pdfUrlsArray)
+      const pdfFilesArray = await Promise.all(pdfDataPromises)
+      setPdfFiles(pdfFilesArray)
 
       return () => {
         // クリーンアップ: URLオブジェクトを解放
-        pdfUrlsArray.forEach(URL.revokeObjectURL)
+        pdfFilesArray.forEach((file) => URL.revokeObjectURL(file.url))
       }
     }
 
@@ -78,7 +78,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
     <StudentSubmissionsHeader student={student} style={{ height, width }}>
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
-          files={pdfUrls}
+          files={pdfFiles}
           width={width}
           pageHeight={pageHeight}
         />
