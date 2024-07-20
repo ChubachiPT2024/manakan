@@ -12,9 +12,6 @@ interface SideMenuProps {
 export function SideMenu({ children, enabled, reportId }: SideMenuProps) {
   const { setNodeRef } = useDroppable({ id: 'has-not-grade' })
 
-  //確認用
-  console.log('enabled:', enabled)
-
   return (
     <div className="bg-white h-screen w-56 flex flex-col shadow-md">
       <header className="pt-3 pl-3 pb-7 flex">
