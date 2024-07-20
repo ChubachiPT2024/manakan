@@ -46,6 +46,10 @@ export interface IElectronAPI {
   getSubmissionFileAsync: (
     command: SubmissionFileGetCommand
   ) => Promise<SubmissionFileGetResult>
+
+  showSaveDialog: (
+    options: Electron.SaveDialogOptions
+  ) => Promise<Electron.SaveDialogReturnValue>
 }
 
 declare global {

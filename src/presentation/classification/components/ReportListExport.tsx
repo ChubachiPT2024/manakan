@@ -1,4 +1,3 @@
-import { dialog } from 'electron';
 import React, { useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -20,7 +19,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({ reportId, isDisabled
       const data = await window.electronAPI.exportReportListAsync(command);
       const workbook = XLSX.read(data.content);
 
-      const result = await dialog.showSaveDialog({
+      const result = await window.electronAPI.showSaveDialog({
         title: 'Save file as',
         filters: [{
           name: "Spreadsheets",

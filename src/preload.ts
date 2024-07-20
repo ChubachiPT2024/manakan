@@ -39,4 +39,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getSubmissionFileAsync: (command: SubmissionFileGetCommand) =>
     ipcRenderer.invoke('getSubmissionFileAsync', command),
+
+  showSaveDialog: (options: Electron.SaveDialogOptions) =>
+    ipcRenderer.invoke('showSaveDialog', options),
 })
