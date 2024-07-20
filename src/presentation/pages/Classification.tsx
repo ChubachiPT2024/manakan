@@ -230,7 +230,6 @@ const Classification = () => {
     .filter((item) => item.assessment.grade != null)
 
   const handleOpenSelected = () => {
-    const selectedSubmissions = report.items.filter((item) => item.isChecked)
     navigate('/review', {
       state: { reportId: id, studentNumIds: selectedStudentIds },
     })
@@ -254,7 +253,10 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex w-full h-full">
-          <SideMenu isDisabled={notHasAssessmentItem.length == 0}>
+          <SideMenu 
+            enabled={notHasAssessmentItem.length === 0}
+            reportId={id}
+          >
             {notHasAssessmentItem.map((item, idx) => {
               return (
                 <SubmissionCard

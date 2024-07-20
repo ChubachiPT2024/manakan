@@ -2,12 +2,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import path from 'path'
 import { ReportListApplicationService } from './application/reportLists/reportListApplicationService'
-import { InMemoryStudentRepository } from './infrastructure/inMemory/students/inMemoryStudentRepository'
-import { InMemoryReportRepository } from './infrastructure/inMemory/reports/inMemoryReportRepository'
-import { InMemoryCourseRepository } from './infrastructure/inMemory/courses/inMemoryCourseRepository'
 import { ReportListImportCommand } from './application/reportLists/reportListImportCommand'
-import { InMemorySubmissionRepository } from './infrastructure/inMemory/submissions/inMemorySubmissionRepository'
-import { InMemoryAssessmentRepository } from './infrastructure/inMemory/assessments/inMemoryAssessmentRepository'
 import { ReportListGetCommand } from './application/reportLists/reportListGetCommand'
 import { AssessmentClassifyCommand } from './application/assessments/assessmentClassifyCommand'
 import { AssessmentApplicationService } from './application/assessments/assessmentApplicationService'
@@ -19,6 +14,13 @@ import { SubmissionFileApplicationService } from './application/submissionFiles/
 import { SubmissionFileGetCommand } from './application/submissionFiles/submissionFileGetCommand'
 import { ReportListExportCommand } from './application/reportLists/reportListExportCommand'
 import { ReportCourseApplicationService } from './application/reportCourse/reportCourseApplicationService'
+import { JsonCourseRepository } from './infrastructure/json/courses/jsonCourseRepository'
+import { JsonReportRepository } from './infrastructure/json/reports/jsonReportRepository'
+import { JsonStudentRepository } from './infrastructure/json/students/jsonStudentRepository'
+import { JsonSubmissionRepository } from './infrastructure/json/submissions/jsonSubmissionRepository'
+import { JsonAssessmentRepository } from './infrastructure/json/assessments/jsonAssessmentRepository'
+import { mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -33,6 +35,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+    icon: path.join(__dirname, '../assets/icon/manakan_icon.png'),
   })
 
   // and load the index.html of the app.
@@ -43,18 +46,31 @@ const createWindow = () => {
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
     )
   }
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
 }
 
 // TODO 定義場所の検討
 // TODO DI フレームワークの利用を検討
-const courseRepository = new InMemoryCourseRepository()
-const reportRepository = new InMemoryReportRepository()
-const studentRepository = new InMemoryStudentRepository()
-const submissionRepository = new InMemorySubmissionRepository()
-const assessmentRepository = new InMemoryAssessmentRepository()
+const jsonsFolderAbsolutePath = join(
+  app.getPath('userData'),
+  'repositories',
+  'jsons'
+)
+mkdirSync(jsonsFolderAbsolutePath, { recursive: true })
+const courseRepository = new JsonCourseRepository(
+  join(jsonsFolderAbsolutePath, 'courses.json')
+)
+const reportRepository = new JsonReportRepository(
+  join(jsonsFolderAbsolutePath, 'reports.json')
+)
+const studentRepository = new JsonStudentRepository(
+  join(jsonsFolderAbsolutePath, 'students.json')
+)
+const submissionRepository = new JsonSubmissionRepository(
+  join(jsonsFolderAbsolutePath, 'submissions.json')
+)
+const assessmentRepository = new JsonAssessmentRepository(
+  join(jsonsFolderAbsolutePath, 'assessments.json')
+)
 const reportListApplicationService = new ReportListApplicationService(
   courseRepository,
   reportRepository,
