@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
-import { SubmissionCard } from './SubmissionCard'
 import { useDroppable } from '@dnd-kit/core'
+import { PiFlowerDuotone } from 'react-icons/pi'
 import { ExportButton } from './ReportListExport'
 
 interface SideMenuProps {
@@ -18,7 +18,7 @@ export function SideMenu({ children, enabled, reportId }: SideMenuProps) {
   return (
     <div className="bg-white h-screen w-56 flex flex-col shadow-md">
       <header className="pt-3 pl-3 pb-7 flex">
-        <div className="h-7 w-7 bg-pink-500 rounded-2xl"></div>
+        <PiFlowerDuotone color="pink" size={35} />
         <h1 className="text-3xl font-semibold ml-1">Manakan</h1>
       </header>
       <div
