@@ -25,6 +25,12 @@ const config: ForgeConfig = {
     new MakerZIP({}, ['darwin']),
     new MakerRpm({}),
     new MakerDeb({}),
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {
+        icon: 'assets/icon/manakan_icon.icns',
+      },
+    },
   ],
   plugins: [
     new VitePlugin({
