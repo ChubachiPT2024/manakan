@@ -24,7 +24,7 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
   return (
     <div
       ref={setNodeRef}
-      className="h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer"
+      className="h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer relative"
       style={style}
       {...attributes}
       {...listeners}
@@ -38,11 +38,9 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
         </div>
       </div>
       {!isSubmitted && (
-        <div className="flex justify-end -mt-2">
-          <span className="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-            未提出
-          </span>
-        </div>
+        <span className="absolute right-1 bottom-1 rounded-md bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+          未提出
+        </span>
       )}
     </div>
   )

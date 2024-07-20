@@ -18,12 +18,13 @@ export function SideMenu({ children, enabled, reportId }: SideMenuProps) {
         <PiFlowerDuotone color="pink" size={35} />
         <h1 className="text-3xl font-semibold ml-1">Manakan</h1>
       </header>
+      <h2 className="text-xl mb-1">未分類</h2>
       <div
         id="has-not-grade"
-        className="overflow-y-auto ml-3 pt-3 flex-grow"
+        className="overflow-y-auto pt-3 flex-grow"
+        style={{ scrollbarWidth: 'none' }}
         ref={setNodeRef}
       >
-        <h2 className="text-xl mb-4">未分類</h2>
         {children}
       </div>
       <div className="p-3">

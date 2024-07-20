@@ -21,8 +21,6 @@ import {
   AssessmentRankOfFrontend,
 } from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
-
-import { AssessmentGrade } from 'src/domain/models/assessments/assessmentGrade'
 import { BackButton } from '../common/button/BackButton'
 import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
@@ -254,7 +252,7 @@ const Classification = () => {
             />
           </DragOverlay>
         )}
-        <div className="flex h-screen">
+        <div className="flex w-full h-full">
           <SideMenu 
             enabled={notHasAssessmentItem.length === 0}
             reportId={id}
@@ -270,8 +268,8 @@ const Classification = () => {
               )
             })}
           </SideMenu>
-          <div className="flex-1 overflow-hidden">
-            <div className="pt-3 pl-3 h-full flex flex-col">
+          <div className="flex overflow-hidden">
+            <div className="flex flex-col max-w-full max-h-full pt-3 pl-3">
               <div className="flex justify-between">
                 <div className="flex justify-between">
                   <BackButton href={`/`} />
@@ -303,7 +301,7 @@ const Classification = () => {
                   />
                 </div>
               </div>
-              <div className="flex-1 overflow-x-auto">
+              <div className="grow overflow-x-scroll">
                 <div className="flex h-full">
                   {assessmentGrades.map((grade) => (
                     <GradeColumn
