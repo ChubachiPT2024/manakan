@@ -232,7 +232,6 @@ const Classification = () => {
     .filter((item) => item.assessment.grade != null)
 
   const handleOpenSelected = () => {
-    const selectedSubmissions = report.items.filter((item) => item.isChecked)
     navigate('/review', {
       state: { reportId: id, studentNumIds: selectedStudentIds },
     })
