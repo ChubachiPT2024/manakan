@@ -5,10 +5,10 @@ import useSWR from 'swr'
 /**
  * 提出物のファイルを取得する
  *
- * @param reportId
- * @param studentNumId
- * @param files
- * @returns
+ * @param reportId レポート ID
+ * @param studentNumId 学籍番号
+ * @param file ファイル名
+ * @returns ファイル名とURL
  */
 async function getSubmissionFile(
   reportId: number,
