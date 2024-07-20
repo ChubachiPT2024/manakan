@@ -141,7 +141,7 @@ app.whenReady().then(() => {
     async (_, command: SubmissionFileGetCommand) =>
       await submissionFileApplicationService.getAsync(command)
   )
-  
+
   createWindow()
 })
 
