@@ -59,18 +59,23 @@ const Classification = () => {
     setDraggingSubmissionId(null)
     const { active, over } = event
 
-    let grade: AssessmentGradeOfFrontend | null = null
-    let rank: AssessmentRankOfFrontend | null = null
-
     if (over && active.id !== over?.id) {
       const newItems = report.items.map((item) => {
         if (item.student.numId === active.id) {
-          if (over.id !== 'has-not-grade') {
-            let [newGrade, newRank] = (over.id as string).split(':')
-            newRank = newRank === '' ? undefined : newRank
-            grade = Number(newGrade) as AssessmentGradeOfFrontend
-            rank = newRank as AssessmentRankOfFrontend
+          if (over.id === 'has-not-grade') {
+            return {
+              ...item,
+              assessment: {
+                grade: undefined,
+                rank: undefined,
+              },
+            }
           }
+
+          let [newGrade, newRank] = (over.id as string).split(':')
+          newRank = newRank === '' ? undefined : newRank
+          let grade = Number(newGrade) as AssessmentGradeOfFrontend
+          let rank = newRank as AssessmentRankOfFrontend
 
           return {
             ...item,
@@ -86,7 +91,12 @@ const Classification = () => {
 
       const item = report.items.find((item) => item.student.numId === active.id)
       const studentNumId = Number(item.student.numId)
-      updateAssessment(report.id, studentNumId, grade, rank)
+      updateAssessment(
+        report.id,
+        studentNumId,
+        item.assessment.grade,
+        item.assessment.rank
+      )
 
       setReport({
         ...report,
@@ -253,10 +263,7 @@ const Classification = () => {
           </DragOverlay>
         )}
         <div className="flex w-full h-full">
-          <SideMenu 
-            enabled={notHasAssessmentItem.length === 0}
-            reportId={id}
-          >
+          <SideMenu enabled={notHasAssessmentItem.length === 0} reportId={id}>
             {notHasAssessmentItem.map((item, idx) => {
               return (
                 <SubmissionCard
