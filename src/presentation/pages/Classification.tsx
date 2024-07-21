@@ -56,7 +56,7 @@ const Classification = () => {
     setDraggingSubmissionId(event.active.id)
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     setDraggingSubmissionId(null)
 
     const { active, over } = event
@@ -77,7 +77,7 @@ const Classification = () => {
       },
     }
 
-    updateAssessment(
+    await updateAssessment(
       report.id,
       newItem.student.numId,
       newItem.assessment.grade,
