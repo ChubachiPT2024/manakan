@@ -67,7 +67,7 @@ const Sidebar: React.FC<IPropsSidebar> = ({
               submissionSummaries.find(
                 (summary: SubmissionSummaryData) =>
                   summary.student.numId === selectedStudent.numId
-              )?.assessment.score
+              )?.assessment.score ?? '--'
             }
             variant="outlined"
             fullWidth
