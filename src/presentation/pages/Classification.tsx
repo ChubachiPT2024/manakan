@@ -24,6 +24,7 @@ import { AssessmentClassifyCommand } from 'src/application/assessments/assessmen
 import { BackButton } from '../common/button/BackButton'
 import Spinner from '../common/isLoading/Spinner'
 import Error from '../common/error/Error'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 const Classification = () => {
   const { id } = useParams()
@@ -57,51 +58,56 @@ const Classification = () => {
 
   const handleDragEnd = (event: DragEndEvent) => {
     setDraggingSubmissionId(null)
+
     const { active, over } = event
+    if (!over || active.id === over?.id) {
+      return
+    }
 
-    if (over && active.id !== over?.id) {
-      const newItems = report.items.map((item) => {
-        if (item.student.numId === active.id) {
-          if (over.id === 'has-not-grade') {
-            return {
-              ...item,
-              assessment: {
-                grade: undefined,
-                rank: undefined,
-              },
-            }
-          }
+    const newGradeAndRank = getNewGradeAndRank(over.id)
 
-          let [newGrade, newRank] = (over.id as string).split(':')
-          newRank = newRank === '' ? undefined : newRank
-          let grade = Number(newGrade) as AssessmentGradeOfFrontend
-          let rank = newRank as AssessmentRankOfFrontend
+    const itemIndex = report.items.findIndex(
+      (x) => x.student.numId === active.id
+    )
+    const newItem = {
+      ...report.items[itemIndex],
+      assessment: {
+        grade: newGradeAndRank.grade,
+        rank: newGradeAndRank.rank,
+      },
+    }
 
-          return {
-            ...item,
-            assessment: {
-              grade: grade,
-              rank: rank,
-            },
-          }
-        }
+    updateAssessment(
+      report.id,
+      newItem.student.numId,
+      newItem.assessment.grade,
+      newItem.assessment.rank
+    )
 
-        return item
-      })
+    setReport({
+      ...report,
+      items: report.items.with(itemIndex, newItem),
+    })
+  }
 
-      const item = report.items.find((item) => item.student.numId === active.id)
-      const studentNumId = Number(item.student.numId)
-      updateAssessment(
-        report.id,
-        studentNumId,
-        item.assessment.grade,
-        item.assessment.rank
-      )
+  const getNewGradeAndRank = (
+    overId: UniqueIdentifier
+  ): { grade?: AssessmentGradeOfFrontend; rank?: AssessmentRankOfFrontend } => {
+    if (overId === 'has-not-grade') {
+      return {
+        grade: undefined,
+        rank: undefined,
+      }
+    }
 
-      setReport({
-        ...report,
-        items: newItems,
-      })
+    let [newGrade, newRank] = (overId as string).split(':')
+    newRank = newRank === '' ? undefined : newRank
+    let grade = Number(newGrade) as AssessmentGradeOfFrontend
+    let rank = newRank as AssessmentRankOfFrontend
+
+    return {
+      grade: grade,
+      rank: rank,
     }
   }
 
@@ -234,10 +240,10 @@ const Classification = () => {
   )
   const notHasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade == null)
+    .filter((item) => item.assessment.grade === undefined)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade != null)
+    .filter((item) => item.assessment.grade !== undefined)
 
   const handleOpenSelected = () => {
     navigate('/review', {
