@@ -61,7 +61,7 @@ const Sidebar: React.FC<IPropsSidebar> = ({
         <div className="pl-3">
           <TextField
             id="score"
-            type="number"
+            type="text"
             disabled
             value={
               submissionSummaries.find(
@@ -73,8 +73,6 @@ const Sidebar: React.FC<IPropsSidebar> = ({
             fullWidth
             inputProps={{
               'aria-label': 'Without label',
-              min: 0,
-              max: 100,
             }}
           />
         </div>
