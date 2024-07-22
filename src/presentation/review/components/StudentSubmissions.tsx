@@ -17,7 +17,7 @@ interface StudentSubmissionsProps {
   reportId: number
   student: Student
   files: string[]
-  height: string
+  // height: string
   width: number
   submission: Submission
 }
@@ -32,10 +32,11 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   reportId,
   student,
   files,
-  height,
+  // height,
   width,
   submission,
 }) => {
+  const height = 'calc(100vh - 6rem)'
   const pageHeight = (297 / 210) * width // A4縦の比率で高さを計算
 
   // 未提出の場合は例外テキストを表示

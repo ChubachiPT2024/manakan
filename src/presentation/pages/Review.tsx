@@ -44,7 +44,7 @@ const Review = () => {
                 reportId={Number(reportId)}
                 student={summary.student}
                 files={summary.files}
-                height="calc(100vh - 6rem)"
+                // height="calc(100vh - 6rem)"
                 width={1100}
                 submission={summary.submission}
               />
