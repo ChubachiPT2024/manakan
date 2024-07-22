@@ -61,20 +61,18 @@ const Sidebar: React.FC<IPropsSidebar> = ({
         <div className="pl-3">
           <TextField
             id="score"
-            type="number"
+            type="text"
             disabled
             value={
               submissionSummaries.find(
                 (summary: SubmissionSummaryData) =>
                   summary.student.numId === selectedStudent.numId
-              )?.assessment.score
+              )?.assessment.score ?? '--'
             }
             variant="outlined"
             fullWidth
             inputProps={{
               'aria-label': 'Without label',
-              min: 0,
-              max: 100,
             }}
           />
         </div>
