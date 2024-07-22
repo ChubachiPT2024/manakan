@@ -22,8 +22,7 @@ const Sidebar: React.FC<IPropsSidebar> = ({
   const [selectedStudent, setSelectedStudent] =
     useState<SubmissionSummaryStudentData>(submissionSummaries[0].student)
 
-  // 非同期処理でのsubmissionSummariesの取得のため
-  // selectedStudentの初期値が更新されないことがあるため、useEffectで初期値を設定
+  // レンダリングごとに、最初の学生を選択状態にする
   useEffect(() => {
     setSelectedStudent(submissionSummaries[0].student)
   }, [submissionSummaries])
