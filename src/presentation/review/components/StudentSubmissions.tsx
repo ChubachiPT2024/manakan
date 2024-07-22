@@ -32,9 +32,34 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   files,
   submission,
 }) => {
+  // ウィンドウの幅と高さを計算するための状態を定義
+  const [dimensions, setDimensions] = useState({
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+  })
+
+  // ウィンドウのリサイズイベントに対応するためのエフェクトを定義
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // クリーンアップ関数でイベントリスナーを削除
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
   // 学生毎の縦のdiv
-  const height = 'calc(100vh - 6rem)'
-  const width = 1100
+  const { innerWidth, innerHeight } = dimensions
+  const width = innerWidth / 2
+  const height = `calc(${innerHeight}px - 6rem)`
+
   // PDF用div
   const pageHeight = (297 / 210) * width // A4縦の比率で高さを計算
   const pageWidth = width - 50 // 50pxは Submission Container の外側の div 用の スクロールバーの幅
