@@ -19,7 +19,6 @@ interface StudentSubmissionsProps {
   files: string[]
   height: string
   width: number
-  pageHeight: number
   submission: Submission
 }
 
@@ -35,9 +34,10 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   files,
   height,
   width,
-  pageHeight,
   submission,
 }) => {
+  const pageHeight = (297 / 210) * width // A4縦の比率で高さを計算
+
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
@@ -82,7 +82,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
           files={pdfUrls}
-          width={width - 50}
+          width={width - 50} // 50pxは Submission Container の外側の div 用の スクロールバーの幅
           pageHeight={pageHeight}
         />
       </SubmissionContainer>

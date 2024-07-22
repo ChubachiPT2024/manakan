@@ -46,7 +46,6 @@ const Review = () => {
                 files={summary.files}
                 height="calc(100vh - 6rem)"
                 width={1100}
-                pageHeight={1200}
                 submission={summary.submission}
               />
             ))}
