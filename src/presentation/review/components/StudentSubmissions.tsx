@@ -84,7 +84,7 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
         <SubmissionPdfContainer
           files={pdfUrls}
           width={pageWidth}
-          pageHeight={pageHeight}
+          height={pageHeight}
         />
       </SubmissionContainer>
     </StudentSubmissionsHeader>
