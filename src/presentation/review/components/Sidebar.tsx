@@ -24,7 +24,7 @@ const Sidebar: React.FC<IPropsSidebar> = ({
   const [selectedStudent, setSelectedStudent] =
     useState<SubmissionSummaryStudentData>(initialStudent)
 
-  // レンダリングごとに選択された学生を初期化
+  // レンダリングごとに、最初の学生を選択状態にする
   useEffect(() => {
     setSelectedStudent(initialStudent)
   }, [initialStudent.numId])
