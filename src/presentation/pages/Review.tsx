@@ -52,6 +52,7 @@ const Review = () => {
           <Sidebar
             reportId={reportId}
             submissionSummaries={submissionSummaries}
+            initialStudent={submissionSummaries[0].student}
           />
         </div>
       </div>
