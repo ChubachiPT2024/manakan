@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
-import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
