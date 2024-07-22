@@ -7,13 +7,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = `./pdf.worker.min.mjs`
 interface SubmissionPdfContainerProps {
   files: { name: string; url: string }[]
   width: number
-  pageHeight: number
+  height: number
 }
 
 const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
   files,
   width,
-  pageHeight,
+  height,
 }) => {
   const [numPages, setNumPages] = useState<number[]>([])
   const [fileTypes, setFileTypes] = useState<{ [key: string]: string }>({})
@@ -68,7 +68,7 @@ const SubmissionPdfContainer: React.FC<SubmissionPdfContainerProps> = ({
             <div
               style={{
                 width,
-                height: pageHeight,
+                height,
                 overflowY: 'auto',
                 border: '1px solid #ccc',
                 borderRadius: '4px',

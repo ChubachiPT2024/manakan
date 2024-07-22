@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
-import { SubmissionFileGetCommand } from 'src/application/submissionFiles/submissionFileGetCommand'
 import StudentSubmissionsHeader from './StudentSubmissionsHeader'
 import SubmissionContainer from './SubmissionContainer'
 import SubmissionPdfContainer from './SubmissionPdfContainer'
@@ -18,9 +17,6 @@ interface StudentSubmissionsProps {
   reportId: number
   student: Student
   files: string[]
-  height: string
-  width: number
-  pageHeight: number
   submission: Submission
 }
 
@@ -34,11 +30,40 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
   reportId,
   student,
   files,
-  height,
-  width,
-  pageHeight,
   submission,
 }) => {
+  // ウィンドウの幅と高さを計算するための状態を定義
+  const [dimensions, setDimensions] = useState({
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+  })
+
+  // ウィンドウのリサイズイベントに対応するためのエフェクトを定義
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        innerWidth: window.innerWidth,
+        innerHeight: window.innerHeight,
+      })
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    // クリーンアップ関数でイベントリスナーを削除
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  // 学生毎の縦のdiv
+  const { innerWidth, innerHeight } = dimensions
+  const width = innerWidth / 2
+  const height = `calc(${innerHeight}px - 6rem)`
+
+  // PDF用div
+  const pageHeight = (297 / 210) * width // A4縦の比率で高さを計算
+  const pageWidth = width - 50 // 50pxは Submission Container の外側の div 用の スクロールバーの幅
+
   // 未提出の場合は例外テキストを表示
   if (!submission.isSubmitted) {
     return (
@@ -83,8 +108,8 @@ const StudentSubmissions: React.FC<StudentSubmissionsProps> = ({
       <SubmissionContainer height={height}>
         <SubmissionPdfContainer
           files={pdfUrls}
-          width={width - 50}
-          pageHeight={pageHeight}
+          width={pageWidth}
+          height={pageHeight}
         />
       </SubmissionContainer>
     </StudentSubmissionsHeader>
