@@ -65,7 +65,7 @@ export class AssessmentApplicationService {
       command.studentNumId
     )
 
-    const updated = assessment.updateFeedback(command.memo)
+    const updated = assessment.updateMemo(command.memo)
 
     await this.assessmentRepository.saveAsync(updated)
   }

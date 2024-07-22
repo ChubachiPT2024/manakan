@@ -8,16 +8,23 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import { useNavigate, useParams } from 'react-router-dom'
 import { SubmissionCard } from '../classification/components/SubmissionCard'
 import { SideMenu } from '../classification/components/SideMenu'
 import { SelectedButton } from '../classification/components/SelectedButton'
 import { GradeColumn } from '../classification/components/GradeColumn'
 import { RankRow } from '../classification/components/RankRow'
-import { useNavigate, useParams } from 'react-router-dom'
 import { ReportListGetCommand } from 'src/application/reportLists/reportListGetCommand'
 import { Report } from '../types/report'
-import { AssessmentRank } from '../types/submission'
+import {
+  AssessmentGradeOfFrontend,
+  AssessmentRankOfFrontend,
+} from '../types/assessment'
 import { AssessmentClassifyCommand } from 'src/application/assessments/assessmentClassifyCommand'
+import { BackButton } from '../common/button/BackButton'
+import Spinner from '../common/isLoading/Spinner'
+import Error from '../common/error/Error'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 const Classification = () => {
   const { id } = useParams()
@@ -28,17 +35,19 @@ const Classification = () => {
   const [draggingSubmissionId, setDraggingSubmissionId] = useState(null)
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([])
   const [report, setReport] = useState<Report | null>(null)
+  const [courseName, setCourseName] = useState<string>('')
   const [assessmentGrades, setAssessmentGrades] = useState<
     {
       id: number
       submissionNum: number
     }[]
   >([
-    { id: 1, submissionNum: 0 },
-    { id: 2, submissionNum: 0 },
-    { id: 3, submissionNum: 0 },
-    { id: 4, submissionNum: 0 },
     { id: 5, submissionNum: 0 },
+    { id: 4, submissionNum: 0 },
+    { id: 3, submissionNum: 0 },
+    { id: 2, submissionNum: 0 },
+    { id: 1, submissionNum: 0 },
+    { id: 0, submissionNum: 0 },
   ])
 
   const assessmentRanks = ['++', '+', '+-', '-', '--']
@@ -47,50 +56,66 @@ const Classification = () => {
     setDraggingSubmissionId(event.active.id)
   }
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     setDraggingSubmissionId(null)
+
     const { active, over } = event
+    if (!over || active.id === over?.id) {
+      return
+    }
 
-    let grade: number | null = null
-    let rank: AssessmentRank | null = null
+    const newGradeAndRank = getNewGradeAndRank(over.id)
 
-    if (over && active.id !== over?.id) {
-      const newItems = report.items.map((item) => {
-        if (item.student.numId === active.id) {
-          if (over.id !== 'has-not-grade') {
-            const [newGrade, newRank] = (over.id as string).split(':')
-            grade = Number(newGrade)
-            rank = newRank as AssessmentRank
-          }
+    const itemIndex = report.items.findIndex(
+      (x) => x.student.numId === active.id
+    )
+    const newItem = {
+      ...report.items[itemIndex],
+      assessment: {
+        grade: newGradeAndRank.grade,
+        rank: newGradeAndRank.rank,
+      },
+    }
 
-          return {
-            ...item,
-            assessment: {
-              grade: grade,
-              rank: rank,
-            },
-          }
-        }
+    await updateAssessment(
+      report.id,
+      newItem.student.numId,
+      newItem.assessment.grade,
+      newItem.assessment.rank
+    )
 
-        return item
-      })
+    setReport({
+      ...report,
+      items: report.items.with(itemIndex, newItem),
+    })
+  }
 
-      const item = report.items.find((item) => item.student.numId === active.id)
-      const studentNumId = Number(item.student.numId)
-      updateAssessment(report.id, studentNumId, grade, rank)
+  const getNewGradeAndRank = (
+    overId: UniqueIdentifier
+  ): { grade?: AssessmentGradeOfFrontend; rank?: AssessmentRankOfFrontend } => {
+    if (overId === 'has-not-grade') {
+      return {
+        grade: undefined,
+        rank: undefined,
+      }
+    }
 
-      setReport({
-        ...report,
-        items: newItems,
-      })
+    let [newGrade, newRank] = (overId as string).split(':')
+    newRank = newRank === '' ? undefined : newRank
+    let grade = Number(newGrade) as AssessmentGradeOfFrontend
+    let rank = newRank as AssessmentRankOfFrontend
+
+    return {
+      grade: grade,
+      rank: rank,
     }
   }
 
   const updateAssessment = async (
     reportId: number,
     studentId: number,
-    grade: number,
-    rank: AssessmentRank
+    grade: AssessmentGradeOfFrontend,
+    rank?: AssessmentRankOfFrontend
   ) => {
     await window.electronAPI
       .classifyAssessmentAsync(
@@ -146,6 +171,9 @@ const Classification = () => {
               numId: item.student.numId,
               name: item.student.name,
             },
+            submission: {
+              isSubmitted: item.submission.isSubmitted,
+            },
             assessment: {
               grade: item.assessment.grade,
               rank: item.assessment.rank,
@@ -155,9 +183,10 @@ const Classification = () => {
         })
         setReport({
           id: res.reportListData.reportId,
-          title: res.reportListData.courseName,
+          title: res.reportListData.reportTitle,
           items: newItems,
         })
+        setCourseName(res.reportListData.courseName)
         setProcess('success')
       })
       .catch((err) => {
@@ -199,37 +228,11 @@ const Classification = () => {
   )
 
   if (process === 'loading') {
-    return (
-      <>
-        <div
-          className="flex justify-center items-center h-screen"
-          aria-label="読み込み中"
-        >
-          <div className="animate-spin h-10 w-10 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-        </div>
-      </>
-    )
+    return <Spinner />
   }
 
   if (process === 'error') {
-    return (
-      <>
-        <div
-          className="flex justify-center items-center h-screen"
-          aria-label="読み込み中"
-        >
-          <div className="text-center">
-            <h1 className="text-2xl mb-5">エラーが発生しました</h1>
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => navigate('/')}
-            >
-              ホームへ戻る
-            </button>
-          </div>
-        </div>
-      </>
-    )
+    return <Error />
   }
 
   const draggingItem = report.items.find(
@@ -237,15 +240,12 @@ const Classification = () => {
   )
   const notHasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter((item) => item.assessment.grade == null)
+    .filter((item) => item.assessment.grade === undefined)
   const hasAssessmentItem = report.items
     .filter((item) => item.student.numId !== draggingSubmissionId)
-    .filter(
-      (item) => item.assessment.grade != null && item.assessment.rank != null
-    )
+    .filter((item) => item.assessment.grade !== undefined)
 
   const handleOpenSelected = () => {
-    const selectedSubmissions = report.items.filter((item) => item.isChecked)
     navigate('/review', {
       state: { reportId: id, studentNumIds: selectedStudentIds },
     })
@@ -268,8 +268,8 @@ const Classification = () => {
             />
           </DragOverlay>
         )}
-        <div className="flex h-screen">
-          <SideMenu isDisabled={notHasAssessmentItem.length == 0}>
+        <div className="flex w-full h-full">
+          <SideMenu enabled={notHasAssessmentItem.length === 0} reportId={id}>
             {notHasAssessmentItem.map((item, idx) => {
               return (
                 <SubmissionCard
@@ -281,14 +281,28 @@ const Classification = () => {
               )
             })}
           </SideMenu>
-          <div className="flex-1 overflow-hidden">
-            <div className="pt-3 pl-3 h-full flex flex-col">
-              <div className="pb-7 flex justify-between">
-                <h1 className="text-2xl">{report.title}</h1>
-                <div>
+          <div className="flex overflow-hidden">
+            <div className="flex flex-col max-w-full max-h-full pt-3 pl-3">
+              <div className="flex justify-between">
+                <div className="flex justify-between">
+                  <BackButton href={`/`} />
+                  <div>
+                    {/* courseName */}
+                    <h1 className="flex ml-2 text-xl">
+                      <p className="mr-2">コース名</p>
+                      {courseName}
+                    </h1>
+                    {/* courseName */}
+                    <h2 className="flex ml-2 text-base">
+                      <p className="mr-2">レポート名</p>
+                      {report.title}
+                    </h2>
+                  </div>
+                </div>
+                <div className="mt-2">
                   <SelectedButton
                     styles="bg-sky-400"
-                    title="複数開く"
+                    title="開く"
                     isDisabled={selectedStudentIds.length === 0}
                     onClick={handleOpenSelected}
                   />
@@ -300,7 +314,7 @@ const Classification = () => {
                   />
                 </div>
               </div>
-              <div className="flex-1 overflow-x-auto">
+              <div className="grow overflow-x-scroll">
                 <div className="flex h-full">
                   {assessmentGrades.map((grade) => (
                     <GradeColumn
@@ -308,17 +322,37 @@ const Classification = () => {
                       title={grade.id.toString()}
                       submissionNum={grade.submissionNum}
                     >
-                      {assessmentRanks.map((rank, index) => (
-                        <RankRow
-                          key={index}
-                          id={`${grade.id}:${rank}`}
-                          title={rank}
-                        >
+                      {grade.id !== 0 ? (
+                        assessmentRanks.map((rank, index) => (
+                          <RankRow
+                            key={index}
+                            id={`${grade.id}:${rank}`}
+                            title={rank}
+                          >
+                            {hasAssessmentItem
+                              .filter(
+                                (item) =>
+                                  `${item.assessment.grade}:${item.assessment.rank}` ===
+                                  `${grade.id}:${rank}`
+                              )
+                              .map((item, index) => (
+                                <SubmissionCard
+                                  key={index}
+                                  id={item.student.numId}
+                                  item={item}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(e, item.student.numId)
+                                  }
+                                />
+                              ))}
+                          </RankRow>
+                        ))
+                      ) : (
+                        <RankRow key={grade.id} id={`${grade.id}:`} title={''}>
                           {hasAssessmentItem
                             .filter(
                               (item) =>
-                                `${item.assessment.grade}:${item.assessment.rank}` ===
-                                `${grade.id}:${rank}`
+                                `${item.assessment.grade}:` === `${grade.id}:`
                             )
                             .map((item, index) => (
                               <SubmissionCard
@@ -331,7 +365,7 @@ const Classification = () => {
                               />
                             ))}
                         </RankRow>
-                      ))}
+                      )}
                     </GradeColumn>
                   ))}
                 </div>

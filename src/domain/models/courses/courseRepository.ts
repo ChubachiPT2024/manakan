@@ -17,4 +17,10 @@ export interface CourseRepository {
    * @param id ID
    */
   findAsync(id: number): Promise<Course>
+
+  /**
+   * コースを全件取得する
+   *
+   */
+  findAllAsync(): Promise<Course[]>
 }

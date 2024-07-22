@@ -19,10 +19,12 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
       }
     : {}
 
+  const isSubmitted = item.submission.isSubmitted
+
   return (
     <div
       ref={setNodeRef}
-      className="h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer"
+      className="h-14 w-[200px] rounded-lg my-2 bg-white shadow-2xl mouse-pointer relative"
       style={style}
       {...attributes}
       {...listeners}
@@ -35,6 +37,11 @@ export function SubmissionCard({ id, item, onChange }: SubmissionCardProps) {
           <p className="text-xs">{item.student.name}</p>
         </div>
       </div>
+      {!isSubmitted && (
+        <span className="absolute right-1 bottom-1 rounded-md bg-red-50 px-1.5 py-0.5 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+          未提出
+        </span>
+      )}
     </div>
   )
 }

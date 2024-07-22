@@ -19,6 +19,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportReportListAsync: (reportListExportCommand: ReportListExportCommand) =>
     ipcRenderer.invoke('exportReportListAsync', reportListExportCommand),
 
+  getReportCourseAsync: () => ipcRenderer.invoke('getReportCourseAsync'),
+
   getReportListAsync: (reportListGetCommand: ReportListGetCommand) =>
     ipcRenderer.invoke('getReportListAsync', reportListGetCommand),
 
