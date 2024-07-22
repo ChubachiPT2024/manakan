@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmissionSummaryData } from 'src/application/submissionSummaries/submissionSummaryData'
 import { SubmissionSummaryStudentData } from 'src/application/submissionSummaries/submissionSummaryStudentData'
 import StudentSelectionRadioGroup from 'src/presentation/review/components/StudentSelectionRadioGroup'
@@ -21,6 +21,12 @@ const Sidebar: React.FC<IPropsSidebar> = ({
   // 選択された学生
   const [selectedStudent, setSelectedStudent] =
     useState<SubmissionSummaryStudentData>(submissionSummaries[0].student)
+
+  // 非同期処理でのsubmissionSummariesの取得のため
+  // selectedStudentの初期値が更新されないことがあるため、useEffectで初期値を設定
+  useEffect(() => {
+    setSelectedStudent(submissionSummaries[0].student)
+  }, [submissionSummaries])
 
   return (
     <div className="w-96 p-4 m-2 border-l-4 flex flex-col justify-start overflow-y-auto">
