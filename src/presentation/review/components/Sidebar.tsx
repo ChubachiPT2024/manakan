@@ -11,21 +11,23 @@ import TextField from '@mui/material/TextField'
 interface IPropsSidebar {
   reportId: string
   submissionSummaries: SubmissionSummaryData[]
+  initialStudent: SubmissionSummaryStudentData
 }
 
 // reviewページサイドバーコンポーネント
 const Sidebar: React.FC<IPropsSidebar> = ({
   reportId,
   submissionSummaries,
+  initialStudent,
 }) => {
   // 選択された学生
   const [selectedStudent, setSelectedStudent] =
-    useState<SubmissionSummaryStudentData>(submissionSummaries[0].student)
+    useState<SubmissionSummaryStudentData>(initialStudent)
 
   // レンダリングごとに、最初の学生を選択状態にする
   useEffect(() => {
-    setSelectedStudent(submissionSummaries[0].student)
-  }, [submissionSummaries])
+    setSelectedStudent(initialStudent)
+  }, [initialStudent.numId])
 
   return (
     <div className="w-96 p-4 m-2 border-l-4 flex flex-col justify-start overflow-y-auto">
