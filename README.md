@@ -1,8 +1,9 @@
 # manakan
 
-manakan（マナカン）は、教員の業務を補助するシステムで、学生のレポート評価をサポートするためのツールです。
+manakan（マナカン）は、教員の業務を補助するシステムで、学生のレポート評価をサポートするためのツールです。  
+<br>
 
-# 使用技術一覧
+# 技術スタック
 
 <p style="display: inline">
   <img src="https://img.shields.io/badge/-Electron-000000.svg?logo=Electron&style=for-the-badge&logoColor=61DAFB">
