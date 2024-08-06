@@ -16,7 +16,7 @@ export function SideMenu({ children, enabled, reportId }: SideMenuProps) {
     <div className="bg-white h-screen w-56 flex flex-col shadow-md">
       <header className="pt-3 pl-3 pb-7 flex">
         <PiFlowerDuotone color="pink" size={35} />
-        <h1 className="text-3xl font-semibold ml-1">Manakan</h1>
+        <h1 className="text-3xl font-semibold ml-1">manakan</h1>
       </header>
       <h2 className="text-xl mb-1">未分類</h2>
       <div
